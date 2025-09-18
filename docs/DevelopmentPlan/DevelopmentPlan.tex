@@ -64,7 +64,8 @@ Given that the MES's website source code \href{https://github.com/McMaster-Engin
 \begin{itemize}
   \item GitHub Issues for tasks, bugs, feature requests and meeting agendas.
   \item Pull requests for all code changes with at least one reviewer before merging.
-  \item Synchronous chat (Discord) for quick coordination; email for formal stakeholder communications.
+  \item Discord for quick coordination.
+  \item Email for formal stakeholder communications.
   \item Weekly status updates posted to a shared project board or README for the MES contact.
 \end{itemize}
 
@@ -77,17 +78,21 @@ likely change throughout the year.}
 
 \section{Workflow Plan}
 
-- Git branching: single protected `main` branch for production; feature branches named `feature/short-description`; pull requests for merges.
-- Pull request policy: descriptive PRs, link to issues, at least one approving review and passing CI.
-- Issue management: issue templates for bug, feature, and documentation; labels for priority and component (frontend/backend/ops).
-- CI/CD: automatic test runs on PRs; deployments to a staging environment on merges to `develop` (optional) and production on `main` after review.
-- Code reviews: enforce linting and basic tests; use GitHub Actions for automated checks (linters, tests, security scanning).
+\begin{itemize}
+  \item Git branching: single protected \texttt{main} branch for production; feature branches named \texttt{feature/short-description}; pull requests for merges.
+  \item Pull request policy: descriptive PRs, link to issues, at least one approving review and passing CI.
+  \item Issue management: issue templates for bug, feature, and documentation; labels for priority and component (frontend/backend/ops).
+  \item CI/CD: automatic test runs on PRs; deployments to a staging environment on merges to \texttt{develop} (optional) and production on \texttt{main} after review.
+  \item Code reviews: enforce linting and basic tests; use GitHub Actions for automated checks (linters, tests, security scanning).
+\end{itemize}
 
 \section{Project Decomposition and Scheduling}
 
 \begin{itemize}
-  \item How will you be using GitHub projects?
-  \item Include a link to your GitHub project
+  \item We will use GitHub Issues and GitHub Projects to manage work and track progress. Issues will represent tasks, bugs, and feature requests; Projects will be used for sprint planning and high-level roadmaps.
+  \item GitHub Projects board (create and link when available): \href{https://github.com/zheniasigayev/MES-Finance-Tracking/projects}{Project board placeholder}
+  \item Capstone Repository: \href{https://github.com/zheniasigayev/MES-Finance-Tracking}{https://github.com/zheniasigayev/MES-Finance-Tracking}
+  \item MES Website Repository: \href{https://github.com/McMaster-Engineering-Society/MES-Website-App-Router}{https://github.com/McMaster-Engineering-Society/MES-Website-App-Router}
 \end{itemize}
 
 \wss{How will the project be scheduled?  This is the big picture schedule, not
