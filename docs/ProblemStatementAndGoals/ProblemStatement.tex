@@ -57,17 +57,83 @@ a large quantity at the end of the year, and provide clear visualization that ma
 information.}
 
 \subsection{Problem}
+\begin{itemize}
+    \item MES reimbursment process is manual and slow to complete
+    \item expense submissions can come from multiple places making them difficult to access
+    \item Hard to keep track of payments and receipts
+  \end{itemize}
 
 \subsection{Inputs and Outputs}
+Inputs: 
+\begin{itemize}
+  \item Relevant user information (i.e. name)
+  \item Reimbursement amount
+  \item Proof of expense
+    \begin{itemize}
+      \item Picture of physical receipt
+      \item Digital copy of receipt (pdf, email, etc)
+    \end{itemize}
+\end{itemize}
+Outputs:
+\begin{itemize}
+  \item Visual dashboard to navigate features 
+    \begin{itemize}
+      \item Reimbursement request history
+      \item Status of reimbursement requests
+    \end{itemize}
+  \item Financial reports/summaries (for transaction details)
+  \item Confirmations when reimbursement request status changes (status examples: submitted, pending, approved, rejected)
+\end{itemize}
 
-\wss{Characterize the problem in terms of ``high level'' inputs and outputs.  
+
+\wss{Characterize the problem in terms of 'high level' inputs and outputs.  
 Use abstraction so that you can avoid details.}
 
 \subsection{Stakeholders}
+\begin{itemize}
+  \item Group leadership teams in charge of managing MES budget
+  \item Administrative staff in charge of monitoring spending provide reimbursements
+  \item Faculty advisors who determine what expenses are eligible for reimbursement
+\end{itemize}
 
 \subsection{Environment}
 
 \wss{Hardware and Software Environment}
+Software and Technology Stack:
+\begin{itemize}
+  \item \textbf{Languages:}
+    \begin{itemize}
+      \item TypeScript (primary)
+      \item CSS
+    \end{itemize}
+  \item \textbf{Runtime:}
+    \begin{itemize}
+      \item Node.js
+    \end{itemize}
+  \item \textbf{Database:}
+    \begin{itemize}
+      \item MongoDB Community Server
+    \end{itemize}
+  \item \textbf{Core Frameworks:}
+    \begin{itemize}
+      \item Next.js (React-based framework for server-side rendering, routing, static site generation)
+      \item React (UI library)
+      \item Tailwind CSS (utility-first CSS framework)
+      \item NextUI (UI component library)
+    \end{itemize}
+  \item \textbf{Major Libraries:}
+    \begin{itemize}
+      \item @mui/material (Material UI for React)
+      \item @tanstack/react-query (Data fetching, state management)
+      \item axios (HTTP client)
+      \item next-auth (authentication)
+    \end{itemize}
+  \item \textbf{Other Configuration/Plugin Files:}
+    \begin{itemize}
+      \item next-sitemap (sitemap generation)
+      \item pnpm/yarn (dependency management)
+    \end{itemize}
+\end{itemize}
 
 \section{Goals}
 
