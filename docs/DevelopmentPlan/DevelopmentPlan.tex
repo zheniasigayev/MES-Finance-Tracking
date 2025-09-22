@@ -31,8 +31,7 @@ Date2 & Name(s) & Description of changes\\
 
 \newpage{}
 
-\wss{Put your introductory blurb here.  Often the blurb is a brief roadmap of
-what is contained in the report.}
+This document outlines the development plan for the MES Club Payment Tracking System, a web application designed to streamline the reimbursement process for McMaster Engineering Society (MES) clubs. The current process using Google Forms and spreadsheets is inefficient, error-prone, and difficult to search. This plan provides the roadmap for design and implementation, describes team and workflow organization, lists the expected technologies, and identifies major risks and mitigation strategies.
 
 \wss{Additional information on the development plan can be found in the
 \href{https://gitlab.cas.mcmaster.ca/courses/capstone/-/blob/main/Lectures/L02b_POCAndDevPlan/POCAndDevPlan.pdf?ref_type=heads}
@@ -40,40 +39,35 @@ what is contained in the report.}
 
 \section{Confidential Information?}
 
-\wss{State whether your project has confidential information from industry, or
-not.  If there is confidential information, point to the agreement you have in
-place.}
+This project does not contain industry confidential information.
 
-\wss{For most teams this section will just state that there is no confidential
-information to protect.}
 \section{IP to Protect}
 
-\wss{State whether there is IP to protect.  If there is, point to the agreement.
-All students who are working on a project that requires an IP agreement are also
-required to sign the ``Intellectual Property Guide Acknowledgement.''}
+The McMaster Engineering Society (MES) will be the primary owner of the system and its deployed instance. The student development team will be credited as contributors. Unless MES requests otherwise, the project will be published under an open-source-friendly license allowing MES and future student teams to maintain and extend the system. If MES requests proprietary handling, we will follow the agreement provided by MES and notify course staff.
 
 \section{Copyright License}
 
-\wss{What copyright license is your team adopting.  Point to the license in your
-repo.}
+Given that the MES's website source code \href{https://github.com/McMaster-Engineering-Society/MES-Website-App-Router}{is open-source}, we will be using the MIT License.
 
 \section{Team Meeting Plan}
 
-\wss{How often will you meet? where?}
-
-\wss{If the meeting is a physical location (not virtual), out of an abundance of
-caution for safety reasons you shouldn't put the location online}
-
-\wss{How often will you meet with your industry advisor?  when?  where?}
-
-\wss{Will meetings be virtual?  At least some meetings should likely be
-in-person.}
-
-\wss{How will the meetings be structured?  There should be a chair for all meetings.  There should be an agenda for all meetings.}
+\begin{itemize}
+  \item Weekly team meetings: 60 minutes, fixed weekday time (set by team availability) for planning and progress updates.
+  \item Bi-weekly stakeholder check-ins: 30 minutes with MES representative(s) to gather requirements and demo progress.
+  \item Meeting format: rotating chair; agenda created as a GitHub issue before each meeting; minutes recorded in the issue and a short summary added to the project wiki.
+  \item Ad-hoc technical sessions as needed for design decisions or integration tasks.
+  \item Meeting Notes: Will be documented in GitHub Issues linked to the relevant sprint or task.
+\end{itemize}
 
 \section{Team Communication Plan}
 
-\wss{Issues on GitHub should be part of your communication plan.}
+\begin{itemize}
+  \item GitHub Issues for tasks, bugs, feature requests and meeting agendas.
+  \item Pull requests for all code changes with at least one reviewer before merging.
+  \item Discord for quick coordination.
+  \item Email for formal stakeholder communications.
+  \item Weekly status updates posted to a shared project board or README for the MES contact.
+\end{itemize}
 
 \section{Team Member Roles}
 
@@ -85,17 +79,20 @@ likely change throughout the year.}
 \section{Workflow Plan}
 
 \begin{itemize}
-	\item How will you be using git, including branches, pull request, etc.?
-	\item How will you be managing issues, including template issues, issue
-	classification, etc.?
-  \item Use of CI/CD
+  \item Git branching: single protected \texttt{main} branch for production; feature branches named \texttt{feature/short-description}; pull requests for merges.
+  \item Pull request policy: descriptive PRs, link to issues, at least one approving review and passing CI.
+  \item Issue management: issue templates for bug, feature, and documentation; labels for priority and component (frontend/backend/ops).
+  \item CI/CD: automatic test runs on PRs; deployments to a staging environment on merges to \texttt{develop} (optional) and production on \texttt{main} after review.
+  \item Code reviews: enforce linting and basic tests; use GitHub Actions for automated checks (linters, tests, security scanning).
 \end{itemize}
 
 \section{Project Decomposition and Scheduling}
 
 \begin{itemize}
-  \item How will you be using GitHub projects?
-  \item Include a link to your GitHub project
+  \item We will use GitHub Issues and GitHub Projects to manage work and track progress. Issues will represent tasks, bugs, and feature requests; Projects will be used for sprint planning and high-level roadmaps.
+  \item GitHub Projects board (create and link when available): \href{https://github.com/zheniasigayev/MES-Finance-Tracking/projects}{Project board placeholder}
+  \item Capstone Repository: \href{https://github.com/zheniasigayev/MES-Finance-Tracking}{https://github.com/zheniasigayev/MES-Finance-Tracking}
+  \item MES Website Repository: \href{https://github.com/McMaster-Engineering-Society/MES-Website-App-Router}{https://github.com/McMaster-Engineering-Society/MES-Website-App-Router}
 \end{itemize}
 
 \wss{How will the project be scheduled?  This is the big picture schedule, not
@@ -188,19 +185,43 @@ interviews, or to get an A+, etc.}
 
 \subsubsection*{Expectations}
 
-\wss{What are your team's expectations regarding meeting attendance (being on
-time, leaving early, missing meetings, etc.)?}
+Team members are expected to: 
+\begin{itemize}
+  \item Attend scheduled meetings and be on time.
+  \item Notify the Project Manager and meeting chair in advance if they cannot attend.
+  \item Act professionally and responsibly when absent (review minutes and follow up on assigned actions).
+\end{itemize}
+
+Preferred notification is the day before; same-day notification is acceptable for emergencies.
 
 \subsubsection*{Acceptable Excuse}
 
-\wss{What constitutes an acceptable excuse for missing a meeting or a deadline?
-What types of excuses will not be considered acceptable?}
+Any one of the following reasons that McMaster University recognises, will also be accepted. Below is a list of McMaster's acceptable extenuating circumstances:
+
+\begin{itemize}
+  \item \textbf{Medical issues:} a physical or mental health condition that negatively affected participation or performance. Provide a physician's note or equivalent documentation when available.
+  \item \textbf{Family crises:} significant personal or family situations (e.g., bereavement, serious illness) that create hardship.
+  \item \textbf{Other personal emergencies:} unforeseen and significant events that disrupt academic or project commitments.
+  \item \textbf{Religious observances:} conflicts with religious obligations where accommodation is required.
+  \item \textbf{Varsity reasons:} official university sports commitments.
+  \item \textbf{Business commitments (part-time students):} job-related duties that prevent attendance.
+\end{itemize}
+
+For urgent or sensitive circumstances where documentation cannot be produced immediately, notify the Project Manager promptly and follow up with documentation as soon as reasonably possible. Trivial reasons (e.g., social events) are not considered acceptable without prior agreement.
 
 \subsubsection*{In Case of Emergency}
 
-\wss{What process will team members follow if they have an emergency and cannot
-attend a team meeting or complete their individual work promised for a team
-deliverable?}
+If a team member has an emergency and cannot attend a meeting or complete agreed work, follow these courteous steps:
+\begin{enumerate}
+  \item Notify the Project Manager and meeting chair as soon as possible (direct message and a short message in the team chat). If unavailable, notify any team lead.
+  \item Create a short GitHub Issue titled "emergency: <YourName>" describing current status, outstanding tasks, and the expected return time (if known). Link related issues or PRs.
+  \item Where appropriate, assign a backup or delegate specific issues/tasks to another team member and update issue ownership. Use the handover checklist in the issue description.
+  \item Share any quick access notes or pointers needed to continue work (location of credentials, relevant commands, how to run tests). Do not post sensitive credentials in chat — use the team's secure credential store or inform the Project Manager privately.
+  \item If the absence affects an upcoming demo or deadline, request an immediate short meeting or asynchronous decision from the Project Manager about scope adjustments or re-assignment.
+  \item When able, provide a brief follow-up update and, if requested, supporting documentation. On return, do a short handover with whoever covered your work.
+\end{enumerate}
+
+These steps prioritise clear communication and minimise disruption while respecting the privacy of the person experiencing the emergency.
 
 \subsection*{Accountability and Teamwork}
 
