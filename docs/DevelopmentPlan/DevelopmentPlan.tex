@@ -23,7 +23,7 @@
 \textbf{Date} & \textbf{Developer(s)} & \textbf{Change}\\
 \midrule
 09-21 & Johnny Qu & Added section 8\\
-Date2 & Name(s) & Description of changes\\
+09-22 & Michael Shi & Added section 9\\
 ... & ... & ...\\
 \bottomrule
 \end{tabularx}
@@ -141,10 +141,43 @@ However, we should also be aiming to optimize towards goals outlined in previous
 stretch goals.
 
 \section{Proof of Concept Demonstration Plan}
+Two main high-risk functionalities have been identified regarding the success of our project that, if not completed, severely hinder achievement of project goals:
+\begin {enumerate}
+  \item \textbf{Financial data extraction from photos and screenshots:}
+    \begin {description} 
+      \item[Importance] Although manual data input will be supported, screenshots and images of financial data provides 
+ a much more efficient manner of data entry. As streamlining the financials managing process is one of the project's main goals, this is a functionality of high importance. 
+      \item[Difficulty of Addressal] The proposed input space includes physical photos: receipts, printed statements, as well as digital formats: screenshots of statements, account balances
+    , etc. Although the narrow context (financial data in alphanumerical format) reduce the difficulty of addressing the risk, the wide medium of formats may prove a technical challenge.
+    \end {description}
+  \item \textbf{Integration with McMaster Engineering Society (MSE) Monorepo:}
+    \begin {description} 
+      \item[Importance] As the MSE is the client body, integration with their existing systems to ensure long-term supportability is critical.
+      \item[Difficulty of Addressal] As of the planning stage of the project, the unknown nature of the monorepo, presents potential difficulty.
+      Although many group members already have experience integrating with company and other third party repositories, integration still requires 
+      thorough communication with MSE representatives and team supervisors.
+    \end {description}
+  \item \textbf{User Authentication:}
+    \begin {description} 
+      \item[Importance] As the primary users of the applications will be independent clubs, data must be segregated between users, and users must be authenticated
+      to ensure security and privacy of financial data.
+      \item[Difficulty of Addressal] Authentication logic is likely the most technically challenging part of the project to implement: the difficulty of photo processing comes, to an extent,
+      from tuning to improve the success rate of a chosen method. Authentication, however, involves implementing existing, but technically complex, systems.
+    \end {description}
+\end {enumerate}
 
-What is the main risk, or risks, for the success of your project?  What will you
-demonstrate during your proof of concept demonstration to convince yourself that
-you will be able to overcome this risk?
+A series of minimum Proof of Concept (PoC) functionalities have been proposed to address the risks outlined above:
+\begin {enumerate}
+  \item \textbf{Text Extraction from Receipt Photos:} Physical print representations of financial data are more noisy than digital screenshots, and are more difficult
+  for both traditional computer vision and machine-learning based computer vision techniques to extract data from. Receipts represent one of the potentially more
+  difficult mediums, and is chosen as a representative case for the PoC.
+  \item \textbf{Basic WebApp hosted within MSE Monorepo:} As part of the project, the MSE is providing the group with rights and access to two (2) existing codebases to
+  expand on. To reduce the magnitude of risk involved with integrating into the MSE's repository, integration will be prioritized as part of the PoC to minimize conflicts and
+  sunken-cost efforts.
+  \item \textbf{User authentication MVP:} As the base functionality for user authentication comprises most of what is required for the project, developing an independent
+  authentication system will be included as part of our PoC functionalities. Integration with the rest of the system is however not yet required.
+\end {enumerate}
+
 
 \section{Expected Technology}
 
