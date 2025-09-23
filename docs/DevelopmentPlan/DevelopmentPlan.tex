@@ -23,7 +23,7 @@
 \textbf{Date} & \textbf{Developer(s)} & \textbf{Change}\\
 \midrule
 09-21 & Johnny Qu & Added section 8\\
-Date2 & Name(s) & Description of changes\\
+09-22 & Michael Shi & Added section 9\\
 ... & ... & ...\\
 \bottomrule
 \end{tabularx}
@@ -157,6 +157,13 @@ Two main high-risk functionalities have been identified regarding the success of
       Although many group members already have experience integrating with company and other third party repositories, integration still requires 
       thorough communication with MSE representatives and team supervisors.
     \end {description}
+  \item \textbf{User Authentication:}
+    \begin {description} 
+      \item[Importance] As the primary users of the applications will be independent clubs, data must be segregated between users, and users must be authenticated
+      to ensure security and privacy of financial data.
+      \item[Difficulty of Addressal] Authentication logic is likely the most technically challenging part of the project to implement: the difficulty of photo processing comes, to an extent,
+      from tuning to improve the success rate of a chosen method. Authentication, however, involves implementing existing, but technically complex, systems.
+    \end {description}
 \end {enumerate}
 
 A series of minimum Proof of Concept (PoC) functionalities have been proposed to address the risks outlined above:
@@ -167,6 +174,8 @@ A series of minimum Proof of Concept (PoC) functionalities have been proposed to
   \item \textbf{Basic WebApp hosted within MSE Monorepo:} As part of the project, the MSE is providing the group with rights and access to two (2) existing codebases to
   expand on. To reduce the magnitude of risk involved with integrating into the MSE's repository, integration will be prioritized as part of the PoC to minimize conflicts and
   sunken-cost efforts.
+  \item \textbf{User authentication MVP:} As the base functionality for user authentication comprises most of what is required for the project, developing an independent
+  authentication system will be included as part of our PoC functionalities. Integration with the rest of the system is however not yet required.
 \end {enumerate}
 
 
