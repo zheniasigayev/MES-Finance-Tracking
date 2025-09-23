@@ -49,13 +49,6 @@ errors in transaction logging and reciept submissions, encourage continuous subm
 a large quantity at the end of the year, and provide clear visualization that makes budgets and spending easy to interpret.
 
 
-\wss{You should check your problem statement with the
-\href{https://github.com/smiths/capTemplate/blob/main/docs/Checklists/ProbState-Checklist.pdf}
-{problem statement checklist}.} 
-
-\wss{You can change the section headings, as long as you include the required
-information.}
-
 \subsection{Problem}
 \begin{itemize}
     \item MES reimbursment process is manual and slow to complete
@@ -66,23 +59,58 @@ information.}
 \subsection{Inputs and Outputs}
 Inputs: 
 \begin{itemize}
-  \item Relevant user information (i.e. name)
-  \item Reimbursement amount
-  \item Proof of expense
+  \item \textbf{User Information}
     \begin{itemize}
-      \item Picture of physical receipt
-      \item Digital copy of receipt (pdf, email, etc)
+      \item Authentication credentials
+      \item User role (club member, treasurer, MES admin)
+      \item Club affiliation
+    \end{itemize}
+  \item \textbf{Financial Data}
+    \begin{itemize}
+      \item Reimbursement amount
+      \item Transaction date
+      \item Expense category/purpose
+      \item Payment method used
+    \end{itemize}
+  \item \textbf{Documentation}
+    \begin{itemize}
+      \item Digital receipts (PDF, images, emails)
+      \item Physical receipt scans/photos
+      \item Supporting documentation (event details, approval emails)
+    \end{itemize}
+  \item \textbf{Budget Information}
+    \begin{itemize}
+      \item Club budget allocations
+      \item Funding category limits
     \end{itemize}
 \end{itemize}
 Outputs:
 \begin{itemize}
-  \item Visual dashboard to navigate features 
+  \item \textbf{User Interface}
     \begin{itemize}
+      \item Personalized dashboards by role
       \item Reimbursement request history
-      \item Status of reimbursement requests
+      \item Status tracking for pending requests
     \end{itemize}
-  \item Financial reports/summaries (for transaction details)
-  \item Confirmations when reimbursement request status changes (status examples: submitted, pending, approved, rejected)
+  \item \textbf{Reporting}
+    \begin{itemize}
+      \item Financial summaries by club/category
+      \item Budget utilization metrics
+      \item Transaction logs for auditing
+      \item Exportable reports (CSV, PDF)
+    \end{itemize}
+  \item \textbf{Notifications}
+    \begin{itemize}
+      \item Status change alerts (submitted, approved, rejected)
+      \item Reminder notifications for pending actions
+      \item Budget threshold warnings
+    \end{itemize}
+  \item \textbf{Administrative Tools}
+    \begin{itemize}
+      \item Approval workflows
+      \item Batch processing capabilities
+      \item System configuration options
+    \end{itemize}
 \end{itemize}
 
 
