@@ -37,10 +37,6 @@
 
 This document outlines the development plan for the MES Club Payment Tracking System, a web application designed to streamline the reimbursement process for McMaster Engineering Society (MES) clubs. The current process using Google Forms and spreadsheets is inefficient, error-prone, and difficult to search. This plan provides the roadmap for design and implementation, describes team and workflow organization, lists the expected technologies, and identifies major risks and mitigation strategies.
 
-\wss{Additional information on the development plan can be found in the
-\href{https://gitlab.cas.mcmaster.ca/courses/capstone/-/blob/main/Lectures/L02b_POCAndDevPlan/POCAndDevPlan.pdf?ref_type=heads}
-{lecture slides}.}
-
 \section{Confidential Information?}
 
 This project does not contain industry confidential information.
@@ -185,48 +181,116 @@ A series of minimum Proof of Concept (PoC) functionalities have been proposed to
 
 \section{Expected Technology}
 
-\wss{What programming language or languages do you expect to use?  What external
-libraries?  What frameworks?  What technologies.  Are there major components of
-the implementation that you expect you will implement, despite the existence of
-libraries that provide the required functionality.  For projects with machine
-learning, will you use pre-trained models, or be training your own model?  }
-
-\wss{The implementation decisions can, and likely will, change over the course
-of the project.  The initial documentation should be written in an abstract way;
-it should be agnostic of the implementation choices, unless the implementation
-choices are project constraints.  However, recording our initial thoughts on
-implementation helps understand the challenge level and feasibility of a
-project.  It may also help with early identification of areas where project
-members will need to augment their training.}
-
-Topics to discuss include the following:
-
 \begin{itemize}
-  \item \textbf{Specific programming language:} JavaScript with Node.js; MongoDB
-  \item \textbf{Specific libraries:}  
-        Not exactly libraries, but extensions in use: Error Lens, Tailwind CSS Intellisense, Babel JavaScript, Auto Close Tag, Auto Rename Tag, Better Comments
-  \item \textbf{Pre-trained models}
+  \item \textbf{Version Control}: Git, GitHub
+  \item \textbf{Specific programming language:} JavaScript with Node.js
+  \item \textbf{Specific libraries:} TypeScript, React.js, Next.js, Material UI, react-query, Axios, NextUI, Tailwind CSS, next-auth
   \item \textbf{Specific linter tools:} ESLint, Prettier
-  \item \textbf{Specific unit testing framework}
-  \item \textbf{Investigation of code coverage measuring tools}
-  \item \textbf{Specific plans for Continuous Integration (CI):}  
-        GitHub Actions (or explain if CI is not being done)
-  \item \textbf{Specific performance measuring tools (e.g., Valgrind), if appropriate}
-  \item \textbf{Tools you will likely be using}
+  \item \textbf{Specific unit testing framework:} Jest, React Testing Library
+  \item \textbf{Investigation of code coverage measuring tools:} Jest
+  \item \textbf{Specific plans for Continuous Integration (CI):} GitHub Actions
+  \item \textbf{Specific performance measuring tools (e.g., Valgrind), if appropriate:} React Dev Tools
+  \item \textbf{Tools you will likely be using:} VSCode with the following extensions; Error Lens, Tailwind CSS Intellisense, Babel JavaScript, Auto Close Tag, Auto Rename Tag, Better Comments
 \end{itemize}
-
-
-\wss{git, GitHub and GitHub projects should be part of your technology.}
 
 \section{Coding Standard}
 
-\wss{What coding standard will you adopt?}
+\subsection*{General Principles}
+\begin{itemize}
+  \item Write clean, readable, and maintainable code.
+  \item Prefer clarity over cleverness.
+  \item Follow the principle of ``fail fast, fail clearly''.
+  \item All code must be reviewed via pull requests before merging.
+\end{itemize}
+
+\subsection*{Version Control (Git \& GitHub)}
+\begin{itemize}
+  \item Branching: use \texttt{main} as the stable branch.
+  \item Feature branches: \texttt{feature/<short-description>}.
+  \item Bugfix branches: \texttt{fix/<short-description>}.
+  \item Commit messages follow \textbf{Conventional Commits} specification
+\end{itemize}
+
+\subsection*{Language \& Frameworks (JavaScript / TypeScript / Node.js)}
+\begin{itemize}
+  \item Use \textbf{TypeScript} for code.
+  \item Use \texttt{const} and \texttt{let} instead of \texttt{var}.
+  \item Prefer \texttt{async/await} over \texttt{.then()}.
+  \item Strongly type props, states, and API responses.
+  \item Avoid \texttt{any}; use strict typing.
+  \item Use \texttt{===} over \texttt{==}
+\end{itemize}
+
+\subsection*{Naming Conventions}
+\begin{itemize}
+  \item Components should be in PascalCase.
+  \item Variables and functions should be in camelCase.
+  \item Constants should be in UPPER\_SNAKE\_CASE.
+  \item Files should be in kebab-case.
+\end{itemize}
+
+\subsection*{Formatting \& Style}
+\begin{itemize}
+  \item Follow ESLint + Prettier rules.
+  \item Indentation: 4 spaces.
+  \item Line length: maximum 100 characters.
+\end{itemize}
+
+\subsection*{React / Next.js Guidelines}
+\begin{itemize}
+  \item Function components with hooks (\texttt{useState}, \texttt{useEffect}, etc.).
+  \item Use \texttt{react-query} for data fetching, not raw Axios calls in components.
+  \item Use Axios in a dedicated service layer (e.g., \texttt{services/api.ts}).
+  \item Styling:
+    \begin{itemize}
+      \item Prefer Tailwind CSS for layout and utility classes.
+      \item Use Material UI / NextUI for consistent UI components.
+    \end{itemize}
+  \item Co-locate component-specific styles and tests with the component.
+\end{itemize}
+
+\subsection*{Error Handling \& Logging}
+\begin{itemize}
+  \item Always handle API errors with \texttt{try/catch}.
+  \item Use centralized error boundaries in React where needed.
+  \item Do not use console logging in production.
+\end{itemize}
+
+\subsection*{Testing (Jest \& React Testing Library)}
+\begin{itemize}
+  \item Minimum 80\% code coverage (tracked via Jest).
+  \item Unit tests for services, hooks, and components.
+  \item Naming: test files mirror component/service name (e.g., \texttt{component.test.tsx}).
+\end{itemize}
+
+\subsection*{Continuous Integration (GitHub Actions)}
+\begin{itemize}
+  \item All pull requests into \texttt{main} branch must pass:
+    \begin{itemize}
+      \item ESLint + Prettier checks.
+      \item Jest unit tests with coverage reports.
+      \item Build validation (\texttt{next build}).
+    \end{itemize}
+\end{itemize}
+
+\subsection*{Tools \& Editor Setup (VSCode)}
+\begin{itemize}
+  \item Required extensions:
+    \begin{itemize}
+      \item Error Lens
+      \item Tailwind CSS Intellisense
+      \item Babel JavaScript
+      \item Auto Close Tag
+      \item Auto Rename Tag
+      \item Better Comments
+    \end{itemize}
+  \item Enable format-on-save with Prettier.
+  \item Run \texttt{npm run lint} and \texttt{npm run test} locally before committing.
+\end{itemize}
 
 \newpage{}
 
 \section*{Appendix --- Reflection}
-
-\wss{Not required for CAS 741}
 
 \input{../Reflection.tex}
 
@@ -248,6 +312,7 @@ Topics to discuss include the following:
         improved collaboration among team members. It streamlines the process of integrating code changes and performing manual update tasks such as updating pdf's after changing it's corresponding Tex file.
         It also helps to catch bugs and issues early in the development process, reducing the risk of introducing errors into production.
         \item However, setting up and maintaining a CI/CD pipeline can be complex and time-consuming. It requires a certain level of expertise and resources to implement effectively. Additionally, if not properly configured, CI/CD can lead to increased build times and resource consumption.
+    \end{enumerate}
     \item What disagreements did your group have in this deliverable, if any,
     and how did you resolve them?
       \begin{enumerate}
@@ -266,17 +331,7 @@ Topics to discuss include the following:
 
 \section*{Appendix --- Team Charter}
 
-\wss{borrows from
-\href{https://engineering.up.edu/industry_partnerships/files/team-charter.pdf}
-{University of Portland Team Charter}}
-
 \subsection*{External Goals}
-
-\wss{What are your team's external goals for this project? These are not the
-goals related to the functionality or quality fo the project.  These are the
-goals on what the team wishes to achieve with the project.  Potential goals are
-to win a prize at the Capstone EXPO, or to have something to talk about in
-interviews, or to get an A+, etc.}
 
 Our team's external goals for this project are:
 \begin{itemize}
@@ -334,19 +389,10 @@ These steps prioritise clear communication and minimise disruption while respect
 
 \subsubsection*{Quality} 
 
-\wss{What are your team's expectations regarding the quality
-of team members' preparation for team meetings and the quality of the
-deliverables that members bring to the team?}
-
 We expect all team members to come prepared for meetings having reviewed information relevent to the meeting. Deliverables should satisfy course requirements and stakeholder requirements, while also promoting clarity and completeness.
 Team members are encouraged to seek feedback from other members if they are stuck or unsure about the quality of their work.
 
 \subsubsection*{Attitude}
-
-\wss{What are your team's expectations regarding team members' ideas,
-interactions with the team, cooperation, attitudes, and anything else regarding
-team member contributions?  Do you want to introduce a code of conduct?  Do you
-want a conflict resolution plan?  Can adopt existing codes of conduct.}
 
 We expect all team members to maintain a positive and respectful attitude towards each other. This includes being open to different ideas, actively listening during discussions, and providing constructive feedback.
 We will adopt a code of conduct that promotes inclusivity, respect, and professionalism. In case of conflicts, we will address them promptly through open communication and, if necessary, involve the Project Manager or a neutral third party to mediate.
@@ -354,12 +400,6 @@ We will adopt a code of conduct that promotes inclusivity, respect, and professi
 We awant to promote an environment where new and unique ideas are given the space to be heard and considered. We will strive to create a collaborative atmosphere where all team members feel valued and motivated to contribute their best work.
 
 \subsubsection*{Stay on Track}
-
-\wss{What methods will be used to keep the team on track? How will your team
-ensure that members contribute as expected to the team and that the team
-performs as expected? How will your team reward members who do well and manage
-members whose performance is below expectations?  What are the consequences for
-someone not contributing their fair share?}
 
 We will use regular check-ins during meetings to monitor progress and address any issues early. Members will also use the course google calendar to stay informed about deadlines. There will also be clear communication channels where reminders will be sent out for upcoming deadlines or meetings.
 
@@ -369,24 +409,11 @@ Rewards for members who perform well may include public recognition during meeti
 
 Poor performance will be addressed through private conversations to understand any underlying issues.Consequences for not contributing may include reassignment of tasks, reduced responsibilities or consulation with the TA or instructor if necessary.
 
-\wss{You may wish to use the project management metrics collected for the TA and
-instructor for this.}
-
-\wss{You can set target metrics for attendance, commits, etc.  What are the
-consequences if someone doesn't hit their targets?  Do they need to bring the
-coffee to the next team meeting?  Does the team need to make an appointment with
-their TA, or the instructor?  Are there incentives for reaching targets early?}
-
 \subsubsection*{Team Building}
-
-\wss{How will you build team cohesion (fun time, group rituals, etc.)? }
 
 To build team cohesion, we will schedule regular social activities outside of work meetings, such as dinners or casual hangouts. We will also celebrate completion of milestones and achievements together. Additionally, we will encourage open communication and support among team members to create a positive and inclusive team culture.
 
 \subsubsection*{Decision Making} 
-
-\wss{How will you make decisions in your group? Consensus?  Vote? How will you
-handle disagreements? }
 
 We will aim for consensus in decision-making, ensuring that all team members have the opportunity to voice their opinions. If consensus cannot be reached, we will use a majority vote to make decisions. In case of disagreements, we will encourage open dialogue to understand different perspectives and find common ground. If necessary, we may ask the TA for their input.
 
