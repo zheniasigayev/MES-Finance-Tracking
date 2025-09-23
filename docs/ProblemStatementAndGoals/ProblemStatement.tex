@@ -113,10 +113,6 @@ Outputs:
     \end{itemize}
 \end{itemize}
 
-
-\wss{Characterize the problem in terms of 'high level' inputs and outputs.  
-Use abstraction so that you can avoid details.}
-
 \subsection{Stakeholders}
 \begin{itemize}
   \item Group leadership teams in charge of managing MES budget
@@ -126,7 +122,6 @@ Use abstraction so that you can avoid details.}
 
 \subsection{Environment}
 
-\wss{Hardware and Software Environment}
 Software and Technology Stack:
 \begin{itemize}
   \item \textbf{Languages:}
@@ -164,38 +159,70 @@ Software and Technology Stack:
 \end{itemize}
 
 \section{Goals}
+\begin{itemize}
+  \item \textbf{Centralize financial submission process} — Create a single platform where all expense submissions, approvals, and tracking occur, eliminating the need for multiple submission channels.
+
+  \item \textbf{Enhance budget visibility} — Provide real-time budget utilization data that is accessible to all stakeholders with appropriate permissions.
+
+  \item \textbf{Reduce processing time} — Decrease the average number of actions needed to process a reimbursement request to at most 10.
+
+  \item \textbf{Improve receipt management} — Achieve 100\% receipt retention through digital storage, preventing lost or misplaced documentation.
+
+  \item \textbf{Minimize manual data entry} — Automate at least 80\% of the data entry currently performed manually by treasurers and administrators.
+\end{itemize}
 
 \section{Stretch Goals}
+\begin{itemize}
+  \item \textbf{Mobile-friendly interface} — Create a responsive design that works seamlessly on smartphones, allowing receipt uploads directly from mobile devices.
+
+  \item \textbf{Bulk processing features} — Enable administrators to process bulk reimbursement requests simultaneously to further improve efficiency.
+
+  \item \textbf{Distribute submissions throughout the year} — Reduce end-of-year submission spikes by implementing reminder features that encourage regular submissions.
+
+  \item \textbf{Automated receipt data extraction} — Have at least 10 MES clubs submit at least 1 reimbursement receipt using our new MES financial tracker before end of April.
+
+  \item \textbf{Advanced analytics dashboard} — Provide trend analysis and forecasting tools to help clubs plan future spending based on historical data.
+\end{itemize}
 
 \section{Extras}
 
-\wss{For CAS 741: State whether the project is a research project. This
-designation, with the approval (or request) of the instructor, can be modified
-over the course of the term.}
-
-\wss{For SE Capstone: List your extras.  Potential extras include usability
-testing, code walkthroughs, user documentation, formal proof, GenderMag
-personas, Design Thinking, etc.  (The full list is on the course outline and in
-Lecture 02.) Normally the number of extras will be two.  Approval of the extras
-will be part of the discussion with the instructor for approving the project.
-The extras, with the approval (or request) of the instructor, can be modified
-over the course of the term.}
+\begin{itemize}
+\item \textbf{User Instructional Video} — Create a short instructional video demonstrating how to use the MES financial tracker, including steps for submitting expenses, tracking reimbursements, and generating reports.
+\item \textbf{Wireframe Report} — Develop a comprehensive wireframe report outlining the user interface and user experience design for all key pages of the MES financial tracker.
+\end{itemize}
 
 \newpage{}
 
 \section*{Appendix --- Reflection}
 
-\wss{Not required for CAS 741}
-
 \input{../Reflection.tex}
 
 \begin{enumerate}
     \item What went well while writing this deliverable? 
+    
+    One thing that I think went well when writing this deliverable is the fact that we effectively collected information from the relevant MES stakeholders very thoroughly and appropriately. As a result, we were able to clearly define:
+    \begin{enumerate}
+        \item Pain points in the problem that the MES and clubs are facing 
+        \item Goals and Requirements needed in the solution to be effective
+        \item Stretch goals that would be nice-to-haves for the MES reimbursement team
+    \end{enumerate}
+
     \item What pain points did you experience during this deliverable, and how
     did you resolve them?
+    
+    One of the great pain points that our group has faced is that we did not have very strong team alignment during this deliverable, which meant we were figuring things
+    out a bit too late in the process. We resolved this by ensuring that we had more meetings to check in with each other and make sure we were all on the same page moving forward. 
+    Additionally, the disorganized nature of not knowing where exactly the deliverable requirements were made it challenging to stay on track.
+
     \item How did you and your team adjust the scope of your goals to ensure
     they are suitable for a Capstone project (not overly ambitious but also of
     appropriate complexity for a senior design project)?
-\end{enumerate}  
+
+    Our team approached scope adjustment by conducting meetings with MES developers to identify their most critical pain points. This helped us prioritize essential features over nice-to-haves.
+    We then established clear primary goals focused on core functionality (centralized submissions, budget visibility) while designating more complex features (like automated data extraction) as stretch goals.
+    This tiered approach ensures we deliver a complete, valuable solution even if resource constraints prevent implementing every feature.
+    Additionally, we decided on an incremental development approach with regular milestones rather than attempting a monolithic build, allowing us to demonstrate concrete progress throughout the project timeline while maintaining appropriate complexity for a senior design project.
+    Finally, we figured out early risks such as where development would occur (e.g., in the MES monolith repo, our own own repository, which we would then submodule into the MES repo, etc.) and planned accordingly to mitigate these risks.
+\end{enumerate}
 
 \end{document}
