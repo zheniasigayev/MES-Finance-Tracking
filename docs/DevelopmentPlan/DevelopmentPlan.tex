@@ -181,42 +181,112 @@ A series of minimum Proof of Concept (PoC) functionalities have been proposed to
 
 \section{Expected Technology}
 
-\wss{What programming language or languages do you expect to use?  What external
-libraries?  What frameworks?  What technologies.  Are there major components of
-the implementation that you expect you will implement, despite the existence of
-libraries that provide the required functionality.  For projects with machine
-learning, will you use pre-trained models, or be training your own model?  }
-
-\wss{The implementation decisions can, and likely will, change over the course
-of the project.  The initial documentation should be written in an abstract way;
-it should be agnostic of the implementation choices, unless the implementation
-choices are project constraints.  However, recording our initial thoughts on
-implementation helps understand the challenge level and feasibility of a
-project.  It may also help with early identification of areas where project
-members will need to augment their training.}
-
-Topics to discuss include the following:
-
 \begin{itemize}
-  \item \textbf{Specific programming language:} JavaScript with Node.js; MongoDB
-  \item \textbf{Specific libraries:}  
-        Not exactly libraries, but extensions in use: Error Lens, Tailwind CSS Intellisense, Babel JavaScript, Auto Close Tag, Auto Rename Tag, Better Comments
-  \item \textbf{Pre-trained models}
+  \item \textbf{Version Control}: Git, GitHub
+  \item \textbf{Specific programming language:} JavaScript with Node.js
+  \item \textbf{Specific libraries:} TypeScript, React.js, Next.js, Material UI, react-query, Axios, NextUI, Tailwind CSS, next-auth
   \item \textbf{Specific linter tools:} ESLint, Prettier
-  \item \textbf{Specific unit testing framework}
-  \item \textbf{Investigation of code coverage measuring tools}
-  \item \textbf{Specific plans for Continuous Integration (CI):}  
-        GitHub Actions (or explain if CI is not being done)
-  \item \textbf{Specific performance measuring tools (e.g., Valgrind), if appropriate}
-  \item \textbf{Tools you will likely be using}
+  \item \textbf{Specific unit testing framework:} Jest, React Testing Library
+  \item \textbf{Investigation of code coverage measuring tools:} Jest
+  \item \textbf{Specific plans for Continuous Integration (CI):} GitHub Actions
+  \item \textbf{Specific performance measuring tools (e.g., Valgrind), if appropriate:} React Dev Tools
+  \item \textbf{Tools you will likely be using:} VSCode with the following extensions; Error Lens, Tailwind CSS Intellisense, Babel JavaScript, Auto Close Tag, Auto Rename Tag, Better Comments
 \end{itemize}
-
-
-\wss{git, GitHub and GitHub projects should be part of your technology.}
 
 \section{Coding Standard}
 
-\wss{What coding standard will you adopt?}
+\subsection*{General Principles}
+\begin{itemize}
+  \item Write clean, readable, and maintainable code.
+  \item Prefer clarity over cleverness.
+  \item Follow the principle of ``fail fast, fail clearly''.
+  \item All code must be reviewed via pull requests before merging.
+\end{itemize}
+
+\subsection*{Version Control (Git \& GitHub)}
+\begin{itemize}
+  \item Branching: use \texttt{main} as the stable branch.
+  \item Feature branches: \texttt{feature/<short-description>}.
+  \item Bugfix branches: \texttt{fix/<short-description>}.
+  \item Commit messages follow \textbf{Conventional Commits} specification
+\end{itemize}
+
+\subsection*{Language \& Frameworks (JavaScript / TypeScript / Node.js)}
+\begin{itemize}
+  \item Use \textbf{TypeScript} for code.
+  \item Use \texttt{const} and \texttt{let} instead of \texttt{var}.
+  \item Prefer \texttt{async/await} over \texttt{.then()}.
+  \item Strongly type props, states, and API responses.
+  \item Avoid \texttt{any}; use strict typing.
+  \item Use \texttt{===} over \texttt{==}
+\end{itemize}
+
+\subsection*{Naming Conventions}
+\begin{itemize}
+  \item Components should be in PascalCase.
+  \item Variables and functions should be in camelCase.
+  \item Constants should be in UPPER\_SNAKE\_CASE.
+  \item Files should be in kebab-case.
+\end{itemize}
+
+\subsection*{Formatting \& Style}
+\begin{itemize}
+  \item Follow ESLint + Prettier rules.
+  \item Indentation: 4 spaces.
+  \item Line length: maximum 100 characters.
+\end{itemize}
+
+\subsection*{React / Next.js Guidelines}
+\begin{itemize}
+  \item Function components with hooks (\texttt{useState}, \texttt{useEffect}, etc.).
+  \item Use \texttt{react-query} for data fetching, not raw Axios calls in components.
+  \item Use Axios in a dedicated service layer (e.g., \texttt{services/api.ts}).
+  \item Styling:
+    \begin{itemize}
+      \item Prefer Tailwind CSS for layout and utility classes.
+      \item Use Material UI / NextUI for consistent UI components.
+    \end{itemize}
+  \item Co-locate component-specific styles and tests with the component.
+\end{itemize}
+
+\subsection*{Error Handling \& Logging}
+\begin{itemize}
+  \item Always handle API errors with \texttt{try/catch}.
+  \item Use centralized error boundaries in React where needed.
+  \item Do not use console logging in production.
+\end{itemize}
+
+\subsection*{Testing (Jest \& React Testing Library)}
+\begin{itemize}
+  \item Minimum 80\% code coverage (tracked via Jest).
+  \item Unit tests for services, hooks, and components.
+  \item Naming: test files mirror component/service name (e.g., \texttt{component.test.tsx}).
+\end{itemize}
+
+\subsection*{Continuous Integration (GitHub Actions)}
+\begin{itemize}
+  \item All pull requests into \texttt{main} branch must pass:
+    \begin{itemize}
+      \item ESLint + Prettier checks.
+      \item Jest unit tests with coverage reports.
+      \item Build validation (\texttt{next build}).
+    \end{itemize}
+\end{itemize}
+
+\subsection*{Tools \& Editor Setup (VSCode)}
+\begin{itemize}
+  \item Required extensions:
+    \begin{itemize}
+      \item Error Lens
+      \item Tailwind CSS Intellisense
+      \item Babel JavaScript
+      \item Auto Close Tag
+      \item Auto Rename Tag
+      \item Better Comments
+    \end{itemize}
+  \item Enable format-on-save with Prettier.
+  \item Run \texttt{npm run lint} and \texttt{npm run test} locally before committing.
+\end{itemize}
 
 \newpage{}
 
