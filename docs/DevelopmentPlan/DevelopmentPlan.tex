@@ -22,7 +22,7 @@
 \toprule
 \textbf{Date} & \textbf{Developer(s)} & \textbf{Change}\\
 \midrule
-Date1 & Name(s) & Description of changes\\
+09-21 & Johnny Qu & Added section 8\\
 Date2 & Name(s) & Description of changes\\
 ... & ... & ...\\
 \bottomrule
@@ -71,10 +71,14 @@ Given that the MES's website source code \href{https://github.com/McMaster-Engin
 
 \section{Team Member Roles}
 
-\wss{You should identify the types of roles you anticipate, like notetaker,
-leader, meeting chair, reviewer.  Assigning specific people to those roles is
-not necessary at this stage.  In a student team the role of the individuals will
-likely change throughout the year.}
+\begin{itemize}
+  \item Project Coordinator/lead: Oversees the overall project direction and ensures milestones are met in a timely fashion. Facilitates communication between faculty advisors and the team, keeps team aligned with project goals and deadlines
+  \item Meeting Chair (rotates weekly): Prepares agenda and leads team meetings. Ensures discussion stays focused and all voices are heard. Summarize action items at end of all meetings.
+  \item Notetaker (rotates weekly): Record meeting minutes, decisions, and assigned tasks. maintains organized project documnetation. Ensures deliverables are well documented, both for technical and non-technical audiences.
+  \item Technical Development (everyone): Ensures coding practices, frameworks, and tools are consistent across team. SUpports integration of all coding components.
+  \item QA/Testing (everyone): Review code correctness, readability, and adherence to standards. Develops and run test cases to validate functionality
+  \item User Experience and Requirements (everyone): Gathers and refines requirements from MES stakeholders. Focuses on usability, interface design, and accessibility. 
+\end{itemize}
 
 \section{Workflow Plan}
 
@@ -95,9 +99,46 @@ likely change throughout the year.}
   \item MES Website Repository: \href{https://github.com/McMaster-Engineering-Society/MES-Website-App-Router}{https://github.com/McMaster-Engineering-Society/MES-Website-App-Router}
 \end{itemize}
 
-\wss{How will the project be scheduled?  This is the big picture schedule, not
-details. You will need to reproduce information that is in the course outline
-for deadlines.}
+The following are the key dates and deadlines for completion of different milestones for this project:
+
+\begin{itemize}
+    \item \textbf{09-22} -- Project plan, development plan, proof of concept plan, team charter
+    \item \textbf{10-06} -- Software Requirements Specification + Hazard Analysis
+    \item \textbf{10-27} -- Validation and Verification Plan
+    \item \textbf{11-10} -- Design Doc Revision -1
+    \item \textbf{11-17} -- Proof of concept demos start
+    \item \textbf{11-28} -- Proof of concept demos end
+    \item \textbf{01-19} -- Design Documentation due
+    \item \textbf{02-01} -- Revision 0 presentation starts
+    \item \textbf{02-13} -- Revision 0 presentations end
+    \item \textbf{03-09} -- Verification and Validation Report due
+    \item \textbf{04-06} -- Final Documentation Due
+\end{itemize}
+
+This allows us to break down the development of the MES Finance Tracker into the following stages.
+
+\subsection*{Phase 1 -- Scoping (September 22 to October 27)}
+During this time, we will work to refine our high-level goals into a comprehensible list of requirements. 
+We will be conducting interviews as well as experimentations with existing processes to determine what we can 
+and should address within our project. At the end of this phase, we should have a concrete plan of how we 
+will approach the rest of the term by producing a requirements specification, hazard assessment, and a 
+validation and verification plan.
+
+\subsection*{Phase 2 -- Prototyping (October 27 to November 17)}
+In this phase, we will start initial development on our application, focusing on the features mentioned 
+in our proof of concept plan. The goal of this phase is for our team to ensure our core features are 
+reasonable and achievable by us, and to gather feedback regarding our features.
+
+\subsection*{Phase 3 -- MVP (November 17 to February 1)}
+During this phase, the bulk of the development work needs to be done. The prototype developed in the 
+previous phase should be improved to become a holistic user experience and all the requirements outlined 
+in the SRS should be addressed. During the demo, we should be aiming to collect valuable feedback to 
+improve the project. 
+
+\subsection*{Phase 4 -- Finalizing (February 1 to April 6)}
+The goal of this phase is to polish what was built in the previous phase by iterating on feedback. 
+However, we should also be aiming to optimize towards goals outlined in previous phases and work on 
+stretch goals.
 
 \section{Proof of Concept Demonstration Plan}
 Two main high-risk functionalities have been identified regarding the success of our project that, if not completed, severely hinder achievement of project goals:
