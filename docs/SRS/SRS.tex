@@ -177,14 +177,50 @@
 
 
 \subsection{Solution Constraints}
+  \begin{enumerate}
+    \item The system must be capable of managing expense reimbursement requests for up to 61 clubs or 7000 students.
+    \item The system must track and display the real-time status of each reimbursement request (e.g., submitted, under review, approved, rejected, reimbursed) to ensure transparency for submitters, reviewers, and administrators.
+    \item The system must allow users to attach digital receipts in PDF or image formats to their reimbursement requests.
+    \item The system must comply with data privacy regulations, ensuring that all personal and financial information is securely stored and transmitted.
+    \item The system must be able to import existing financial data from the current MES finance tracker to ensure continuity and data integrity.
+    \item The system must maintain consistent in accordance with the overall MES platform availability to support uninterrupted access.
+  \end{enumerate}
 
-  \subsection{Current MES Platform Overview}
-  \subsection{Current MES Finance Tracker}
-  \subsection{Cost Constraints}
-  \subsection{Off-the-Shelf Software}
-  \subsection{Schedule Constraints}
-  \subsection{Workflow Constraints}
-  \subsection{Enterprise Constraints}
+\subsection{Current MES Finance Tracker}
+  \begin{itemize}
+    \item \textbf{MC X:} The current MES finance tracker is not scalable and lacks proper traceability features.
+    \item \textbf{Rationale:} This constraint ensures that the new system is designed to be deployed on the existing MES infrastructure, addressing the limitations of the current reimbursement process.
+  \end{itemize}
+
+\subsection{Cost Constraints}
+  \begin{itemize}
+    \item \textbf{MC X:} The amount spent by a team should not exceed \$500.
+    \item \textbf{Rationale:} The project must meet capstone budget constraints and be economically feasible for the MES to support and maintain, as their current solution is free.
+  \end{itemize}
+
+\subsection{Off-the-Shelf Software}
+  \begin{itemize}
+    \item \textbf{MC X:} There are other financial tracking software options (e.g., Quickbooks) available. However, they are not necessarily compatible with the look and feel and budget requirements of the MES.
+    \item \textbf{Rationale:} To ensure the system integrates seamlessly with the MES's existing platform and maintains consistency in user experience.
+  \end{itemize}
+
+\subsection{Schedule Constraints}
+  \begin{itemize}
+    \item \textbf{MC X:} The project must be completed by March 2026 to allow completion one month before the end of the school term in April.
+    \item \textbf{Rationale:} This will allow any clubs to use our product and to avoid a massive submission of reimbursement requests towards the end of a busy year.
+  \end{itemize}
+
+\subsection{Workflow Constraints}
+  \begin{itemize}
+    \item \textbf{MC X:} The Capstone group will collaborate with existing MES developers to integrate code into staging branches, which will then be merged into the main branch of their repository. This process will be incremental to ensure smooth integration.
+    \item \textbf{Rationale:} This approach minimizes disruption to the MES's existing workflow and allows for gradual adoption of the new system.
+  \end{itemize}
+
+\subsection{Enterprise Constraints}
+  \begin{itemize}
+    \item \textbf{MC X:} Development must use technologies with favourable licensing terms for non-profit organizations.
+    \item \textbf{Rationale:} Certain software licenses require payment, and/or open-sourcing source code, which could interfere with future MES ambitions.
+\end{itemize}
 
 
 %-------------------------------------
@@ -227,7 +263,7 @@
   \subsection{Functional Requirements}
     \begin{itemize}
         \item Example
-      \end{itemize}
+    \end{itemize}
 
 %-------------------------------------
 % 10. Non-Functional Requirements
@@ -663,6 +699,20 @@ Their values are defined in this section for easy maintenance.}
     \item Thomas Wang
     \item Michael Shi
     \item Johnny Qu
+  \end{itemize}
+
+  \subsection{What parts of this deliverable has each team member contributed to?}
+  \begin{itemize}
+    \item Zhenia Sigayev
+      \item example
+    \item Justin Ho
+      \item example
+    \item Thomas Wang
+      \item example
+    \item Michael Shi
+      \item example
+    \item Johnny Qu
+      \item example
   \end{itemize}
 
 \section*{Appendix --- References}
