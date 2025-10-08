@@ -18,6 +18,7 @@
 \usepackage{caption}
 \usepackage{pdflscape}
 \usepackage{afterpage}
+\usepackage{enumitem} % add to preamble
 
 \usepackage[round]{natbib}
 
@@ -188,39 +189,57 @@
 
 \subsection{Current MES Finance Tracker}
   \begin{itemize}
-    \item \textbf{MC X:} The current MES finance tracker is not scalable and lacks proper traceability features.
-    \item \textbf{Rationale:} This constraint ensures that the new system is designed to be deployed on the existing MES infrastructure, addressing the limitations of the current reimbursement process.
+    \item \textbf{MC X:}
+      \begin{itemize}[label=$\circ$]
+        \item \textbf{description:} The current MES finance tracker is not scalable and lacks proper traceability features.
+        \item \textbf{rationale:} The new system must be designed to integrate with existing MES infrastructure and address current limitations.
+      \end{itemize}
   \end{itemize}
 
 \subsection{Cost Constraints}
   \begin{itemize}
-    \item \textbf{MC X:} The amount spent by a team should not exceed \$500.
-    \item \textbf{Rationale:} The project must meet capstone budget constraints and be economically feasible for the MES to support and maintain, as their current solution is free.
+    \item \textbf{MC X:}
+      \begin{itemize}[label=$\circ$]
+        \item \textbf{description:} The amount spent by a team should not exceed \$500.
+        \item \textbf{rationale:} The project must meet capstone budget constraints and be economically feasible for MES to support and maintain.
+      \end{itemize}
   \end{itemize}
 
 \subsection{Off-the-Shelf Software}
   \begin{itemize}
-    \item \textbf{MC X:} There are other financial tracking software options (e.g., Quickbooks) available. However, they are not necessarily compatible with the look and feel and budget requirements of the MES.
-    \item \textbf{Rationale:} To ensure the system integrates seamlessly with the MES's existing platform and maintains consistency in user experience.
+    \item \textbf{MC X:}
+      \begin{itemize}[label=$\circ$]
+        \item \textbf{description:} There are other financial tracking options (e.g., Quickbooks), but they may not match MES look-and-feel or budget.
+        \item \textbf{rationale:} Ensures the chosen solution integrates seamlessly with MES UX and licensing constraints.
+      \end{itemize}
   \end{itemize}
 
 \subsection{Schedule Constraints}
   \begin{itemize}
-    \item \textbf{MC X:} The project must be completed by March 2026 to allow completion one month before the end of the school term in April.
-    \item \textbf{Rationale:} This will allow any clubs to use our product and to avoid a massive submission of reimbursement requests towards the end of a busy year.
+    \item \textbf{MC X:}
+      \begin{itemize}[label=$\circ$]
+        \item \textbf{description:} The project must be completed by March 2026.
+        \item \textbf{rationale:} Allows deployment one month before term end to avoid an end-of-term submission surge.
+      \end{itemize}
   \end{itemize}
 
 \subsection{Workflow Constraints}
   \begin{itemize}
-    \item \textbf{MC X:} The Capstone group will collaborate with existing MES developers to integrate code into staging branches, which will then be merged into the main branch of their repository. This process will be incremental to ensure smooth integration.
-    \item \textbf{Rationale:} This approach minimizes disruption to the MES's existing workflow and allows for gradual adoption of the new system.
+    \item \textbf{MC X:}
+      \begin{itemize}[label=$\circ$]
+        \item \textbf{description:} Capstone group will collaborate with MES developers using staging branches and incremental merges.
+        \item \textbf{rationale:} Minimizes disruption and enables gradual adoption.
+      \end{itemize}
   \end{itemize}
 
 \subsection{Enterprise Constraints}
   \begin{itemize}
-    \item \textbf{MC X:} Development must use technologies with favourable licensing terms for non-profit organizations.
-    \item \textbf{Rationale:} Certain software licenses require payment, and/or open-sourcing source code, which could interfere with future MES ambitions.
-\end{itemize}
+    \item \textbf{MC X:}
+      \begin{itemize}[label=$\circ$]
+        \item \textbf{description:} Development must use technologies with favourable licensing terms for non-profits.
+        \item \textbf{rationale:} Avoids licensing costs or obligations that could hinder MES future plans.
+      \end{itemize}
+  \end{itemize}
 
 
 %-------------------------------------
@@ -243,24 +262,42 @@
   \subsection{Acronyms}
     \begin{itemize}
       \item \textbf{MES:} McMaster Engineering Society.
-        \item \textbf{Description:} The student-led organization representing engineering students at McMaster University.
+        \begin{itemize}[label=$\circ$]
+          \item \textbf{description:} The student-led organization representing engineering students at McMaster University.
+        \end{itemize}
       \item \textbf{SLA:} Service Level Agreement.
-        \item \textbf{Description:} A formal agreement between a service provider and a client that outlines the expected level of service.
+        \begin{itemize}[label=$\circ$]
+          \item \textbf{description:} A formal agreement between a service provider and a client that outlines the expected level of service.
+        \end{itemize}
       \item \textbf{CI:} Content Integration.
-        \item \textbf{Description:} Content integration refers to validating the correctness of the software changes, typically running unit or integration tests.
+        \begin{itemize}[label=$\circ$]
+          \item \textbf{description:} Content integration refers to validating the correctness of the software changes, typically running unit or integration tests.
+        \end{itemize}
       \item \textbf{CD:} Content Deployment.
-        \item \textbf{Description:} Content deployment refers to deploying those changes to your product / platform (e.g., a website) for users to interact with.
-      \item \textbf{CTA:} Call-to-Action – an element of a web-page that elicits an action from the user.
-        \item \textbf{Description:} A CTA is typically a button or link that encourages users to take a specific action, such as signing up for a newsletter or making a purchase.
+        \begin{itemize}[label=$\circ$]
+          \item \textbf{description:} Content deployment refers to deploying those changes to your product / platform (e.g., a website) for users to interact with.
+        \end{itemize}
+      \item \textbf{CTA:} Call-to-Action.
+        \begin{itemize}[label=$\circ$]
+          \item \textbf{description:} An element of a web-page (e.g., a button or link) that encourages users to take a specific action.
+        \end{itemize}
       \item \textbf{UX:} User Experience.
-        \item \textbf{Description:} UX refers to the overall experience a user has when interacting with a product or service, including factors such as usability, accessibility, and design.
+        \begin{itemize}[label=$\circ$]
+          \item \textbf{description:} The overall experience a user has when interacting with a product, including usability and design.
+        \end{itemize}
       \item \textbf{UI:} User Interface.
-        \item \textbf{Description:} UI refers to the visual and interactive elements of a product or service that users interact with, such as buttons, menus, and forms.
+        \begin{itemize}[label=$\circ$]
+          \item \textbf{description:} The visual and interactive elements users interact with (buttons, menus, forms).
+        \end{itemize}
       \item \textbf{OCR:} Optical Character Recognition.
-        \item \textbf{Description:} OCR is a technology that converts different types of documents, such as scanned paper documents or images captured by a digital camera, into editable and searchable data.
+        \begin{itemize}[label=$\circ$]
+          \item \textbf{description:} Technology that converts images of text into editable and searchable data.
+        \end{itemize}
       \item \textbf{WCAG:} Web Content Accessibility Guidelines.
-        \item \textbf{Description:} WCAG is a set of guidelines developed by the World Wide Web Consortium (W3C) to make web content more accessible to people with disabilities.
-      \end{itemize}
+        \begin{itemize}[label=$\circ$]
+          \item \textbf{description:} Guidelines from W3C to make web content more accessible to people with disabilities.
+        \end{itemize}
+    \end{itemize}
 
   \subsection{Technologies}
     \begin{itemize}
@@ -717,49 +754,85 @@ Their values are defined in this section for easy maintenance.}
 \section*{Appendix --- Reflection}
 
   \subsection{What went well while writing this deliverable?}
-  \begin{itemize}
+   \begin{itemize}
     \item Zhenia Sigayev
+      \begin{itemize}[label=$\circ$]
+        \item TODO.
+      \end{itemize}
     \item Justin Ho
+      \begin{itemize}[label=$\circ$]
+        \item TODO.
+      \end{itemize}
     \item Thomas Wang
+      \begin{itemize}[label=$\circ$]
+        \item TODO.
+      \end{itemize}
     \item Michael Shi
+      \begin{itemize}[label=$\circ$]
+        \item TODO.
+      \end{itemize}
     \item Johnny Qu
+      \begin{itemize}[label=$\circ$]
+        \item TODO.
+      \end{itemize}
   \end{itemize}
 
-  \subsection{How many of your requirements were inspired by speaking to your
-    client(s) or their proxies (e.g. your peers, stakeholders, potential users)?}
-  \begin{itemize}
-    \item Zhenia Sigayev
-    \item Justin Ho
-    \item Thomas Wang
-    \item Michael Shi
-    \item Johnny Qu
-  \end{itemize}
+  \subsection{How many of your requirements were inspired by speaking to your clients or their proxies?}
+    \begin{itemize}
+      \item TODO.
+    \end{itemize}
 
   \subsection{What knowledge and skills will the team collectively need to acquire to
-    successfully complete this capstone project? This includes domain specific knowledge or software engineering and/or
-    computer science knowledge. Skills may be related to technology, or writing,
-    or presentation, or team management, etc. You should look to identify at
-    least one item for each team member.}
+    successfully complete this capstone project?}
+    % This includes domain specific knowledge or software engineering and/or
+    % computer science knowledge. Skills may be related to technology, or writing,
+    % or presentation, or team management, etc. You should look to identify at
+    % least one item for each team member.
   \begin{itemize}
     \item Zhenia Sigayev
+      \begin{itemize}[label=$\circ$]
+        \item TODO.
+      \end{itemize}
     \item Justin Ho
+      \begin{itemize}[label=$\circ$]
+        \item TODO.
+      \end{itemize}
     \item Thomas Wang
+      \begin{itemize}[label=$\circ$]
+        \item TODO.
+      \end{itemize}
     \item Michael Shi
+      \begin{itemize}[label=$\circ$]
+        \item TODO.
+      \end{itemize}
     \item Johnny Qu
+      \begin{itemize}[label=$\circ$]
+        \item TODO.
+      \end{itemize}
   \end{itemize}
 
   \subsection{What parts of this deliverable has each team member contributed to?}
   \begin{itemize}
     \item Zhenia Sigayev
-      \item example
+      \begin{itemize}[label=$\circ$]
+        \item TODO.
+      \end{itemize}
     \item Justin Ho
-      \item example
+      \begin{itemize}[label=$\circ$]
+        \item TODO.
+      \end{itemize}
     \item Thomas Wang
-      \item example
+      \begin{itemize}[label=$\circ$]
+        \item TODO.
+      \end{itemize}
     \item Michael Shi
-      \item example
+      \begin{itemize}[label=$\circ$]
+        \item TODO.
+      \end{itemize}
     \item Johnny Qu
-      \item example
+      \begin{itemize}[label=$\circ$]
+        \item TODO.
+      \end{itemize}
   \end{itemize}
 
 \section*{Appendix --- References}
