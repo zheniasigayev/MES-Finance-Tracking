@@ -18,6 +18,7 @@
 \usepackage{caption}
 \usepackage{pdflscape}
 \usepackage{afterpage}
+\usepackage{enumitem}
 
 \usepackage[round]{natbib}
 
@@ -177,14 +178,68 @@
 
 
 \subsection{Solution Constraints}
+  \begin{enumerate}
+    \item The system must be capable of managing expense reimbursement requests for up to 61 clubs or 7000 students.
+    \item The system must track and display the real-time status of each reimbursement request (e.g., submitted, under review, approved, rejected, reimbursed) to ensure transparency for submitters, reviewers, and administrators.
+    \item The system must allow users to attach digital receipts in PDF or image formats to their reimbursement requests.
+    \item The system must comply with data privacy regulations, ensuring that all personal and financial information is securely stored and transmitted.
+    \item The system must be able to import existing financial data from the current MES finance tracker to ensure continuity and data integrity.
+    \item The system must maintain consistent in accordance with the overall MES platform availability to support uninterrupted access.
+  \end{enumerate}
 
-  \subsection{Current MES Platform Overview}
-  \subsection{Current MES Finance Tracker}
-  \subsection{Cost Constraints}
-  \subsection{Off-the-Shelf Software}
-  \subsection{Schedule Constraints}
-  \subsection{Workflow Constraints}
-  \subsection{Enterprise Constraints}
+\subsection{Current MES Finance Tracker}
+  \begin{itemize}
+    \item \textbf{MC X:}
+      \begin{itemize}[label=$\circ$]
+        \item \textbf{description:} The current MES finance tracker is not scalable and lacks proper traceability features.
+        \item \textbf{rationale:} The new system must be designed to integrate with existing MES infrastructure and address current limitations.
+      \end{itemize}
+  \end{itemize}
+
+\subsection{Cost Constraints}
+  \begin{itemize}
+    \item \textbf{MC X:}
+      \begin{itemize}[label=$\circ$]
+        \item \textbf{description:} The amount spent by a team should not exceed \$500.
+        \item \textbf{rationale:} The project must meet capstone budget constraints and be economically feasible for MES to support and maintain.
+      \end{itemize}
+  \end{itemize}
+
+\subsection{Off-the-Shelf Software}
+  \begin{itemize}
+    \item \textbf{MC X:}
+      \begin{itemize}[label=$\circ$]
+        \item \textbf{description:} There are other financial tracking options (e.g., Quickbooks), but they may not match MES look-and-feel or budget.
+        \item \textbf{rationale:} Ensures the chosen solution integrates seamlessly with MES UX and licensing constraints.
+      \end{itemize}
+  \end{itemize}
+
+\subsection{Schedule Constraints}
+  \begin{itemize}
+    \item \textbf{MC X:}
+      \begin{itemize}[label=$\circ$]
+        \item \textbf{description:} The project must be completed by March 2026.
+        \item \textbf{rationale:} Allows deployment one month before term end to avoid an end-of-term submission surge.
+      \end{itemize}
+  \end{itemize}
+
+\subsection{Workflow Constraints}
+  \begin{itemize}
+    \item \textbf{MC X:}
+      \begin{itemize}[label=$\circ$]
+        \item \textbf{description:} Capstone group will collaborate with MES developers using staging branches and incremental merges.
+        \item \textbf{rationale:} Minimizes disruption and enables gradual adoption.
+      \end{itemize}
+  \end{itemize}
+
+\subsection{Enterprise Constraints}
+  \begin{itemize}
+    \item \textbf{MC X:}
+      \begin{itemize}[label=$\circ$]
+        \item \textbf{description:} Development must use technologies with favourable licensing terms for non-profits.
+        \item \textbf{rationale:} Avoids licensing costs or obligations that could hinder MES future plans.
+      \end{itemize}
+  \end{itemize}
 
 
 %-------------------------------------
@@ -193,8 +248,67 @@
 \section{Terminology, Acronyms, and Technologies}
 
   \subsection{Terminology}
+    \begin{itemize}
+      \item \textbf{Audit Log}: A chronological record of all changes made to the system, including who made the change and when it was made.
+      \item \textbf{Budget Allocation}: The total amount of funds allocated to a club or team for a specific period, typically a fiscal year.
+      \item \textbf{Expense Claim}: A request for reimbursement submitted by a club or team member for expenses incurred on behalf of the club or team.
+      \item \textbf{Receipt}: A digital or physical document that serves as proof of purchase for an expense.
+      \item \textbf{Reimbursement}: The process of repaying a club or team member for approved expenses.
+      \item \textbf{Reviewer}: An MES staff member or administrator responsible for reviewing and approving or rejecting expense claims.
+      \item \textbf{Submitter}: A club or team member who submits an expense claim for reimbursement.
+      \item \textbf{MES Administrator}: An MES staff member with elevated permissions to manage the finance tracking platform, including user roles and system settings.
+    \end{itemize}
+
   \subsection{Acronyms}
+    \begin{itemize}
+      \item \textbf{MES:} McMaster Engineering Society.
+        \begin{itemize}[label=$\circ$]
+          \item \textbf{description:} The student-led organization representing engineering students at McMaster University.
+        \end{itemize}
+      \item \textbf{SLA:} Service Level Agreement.
+        \begin{itemize}[label=$\circ$]
+          \item \textbf{description:} A formal agreement between a service provider and a client that outlines the expected level of service.
+        \end{itemize}
+      \item \textbf{CI:} Content Integration.
+        \begin{itemize}[label=$\circ$]
+          \item \textbf{description:} Content integration refers to validating the correctness of the software changes, typically running unit or integration tests.
+        \end{itemize}
+      \item \textbf{CD:} Content Deployment.
+        \begin{itemize}[label=$\circ$]
+          \item \textbf{description:} Content deployment refers to deploying those changes to your product / platform (e.g., a website) for users to interact with.
+        \end{itemize}
+      \item \textbf{CTA:} Call-to-Action.
+        \begin{itemize}[label=$\circ$]
+          \item \textbf{description:} An element of a web-page (e.g., a button or link) that encourages users to take a specific action.
+        \end{itemize}
+      \item \textbf{UX:} User Experience.
+        \begin{itemize}[label=$\circ$]
+          \item \textbf{description:} The overall experience a user has when interacting with a product, including usability and design.
+        \end{itemize}
+      \item \textbf{UI:} User Interface.
+        \begin{itemize}[label=$\circ$]
+          \item \textbf{description:} The visual and interactive elements users interact with (buttons, menus, forms).
+        \end{itemize}
+      \item \textbf{OCR:} Optical Character Recognition.
+        \begin{itemize}[label=$\circ$]
+          \item \textbf{description:} Technology that converts images of text into editable and searchable data.
+        \end{itemize}
+      \item \textbf{WCAG:} Web Content Accessibility Guidelines.
+        \begin{itemize}[label=$\circ$]
+          \item \textbf{description:} Guidelines from W3C to make web content more accessible to people with disabilities.
+        \end{itemize}
+    \end{itemize}
+
   \subsection{Technologies}
+    \begin{itemize}
+      \item \textbf{Front-end:} The client-side part of the application that users interact with directly, typically built using HTML, CSS, and JavaScript frameworks.
+      \item \textbf{Back-end:} The server-side part of the application that handles business logic, database interactions, and authentication, often built using languages like Python, Ruby, or Node.js.
+      \item \textbf{Full-Stack:} A combination of both front-end and back-end development, where a developer is proficient in working on all layers of the application.
+      \item \textbf{Testing:} The process of evaluating the functionality and performance of the application to ensure it meets the specified requirements and is free of defects.
+      \item \textbf{Database:} A structured collection of data that is stored and managed to facilitate efficient retrieval and manipulation.
+      \item \textbf{Cloud Services:} Online platforms that provide computing resources, storage, and services over the internet, such as AWS, Azure, or Google Cloud.
+      \item \textbf{Version Control:} A system that tracks changes to code and allows multiple developers to collaborate on a project, with Git being the most popular version control system.
+    \end{itemize}
 
 %-------------------------------------
 % 6. Relevant Facts And Assumptions
@@ -209,6 +323,12 @@
 %-------------------------------------
 \section{The Scope of the Work}
   \subsection{The Current Situation}
+    The MES currently uses spreadsheets and manual processes
+    to track club finances. This approach often results in errors from lost receipts,
+    duplicated claims, and large amounts of claims at the end of the year. A centralized
+    financial tracking platform is needed to streamline and automate
+    this process for the MES.
+
   \subsection{The Context of the Work}
   \subsection{Work Partitioning}
   \subsection{Specifying a Business Use Case (BUC)}
@@ -226,8 +346,13 @@
 \section{Functional Requirements}
   \subsection{Functional Requirements}
     \begin{itemize}
-        \item Example
-      \end{itemize}
+      \item The system shall allow MES clubs and teams to submit expense claims.
+      \item The system shall provide MES reviewers with tools to efficiently review, approve, or reject the reimbursement requests.
+      \item The system shall track the status of each expense claim (e.g., submitted, under review, approved, rejected, reimbursed).
+      \item The system shall permanently store and retain digital receipt submissions.
+      \item The system shall maintain an audit trail that records who submitted, reviewed, approved, or denied each expense claim.
+      \item The system shall enable access to club expense submissions to the submitters, and other club members with a role greater or equal to that of the submitter, or MES administrators and approvers.
+    \end{itemize}
 
 %-------------------------------------
 % 10. Non-Functional Requirements
@@ -256,29 +381,29 @@
 % 12. Usability and Humanity Requirements
 %-------------------------------------
 \section{Usability and Humanity Requirements}
-  \subsection{Ease of Use Requirements}
+  \subsection{Ease of Use and Learning Requirements}
     \begin{itemize}
-      \item Example
+      \item A straightforward optional overview or tutorial should be provided to first-time users.
     \end{itemize}
 
   \subsection{Personalization and Internationalization Requirements}
     \begin{itemize}
-      \item Example
-    \end{itemize}
-
-  \subsection{Learning Requirements}
-    \begin{itemize}
-      \item Example
+      \item The platform will be in English only.
     \end{itemize}
 
   \subsection{Understandability and Politeness Requirements}
     \begin{itemize}
-      \item Example
+      \item The platform will not use offensive language, imagery, symbols, or media of any kind.
+      \item All errors and warnings will be communicated in a clear, concise, and polite manner.
     \end{itemize}
 
   \subsection{Accessibility Requirements}
     \begin{itemize}
-      \item Example
+      \item Front-end navigation and interactions must comply with WCAG standards to ensure accessibility for users with disabilities.
+      \item The platform will allow users to select between light and dark mode themes.
+      \item The front-end will use semantic tags (<header>, <main>, <nav>, <footer>, <article>, <button>, etc.) for structure.
+      \item All images must have meaningful alternative text (alt).
+      \item All functionality must be navigable from a keyboard (i.e., tab to move through content).
     \end{itemize}
 
 %-------------------------------------
@@ -439,7 +564,8 @@
 
   \subsection{Reusable Components}
     \begin{itemize}
-      \item Example
+      \item Third-party OCR software specializing in receipt scanning can be integrated. For example, Amazon's Textract.
+      \item There exist reusable React.js components for the front-end that are proided by the MES to conform to thier look and feel requirements.
     \end{itemize}
 
   \subsection{Products That Can Be Copied}
@@ -634,35 +760,85 @@ Their values are defined in this section for easy maintenance.}
 \section*{Appendix --- Reflection}
 
   \subsection{What went well while writing this deliverable?}
-  \begin{itemize}
+   \begin{itemize}
     \item Zhenia Sigayev
+      \begin{itemize}[label=$\circ$]
+        \item TODO.
+      \end{itemize}
     \item Justin Ho
+      \begin{itemize}[label=$\circ$]
+        \item TODO.
+      \end{itemize}
     \item Thomas Wang
+      \begin{itemize}[label=$\circ$]
+        \item TODO.
+      \end{itemize}
     \item Michael Shi
+      \begin{itemize}[label=$\circ$]
+        \item TODO.
+      \end{itemize}
     \item Johnny Qu
+      \begin{itemize}[label=$\circ$]
+        \item TODO.
+      \end{itemize}
   \end{itemize}
 
-  \subsection{How many of your requirements were inspired by speaking to your
-    client(s) or their proxies (e.g. your peers, stakeholders, potential users)?}
-  \begin{itemize}
-    \item Zhenia Sigayev
-    \item Justin Ho
-    \item Thomas Wang
-    \item Michael Shi
-    \item Johnny Qu
-  \end{itemize}
+  \subsection{How many of your requirements were inspired by speaking to your clients or their proxies?}
+    \begin{itemize}
+      \item TODO.
+    \end{itemize}
 
   \subsection{What knowledge and skills will the team collectively need to acquire to
-    successfully complete this capstone project? This includes domain specific knowledge or software engineering and/or
-    computer science knowledge. Skills may be related to technology, or writing,
-    or presentation, or team management, etc. You should look to identify at
-    least one item for each team member.}
+    successfully complete this capstone project?}
+    % This includes domain specific knowledge or software engineering and/or
+    % computer science knowledge. Skills may be related to technology, or writing,
+    % or presentation, or team management, etc. You should look to identify at
+    % least one item for each team member.
   \begin{itemize}
     \item Zhenia Sigayev
+      \begin{itemize}[label=$\circ$]
+        \item TODO.
+      \end{itemize}
     \item Justin Ho
+      \begin{itemize}[label=$\circ$]
+        \item TODO.
+      \end{itemize}
     \item Thomas Wang
+      \begin{itemize}[label=$\circ$]
+        \item TODO.
+      \end{itemize}
     \item Michael Shi
+      \begin{itemize}[label=$\circ$]
+        \item TODO.
+      \end{itemize}
     \item Johnny Qu
+      \begin{itemize}[label=$\circ$]
+        \item TODO.
+      \end{itemize}
+  \end{itemize}
+
+  \subsection{What parts of this deliverable has each team member contributed to?}
+  \begin{itemize}
+    \item Zhenia Sigayev
+      \begin{itemize}[label=$\circ$]
+        \item TODO.
+      \end{itemize}
+    \item Justin Ho
+      \begin{itemize}[label=$\circ$]
+        \item TODO.
+      \end{itemize}
+    \item Thomas Wang
+      \begin{itemize}[label=$\circ$]
+        \item TODO.
+      \end{itemize}
+    \item Michael Shi
+      \begin{itemize}[label=$\circ$]
+        \item TODO.
+      \end{itemize}
+    \item Johnny Qu
+      \begin{itemize}[label=$\circ$]
+        \item TODO.
+      \end{itemize}
   \end{itemize}
 
 \section*{Appendix --- References}
