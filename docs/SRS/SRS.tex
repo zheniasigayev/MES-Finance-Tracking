@@ -607,60 +607,8 @@
 % 10. Non-Functional Requirements
 %-------------------------------------
 \section{Non-Functional Requirements}
-  \subsection{Performance Requirements}
-    \begin{itemize}
-        \item The system must support at least 500 concurrent users without noticeable degradation in performance.
-        \item Page load times should not exceed 3 seconds under normal operating conditions.
-        \item API response times must average below 1 second for standard database queries.
-    \end{itemize}
 
-    \subsection{Scalability Requirements}
-    \begin{itemize}
-        \item The database must be capable of storing data for at least 1,000 registered members and 10,000 expense records without performance loss.
-    \end{itemize}
-
-    \subsection{Availability Requirements}
-    \begin{itemize}
-        \item The system should maintain 99\% uptime, excluding scheduled maintenance.
-        \item Critical backend services must recover automatically in case of unexpected failures.
-    \end{itemize}
-
-    \subsection{Reliability Requirements}
-    \begin{itemize}
-        \item Data integrity must be ensured during all CRUD (Create, Read, Update, Delete) operations.
-        \item Any failed financial transaction or reimbursement claim submission must be logged and retried automatically.
-    \end{itemize}
-
-    \subsection{Security Requirements}
-    \begin{itemize}
-        \item Authentication and authorization must be managed using Supabase Auth or equivalent secure mechanisms.
-        \item Only authorized MES administrators should be able to approve or reject reimbursement claims.
-    \end{itemize}
-
-    \subsection{Maintainability Requirements}
-    \begin{itemize}
-        \item The codebase must follow standardized linting and formatting rules enforced by ESLint and Prettier.
-        \item Continuous Integration (CI) pipelines using GitHub Actions must validate all commits before merging.
-        \item The system must include meaningful error logs and documentation for debugging.
-    \end{itemize}
-
-    \subsection{Usability Requirements}
-    \begin{itemize}
-        \item The user interface must be intuitive and require minimal training for club executives to submit claims.
-        \item Navigation must remain consistent across all pages with clear labeling and tooltips.
-    \end{itemize}
-
-    \subsection{Portability Requirements}
-    \begin{itemize}
-        \item The frontend must function on all major browsers (Chrome, Edge, Firefox, Safari).
-        \item The backend should be deployable on prexisting MES infrastructure
-    \end{itemize}
-
-    \subsection{Compliance Requirements}
-    \begin{itemize}
-        \item The system must comply with McMaster University’s data privacy and security policies.
-        \item Financial data handling must align with MES accounting and audit standards.
-    \end{itemize}
+The following 7 sections outline the non-functional requirements for the MES Finance Tracking Platform.
 
 %-------------------------------------
 % 11. Look and Feel Requirements
@@ -776,8 +724,7 @@
 
   \subsection{Requirements for Interfacing with Adjacent Systems}
     \begin{itemize}
-      \item The system may integrate with McMaster's Single Sign-On (SSO) or authentication system in the future.
-      \item Potential interfaces include email APIs (e.g., SendGrid) for notifications and payment APIs for reimbursement processing.
+      \item Example
     \end{itemize}
 
   \subsection{Productization Requirements}
@@ -865,31 +812,10 @@
 % 18. Compliance Requirements
 %-------------------------------------
 \section{Compliance Requirements}
-
-\subsection{Legal and University Policy Alignment}
-\begin{itemize}
-  \item All data handling in this system must follow McMaster University's Data and Information Classification Policy (\url{https://secretariat.mcmaster.ca/app/uploads/Data-and-Information-Classification-Policy.pdf}).  All data stored, processed, or transmitted by the application must be classified according to that policy prior to collection.
-  \item Personal identifiers (names, emails, student IDs) and financial records must be treated at or above the confidentiality level required by the University (i.e., treated as \textit{confidential} or \textit{higher} per the policy) and handled accordingly.
-  \item A Data Protection Impact Assessment (DPIA) or equivalent privacy review must be completed before production deployment.
-\end{itemize}
-
-\subsection{Storage, Encryption, and Infrastructure}
-\begin{itemize}
-  \item Sensitive and confidential data must be stored only on approved infrastructure that meets McMaster security controls (e.g., approved cloud providers or on-prem systems with equivalent protections).
-  \item All network traffic carrying user or financial data must use TLS 1.2+; sensitive fields (e.g., banking details, full student numbers) must be encrypted at rest with strong algorithms and key management.
-  \item Backups containing sensitive data must be encrypted and retained only per the retention policy.
-\end{itemize}
-
-\subsection{Access Control, Audit, and Logging}
-\begin{itemize}
-  \item Enforce role-based access control (RBAC) with least privilege; administrative access must require multi-factor authentication where available.
-  \item Maintain tamper-resistant audit logs for all key actions (submission, approval, rejection, data exports). Audit logs must be protected, monitored, and retained in accordance with university and MES retention rules (minimum three years for finance/audit logs as stated elsewhere in this SRS).
-\end{itemize}
-
-\subsection{Retention, Disposal, and Legal Holds}
-\begin{itemize}
-  \item Implement data retention and secure disposal processes that conform to McMaster retention schedules and MES auditing requirements. Support legal holds to prevent deletion when required.
-\end{itemize}
+  \subsection{Legal Requirements}
+    \begin{itemize}
+      \item Example
+    \end{itemize}
 
 \subsection{Standards Compliance Requirements}
 \begin{itemize}
@@ -897,6 +823,7 @@
     \item Accessibility and usability must meet WCAG 2.1 AA compliance.
     \item Version control, branching, and commit message standards must comply with MES development guidelines.
 \end{itemize}
+
 
 %-------------------------------------
 % 19. Open Issues
