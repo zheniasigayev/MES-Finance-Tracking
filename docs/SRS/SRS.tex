@@ -132,20 +132,62 @@
   \subsection{Architecture Diagram}
     \begin{figure}[H]
         \centering
-        \includegraphics[width=0.8\textwidth]{architecture_diagram.png}
-        \caption{TODO: ADD CAPTION FOR ARCHITECTURE DIAGRAM. This should be a general overview of the flow of information and how 
-        features interact with each other. No technologies etc should be included here.}
+        \includegraphics[width=0.8\textwidth]{architecture_diagram_Justin.png}
+        % \caption{TODO: ADD CAPTION FOR ARCHITECTURE DIAGRAM. This should be a general overview of the flow of information and how 
+        % features interact with each other. No technologies etc should be included here.}
         \label{fig:architecture_diagram}
     \end{figure}
 
   \subsection{Technology Stack Overview}
-    \begin{figure}[H]
-        \centering
-        \includegraphics[width=0.8\textwidth]{tech_stack.png}
-        \caption{TODO: ADD CAPTION FOR TECH STACK OVERVIEW. This should be a general overview of the technologies used in the system and how they interact with each other.
-        This should show how the frontend and backend interact with each other and any external services used.}
-        \label{fig:tech_stack_overview}
-    \end{figure}
+    The system is a web-based application built with modern JavaScript frameworks and libraries, designed to support the needs of the MacEng Society website. The application provides user-facing web pages and administrative features for content management. It is structured as a client-server application where the frontend runs in a web browser and the backend interacts with a database.
+    \subsection{Frontend (Client-Side)}
+    \begin{itemize}
+        \item Developed using \textbf{React/Next.js}.
+        \item Runs in modern web browsers such as Google Chrome, Microsoft Edge, Firefox, and Safari.
+        \item Provides the user interface for interacting with content such as council information, events, and bookings.
+        \item Fetches and displays data from the backend via RESTful or GraphQL APIs.
+    \end{itemize}
+
+    \subsection{Backend (Server-Side)}
+    \begin{itemize}
+        \item Executes on the \textbf{Node.js} runtime environment.
+        \item Manages application logic, routing, and communication with the database.
+        \item Uses \textbf{MongoDB Community Server} as the primary data storage system.
+        \item Exposes APIs consumed by the frontend for dynamic content delivery.
+    \end{itemize}
+
+    \subsection{Database}
+    \begin{itemize}
+        \item Implemented using \textbf{MongoDB Community Server}.
+        \item Stores member information, content, and other structured data required for the application.
+    \end{itemize}
+
+    \subsection{Development Environment}
+    \begin{itemize}
+        \item Source code is managed using \textbf{Git} and hosted in a repository such as GitHub.
+        \item Developers use \textbf{Visual Studio Code (VSCode)} with mandatory extensions:
+        \begin{itemize}
+            \item ESLint
+            \item Prettier
+        \end{itemize}
+        \item Project dependencies are managed with \textbf{pnpm} or \textbf{yarn}.
+        \item \textbf{Husky} and linting hooks enforce branch naming conventions, commit message standards, and code consistency.
+    \end{itemize}
+
+    \subsection{External Dependencies}
+    \begin{itemize}
+        \item \textbf{GitHub Actions} (via \texttt{.github/workflows}) for CI/CD and automated testing.
+        \item \textbf{NextUI} and \textbf{TailwindCSS} for UI components and styling.
+        \item Additional \textbf{Node.js} ecosystem libraries and packages installed via pnpm or yarn.
+    \end{itemize}
+
+    % \begin{figure}[H]
+    %     \centering
+    %     \includegraphics[width=0.8\textwidth]{tech_stack.png}
+    %     \caption{TODO: ADD CAPTION FOR TECH STACK OVERVIEW. This should be a general overview of the technologies used in the system and how they interact with each other.
+    %     This should show how the frontend and backend interact with each other and any external services used.}
+    %     \label{fig:tech_stack_overview}
+    % \end{figure}
 
 %-------------------------------------
 % 3. Stakeholders
@@ -358,25 +400,28 @@
 % 10. Non-Functional Requirements
 %-------------------------------------
 \section{Non-Functional Requirements}
-  \subsection{Non-Functional Requirements}
-    \begin{itemize}
-        \item Example
-      \end{itemize}
+
+The following 7 sections outline the non-functional requirements for the MES Finance Tracking Platform.
 
 %-------------------------------------
 % 11. Look and Feel Requirements
 %-------------------------------------
 \section{Look and Feel Requirements}
-  \subsection{Appearance Requirements}
+    \subsection{Appearance Requirements}
     \begin{itemize}
-      \item Example
+        \item The interface should use the McMaster Engineering Society’s branding colors and logo.
+        \item The design should maintain a clean, modern layout using NextUI and TailwindCSS for consistency.
+        \item The application should use responsive design principles to adapt to desktop, tablet, and mobile displays.
+        \item Buttons, icons, and navigation components should follow accessible contrast ratios (WCAG 2.1 AA).
     \end{itemize}
 
-  \subsection{Style Requirements}
+    \subsection{Style Requirements}
     \begin{itemize}
-      \item Example
+        \item Typography should match MES branding guidelines, using sans-serif fonts for readability.
+        \item UI components must adhere to consistent padding, spacing, and rounded-corner styles.
+        \item Notification banners and status indicators (e.g., “Submitted,” “Pending,” “Approved”) should use color cues for clarity.
+        \item The application should provide a visually appealing balance between white space and content density.
     \end{itemize}
-
 %-------------------------------------
 % 12. Usability and Humanity Requirements
 %-------------------------------------
@@ -412,37 +457,46 @@
 \section{Performance Requirements}
   \subsection{Speed and Latency Requirements}
     \begin{itemize}
-      \item Example
+        \item API response times must average below 1 second for standard database queries and data submissions.
+        \item Page load times should not exceed 3 seconds under normal operating conditions on modern browsers.
+        \item File uploads (e.g., receipts or invoices) must complete within 5 seconds for files under 10 MB.
     \end{itemize}
 
   \subsection{Safety-Critical Requirements}
     \begin{itemize}
-      \item Example
+        \item The system must ensure that no reimbursement or financial transaction is executed without MES reviewer approval.
+        \item All monetary data must be validated before submission to prevent corruption or duplication.
     \end{itemize}
 
   \subsection{Precision or Accuracy Requirements}
     \begin{itemize}
-      \item Example
+        \item Financial transactions must maintain accuracy up to two decimal places.
+        \item All calculations involving funding allocations or reimbursements must be precise and consistent with MES accounting standards.
     \end{itemize}
 
   \subsection{Robustness or Fault-Tolerance Requirements}
     \begin{itemize}
-      \item Example
+        \item The system should handle unexpected backend or network failures gracefully, displaying meaningful error messages to users.
+        \item Data must be saved incrementally to prevent loss during unexpected session timeouts or browser crashes.
+        \item In the event of a failed API request, the system should automatically retry up to three times before reporting failure.
     \end{itemize}
 
   \subsection{Capacity Requirements}
     \begin{itemize}
-      \item Example
+        \item The system must support at least 500 concurrent users without noticeable degradation in performance.
+        \item The database must handle storage for at least 10,000 user records and 100,000 expense claims.
     \end{itemize}
 
   \subsection{Scalability or Extensibility Requirements}
     \begin{itemize}
-      \item Example
+        \item The system must be designed to allow horizontal scaling (e.g., deploying additional backend instances during high usage).
+        \item New features such as additional modules (e.g., club budgeting or analytics dashboards) should be easily integrable without major architectural changes.
     \end{itemize}
 
   \subsection{Longevity Requirements}
     \begin{itemize}
-      \item Example
+        \item The system is expected to remain operational and maintainable for at least 5 years with regular updates.
+        \item Future technology stack upgrades (React, Node.js, MongoDB versions) should not require a full system rewrite.
     \end{itemize}
 
 %-------------------------------------
@@ -450,100 +504,122 @@
 %-------------------------------------
 \section{Operational and Environmental Requirements}
   \subsection{Expected Physical Environment}
-  \begin{itemize}
-    \item Example
-  \end{itemize}
+    \begin{itemize}
+      \item The system will be accessed through desktop and laptop computers using modern browsers (Chrome, Edge, Firefox, Safari).
+      \item Users may also access the site via tablets or smartphones with stable internet connectivity.
+    \end{itemize}
 
   \subsection{Wider Environment Requirements}
     \begin{itemize}
-      \item Example
+      \item The application will be hosted on cloud infrastructure (e.g., Vercel or AWS) with automatic scaling and uptime monitoring.
+      \item The system must operate effectively under typical university network conditions, including campus Wi-Fi and VPN connections.
     \end{itemize}
 
   \subsection{Requirements for Interfacing with Adjacent Systems}
     \begin{itemize}
-      \item Example
+      \item The system may integrate with McMaster’s Single Sign-On (SSO) or authentication system in the future.
+      \item Potential interfaces include email APIs (e.g., SendGrid) for notifications and payment APIs for reimbursement processing.
     \end{itemize}
 
   \subsection{Productization Requirements}
     \begin{itemize}
-      \item Example
+      \item The application should be packaged for deployment using Docker containers to simplify installation and environment configuration.
+      \item Versioning of releases must follow semantic versioning conventions (e.g., v1.0.0).
     \end{itemize}
 
   \subsection{Release Requirements}
     \begin{itemize}
-      \item Example
+      \item New versions of the application must be deployed through GitHub Actions CI/CD pipelines.
+      \item Each release must undergo code review and automated testing before deployment to production.
     \end{itemize}
 
 %-------------------------------------
 % 15. Maintainability and Support Requirements
 %-------------------------------------
 \section{Maintainability and Support Requirements}
-  \subsection{Maintenance Requirements}
-    \begin{itemize}
-      \item Example
-    \end{itemize}
 
-  \subsection{Supportability Requirements}
-    \begin{itemize}
-      \item Example
-    \end{itemize}
+\subsection{Maintenance Requirements}
+\begin{itemize}
+    \item The codebase must adhere to consistent formatting and linting rules enforced by ESLint and Prettier.
+    \item All major system dependencies must be updated at least once per academic year to maintain compatibility and security.
+\end{itemize}
 
-  \subsection{Adaptability Requirements}
-    \begin{itemize}
-      \item Example
-    \end{itemize}
+\subsection{Supportability Requirements}
+\begin{itemize}
+    \item The system should include detailed developer documentation covering setup, deployment, and troubleshooting steps.
+    \item MES technical staff or designated maintainers should have access to logs and monitoring dashboards for issue diagnosis.
+\end{itemize}
+
+\subsection{Adaptability Requirements}
+\begin{itemize}
+    \item The application should support easy modification to accommodate policy or procedural changes in MES financial processes.
+    \item The UI should allow for additional modules or new forms without major rework to existing code.
+\end{itemize}
 
 %-------------------------------------
 % 16. Security Requirements
 %-------------------------------------
 \section{Security Requirements}
-  \subsection{Access Requirements}
-    \begin{itemize}
-      \item Example
-    \end{itemize}
 
-  \subsection{Integrity Requirements}
-    \begin{itemize}
-      \item Example
-    \end{itemize}
+\subsection{Access Requirements}
+\begin{itemize}
+    \item Only authenticated users may access the system.
+    \item Role-based access control (RBAC) must be implemented to distinguish between club members, reviewers, and administrators.
+\end{itemize}
 
-  \subsection{Privacy Requirements}
-    \begin{itemize}
-      \item Example
-    \end{itemize}
+\subsection{Integrity Requirements}
+\begin{itemize}
+    \item All form submissions must be validated both client-side and server-side to prevent tampering.
+    \item Database operations must be protected against injection and cross-site scripting (XSS) attacks.
+\end{itemize}
 
-  \subsection{Audit Requirements}
-    \begin{itemize}
-      \item Example
-    \end{itemize}
+\subsection{Privacy Requirements}
+\begin{itemize}
+    \item Personal information such as names and emails must be stored securely in compliance with McMaster University privacy policies.
+    \item Sensitive financial data must be encrypted at rest and in transit using TLS 1.2 or higher.
+\end{itemize}
 
-  \subsection{Immunity Requirements}
-    \begin{itemize}
-      \item Example
-    \end{itemize}
+\subsection{Audit Requirements}
+\begin{itemize}
+    \item Every key action (claim submission, approval, rejection, fund disbursement) must be logged with timestamp, user ID, and action details.
+    \item Audit logs must be retained for a minimum of 3 years for accountability and financial review.
+\end{itemize}
+
+\subsection{Immunity Requirements}
+\begin{itemize}
+    \item The system must be protected from common web vulnerabilities (e.g., SQL injection, CSRF, XSS).
+    \item Rate limiting must be enforced to prevent denial-of-service (DoS) attacks.
+\end{itemize}
 
 %-------------------------------------
 % 17. Cultural Requirements
 %-------------------------------------
 \section{Cultural Requirements}
-  \subsection{Cultural Requirements}
-    \begin{itemize}
-      \item Example
-    \end{itemize}
+
+\subsection{Cultural Requirements}
+\begin{itemize}
+    \item The system must use inclusive and gender-neutral language throughout all interfaces.
+    \item The design should align with the professional and academic tone of McMaster University and the Engineering Society.
+\end{itemize}
 
 %-------------------------------------
 % 18. Compliance Requirements
 %-------------------------------------
 \section{Compliance Requirements}
-  \subsection{Legal Requirements}
-    \begin{itemize}
-      \item Example
-    \end{itemize}
 
-  \subsection{Standards Compliance Requirements}
-    \begin{itemize}
-      \item Example
-    \end{itemize}
+\subsection{Legal Requirements}
+\begin{itemize}
+    \item The system must comply with Canadian privacy laws (PIPEDA) and McMaster University’s data governance standards.
+    \item All financial data must adhere to internal MES and university auditing regulations.
+\end{itemize}
+
+\subsection{Standards Compliance Requirements}
+\begin{itemize}
+    \item The software must conform to standard web development best practices (HTML5, CSS3, ECMAScript 6+).
+    \item Accessibility and usability must meet WCAG 2.1 AA compliance.
+    \item Version control, branching, and commit message standards must comply with MES development guidelines.
+\end{itemize}
+
 
 %-------------------------------------
 % 19. Open Issues
