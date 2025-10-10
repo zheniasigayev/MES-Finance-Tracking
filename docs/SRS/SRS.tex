@@ -439,8 +439,8 @@
   \begin{itemize}
     \item BUC 1: Uploading Receipts
       \begin{itemize}
-        \item \textbf{Precondition:} User has proper club roles to grant permission for receipt uploads
-        \item \textbf{Trigger:} User has valid reciepts that require reimbursement
+        \item \textbf{Precondition:} User has proper club roles to grant permission for receipt uploads (any member of a club, general or executive member, can upload receipt)
+        \item \textbf{Trigger:} User has valid receipts that require reimbursement
         \item \textbf{Steps:}
           \begin{enumerate}
             \item User logs into MES Financial Tracker
@@ -452,13 +452,13 @@
 
     \item BUC 2: Submitting Reimbursement Request 
       \begin{itemize}
-        \item \textbf{Precondition:} User has proper club roles to grant permission for reimbursement requests
+        \item \textbf{Precondition:} User has proper club roles to grant permission for reimbursement requests (only executive members of a club are allowed to officially submit a created reimbursement request)
         \item \textbf{Trigger:} User has recieved notification of receipt upload success and is authorizing expense claim submission
         \item \textbf{Steps:}
           \begin{enumerate}
             \item User logs into MES Financial Tracker
             \item User navigates to "Submit Reimbursement" page
-            \item User fills out reimbursement form and uploads reciepts 
+            \item User fills out reimbursement form and uploads receipts 
             \item User approves of request and clicks "Submit Request" button
           \end{enumerate}
         \item \textbf{Postcondition:} Reimbursement request is submitted and stored in database, MES admin is notified of submission 
@@ -472,7 +472,7 @@
           \begin{enumerate}
             \item MES admin logs into MES Financial Tracker
             \item MES admin navigates to "Review Reimbursements" page
-            \item MES admin reviews reimbursement request details and uploaded reciepts
+            \item MES admin reviews reimbursement request details and uploaded receipts
             \item MES admin approves or rejects request and clicks "Submit Review" button
           \end{enumerate}
         \item \textbf{Postcondition:} Reimbursement request status is updated in database, submitter is notified of review outcome 
