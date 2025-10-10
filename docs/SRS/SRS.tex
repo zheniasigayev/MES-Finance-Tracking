@@ -417,24 +417,81 @@
 %-------------------------------------
 % 6. Relevant Facts And Assumptions
 %-------------------------------------
-\section{Relevant Facts And Assumptions - Michael}
-  \subsection{Relevant Facts - Michael}
-  \subsection{Business Rules - Michael}
-  \subsection{Assumptions - Michael}
+\section{Relevant Facts And Assumptions}
+  \subsection{Relevant Facts}
+  There exist a set of relevant facts related to the project that are not considered hard constraints or goals. They have been collected below.
+
+  \begin{itemize}
+    \item The MES has existing information about clubs stored within the MES monorepo. This data exists in a MongoDB database instance in non-relational, document form.
+      \begin{itemize}
+        \item Their current applications restrict access based on role according to the data stored in this database.
+      \end{itemize}
+    \item Internal documentation is stored in a seperate repo @ https://github.com/McMaster-Engineering-Society/Documentation (Private Repository)
+    \item The MES has existing development practices. For the purposes of this project, they are generally considered \textit{suggestions}.
+      \begin{itemize}
+        \item A Kanban board has been setup for MES stakeholders to track our progress.
+        \item Current testing standards consist of informally performing manual end-to-end tests. If proof is required, video captures of testing are standard.
+        \item Work will be based on a staging branch in the monorepo specifically for our project.
+        \item Pre-existing styled React front-end components exist, and we may use them. 
+      \end{itemize} 
+  \end{itemize}
+  \subsection{Business rules}
+  These rules are imposed on our group, without necessarily directly being imposed as requirements or constraints on the project. Restrictions on group member interaction with existing user data, as an example, falls under this category.
+  \begin{itemize}
+    \item Code and data outside of that which we directly write for the project should not be modified without permission from a MES representative. This includes the aforementioned pre-styled components, any other MES projects, as well as existing user data.
+    \item To maintain user privacy, group members will not view production database data. An exception is only allowed in exceptional circumstances under the explicit permission of the project supervisor, who is associated with the MES.
+  \end{itemize}
+  \subsection{Assumptions}
+  \begin{itemize}
+    \item \textbf{Development Period:} The development period will be up to the completion of the capstone 4G06 course. Further development may be considered at the discretion of the project supervisor and pending further agreement with development group members.
+    \item \textbf{Communication with MES:} It is assumed that the MES will remain open to communication for the purposes of the project during the development period.
+    \item \textbf{Developmental Discretion:} Development choices, including changes to any plan documents, are completely up to the discretion of the development group.
+  \end{itemize}
 
 %-------------------------------------
 % 7. The Scope of the Work
 %-------------------------------------
-\section{The Scope of the Work - Michael}
-  \subsection{The Current Situation - Michael}
+\section{The Scope of the Work}
+  \subsection{The Current Situation}
     The MES currently uses spreadsheets and manual processes
-    to track club finances. This approach often results in errors from lost receipts,
-    duplicated claims, and large amounts of claims at the end of the year. A centralized
-    financial tracking platform is needed to streamline and automate
-    this process for the MES.
+    to track club finances. This approach results in a large amount of work for MES financial
+    staff due to lost receipts, duplicated claims, or other manual errors. A centralized
+    financial tracking platform is needed to streamline and automate this process for the MES.
 
-  \subsection{The Context of the Work - Michael}
-  \subsection{Work Partitioning - Michael}
+  \subsection{The Context of the Work}
+    The MES Information Technology (IT) team currently has systems and data related to clubs associated
+    with their organization. The project however, will not directly interface with most of the other systems.
+    The work will be conducted within the MES's monorepo, on an individual staging branch, and production databases
+    and code will be owned by the MES.
+
+  \subsection{Work Partitioning}
+    Work on the project is to be partitioned such that development can proceed in an efficient manner while
+    maintaining traceability and accountability for project supervisors. As the project involves a client body (the MES),
+    requirement gathering and communications are included as part of the work.
+    \begin{itemize}
+      \item \textbf{Initial Requirements Gathering and Communications}
+        \begin{itemize}
+          \item \textbf{Collection of initial information:} Directly elicit initial requirements, situation context, and problem context from the client body.
+          Details about desired project output, existing systems, as well as expectations in terms of client supervision/input during project work.
+          \item \textbf{Formal requirement and planning documentation:} Create various documents, including this one, detailing the formal requirements, situation
+          information, and development plan for the project.
+        \end{itemize}
+      \item \textbf{Proof of Concept (PoC) Development}
+        \begin{itemize}
+          \item \textbf{Local Wireframe Full-stack App Development:} Create a local implementation including all major system components to be required for the project. Capability of developing the full system will be demonstrated.
+          \item \textbf{Receipt Scanning Proof of Concept:} Develop a robust system for extracting finacial data from receipts as a PoC for other physical mediums of financial data. Testing and related documentation will be required to prove system effectiveness.
+          \item \textbf{User Authentication Proof of Concept:}  Develop a system to authenticate users and restrict access to system data depending on user role.
+          \item \textbf{Integration with MES Monorepo:} Integration of minimum PoC with existing MES monorepo to prove ability to fulfill project under ownership of the MES.
+          \item \textbf{PoC Demonstration:} Demonstrate PoC to client and supervisors. Collect feedback and iterate development plans for fulfillment of the rest of project goals and functional requirements.
+        \end{itemize}
+      \item \textbf{Integration and Requirement Fulfillment}
+        \begin{itemize}
+          \item \textbf{Full Development Plan:} Create plan and work delegation for fulfillment of rest of functional requirements and goals of the project.
+          \item \textbf{Fulfillment Development:} Fulfill requirements according to plan through software development and iteration, including maintaining iterative communication with client and supervisors.
+        \end{itemize}
+    \end{itemize}
+
+    In addition to the mentioned work, communication with the client and testing of the application will be maintained during the entire development process.
   \subsection{Specifying a Business Use Case (BUC) - Thomas}
   \begin{itemize}
     \item BUC 1: Uploading Receipts
@@ -478,6 +535,7 @@
         \item \textbf{Postcondition:} Reimbursement request status is updated in database, submitter is notified of review outcome 
       \end{itemize}
   \end{itemize}
+
 
 
 %-------------------------------------
