@@ -665,10 +665,29 @@ The following 7 sections outline the non-functional requirements for the MES Fin
 %-------------------------------------
 \section{Compliance Requirements}
 
-\subsection{Legal Requirements}
+\subsection{Legal and University Policy Alignment}
 \begin{itemize}
-    \item The system must comply with McMaster University's data governance standards.
-    \item All financial data must adhere to internal MES and university auditing regulations.
+  \item All data handling in this system must follow McMaster University's Data and Information Classification Policy (\url{https://secretariat.mcmaster.ca/app/uploads/Data-and-Information-Classification-Policy.pdf}).  All data stored, processed, or transmitted by the application must be classified according to that policy prior to collection.
+  \item Personal identifiers (names, emails, student IDs) and financial records must be treated at or above the confidentiality level required by the University (i.e., treated as \textit{confidential} or \textit{higher} per the policy) and handled accordingly.
+  \item A Data Protection Impact Assessment (DPIA) or equivalent privacy review must be completed before production deployment.
+\end{itemize}
+
+\subsection{Storage, Encryption, and Infrastructure}
+\begin{itemize}
+  \item Sensitive and confidential data must be stored only on approved infrastructure that meets McMaster security controls (e.g., approved cloud providers or on-prem systems with equivalent protections).
+  \item All network traffic carrying user or financial data must use TLS 1.2+; sensitive fields (e.g., banking details, full student numbers) must be encrypted at rest with strong algorithms and key management.
+  \item Backups containing sensitive data must be encrypted and retained only per the retention policy.
+\end{itemize}
+
+\subsection{Access Control, Audit, and Logging}
+\begin{itemize}
+  \item Enforce role-based access control (RBAC) with least privilege; administrative access must require multi-factor authentication where available.
+  \item Maintain tamper-resistant audit logs for all key actions (submission, approval, rejection, data exports). Audit logs must be protected, monitored, and retained in accordance with university and MES retention rules (minimum three years for finance/audit logs as stated elsewhere in this SRS).
+\end{itemize}
+
+\subsection{Retention, Disposal, and Legal Holds}
+\begin{itemize}
+  \item Implement data retention and secure disposal processes that conform to McMaster retention schedules and MES auditing requirements. Support legal holds to prevent deletion when required.
 \end{itemize}
 
 \subsection{Standards Compliance Requirements}
