@@ -467,7 +467,7 @@ The following 7 sections outline the non-functional requirements for the MES Fin
 \section{Look and Feel Requirements}
     \subsection{Appearance Requirements}
     \begin{itemize}
-        \item The interface should use the McMaster Engineering Society’s branding colors and logo.
+        \item The interface should use the McMaster Engineering Society's branding colors and logo.
         \item The design should maintain a clean, modern layout using NextUI and TailwindCSS for consistency.
         \item The application should use responsive design principles to adapt to desktop, tablet, and mobile displays.
         \item Buttons, icons, and navigation components should follow accessible contrast ratios (WCAG 2.1 AA).
@@ -575,7 +575,7 @@ The following 7 sections outline the non-functional requirements for the MES Fin
 
   \subsection{Requirements for Interfacing with Adjacent Systems}
     \begin{itemize}
-      \item The system may integrate with McMaster’s Single Sign-On (SSO) or authentication system in the future.
+      \item The system may integrate with McMaster's Single Sign-On (SSO) or authentication system in the future.
       \item Potential interfaces include email APIs (e.g., SendGrid) for notifications and payment APIs for reimbursement processing.
     \end{itemize}
 
@@ -667,7 +667,7 @@ The following 7 sections outline the non-functional requirements for the MES Fin
 
 \subsection{Legal Requirements}
 \begin{itemize}
-    \item The system must comply with Canadian privacy laws (PIPEDA) and McMaster University’s data governance standards.
+    \item The system must comply with McMaster University's data governance standards.
     \item All financial data must adhere to internal MES and university auditing regulations.
 \end{itemize}
 
@@ -678,22 +678,25 @@ The following 7 sections outline the non-functional requirements for the MES Fin
     \item Version control, branching, and commit message standards must comply with MES development guidelines.
 \end{itemize}
 
-
 %-------------------------------------
 % 19. Open Issues
 %-------------------------------------
-\section{Open Issues - Zhenia}
+\section{Open Issues}
   \begin{itemize}
-    \item Example
+    \item Our capstone developer group has not decided on which cloud provider to host our PostgreSQL database, though we are leaning towards Digital Ocean.
+    \item Clubs portal login and administration system is not yet defined, however, it it being developed by MES developers: https://github.com/McMaster-Engineering-Society/MES-Website-App-Router/pull/791.
+    \item The existing data is stored in Google Sheets and thus not easy to iterate over. The data will need to be manually migrated to the new system in a manner which has not yet been discussed.
   \end{itemize}
 
 %-------------------------------------
 % 20. Off-the-Shelf Solutions
 %-------------------------------------
 \section{Off-the-Shelf Solutions}
-  \subsection{Ready-Made Products - Zhenia}
-    \begin{itemize}
-      \item Example
+  \subsection{Ready-Made Products}
+  Two previous groups attempted to create the MES Finance Tracker system, however, both of their attempts were never integrated into the MES' platform.  
+  \begin{itemize}
+      \item MES-ERP: https://github.com/Housam2020/MES-ERP
+      \item Finance-platform: https://github.com/adampodolak/finance-platform
     \end{itemize}
 
   \subsection{Reusable Components}
@@ -702,25 +705,46 @@ The following 7 sections outline the non-functional requirements for the MES Fin
       \item There exist reusable React.js components for the front-end that are proided by the MES to conform to thier look and feel requirements.
     \end{itemize}
 
-  \subsection{Products That Can Be Copied - Zhenia}
+  \subsection{Products That Can Be Copied}
     \begin{itemize}
-      \item Example
+      \item QuickBooks: https://quickbooks.intuit.com/ca/
+      \item Expensify: https://www.expensify.com/
+      \item Zoho Expense: https://www.zoho.com/expense/
+      \item Wave: https://www.waveapps.com/
     \end{itemize}
 
 %-------------------------------------
 % 21. Likely Changes
 %-------------------------------------
-\section{Likely Changes - Zhenia}    
+\section{Likely Changes}
+  \begin{itemize}
+    \item The MES will adopt a new database solution (e.g., Postgres) to store audit log trails and other financial data.
+    \item The MES may want to add additional features such as budgeting tools or analytics dashboards in the future.
+    \item The authentication process might need to support more roles if university administrators want to be involved.
+  \end{itemize}    
 
 %-------------------------------------
 % 22. Unlikely Changes
 %-------------------------------------
-\section{Unlikely Changes - Zhenia}    
+\section{Unlikely Changes}    
+  \begin{itemize}
+    \item Integration with external payment gateways (e.g., Stripe) for direct reimbursements is unlikely in the near term due to complexity and security concerns. Additionally, the MES uses E-Transfer which is free.
+    \item Integration with third parties such as Plaid for bank account linking is unlikely due to privacy and security concerns.
+    \item The core technology stack (React, Node.js, MongoDB) is unlikely to change significantly give the MES platform is built with these technologies.
+  \end{itemize}
 
 %-------------------------------------
 % 23. Ideas for Solution
 %-------------------------------------
-\section{Ideas for Solution - Zhenia}
+\section{Ideas for Solution}
+  \begin{itemize}
+    \item Implementing a role-aware finance portal on the existing MES Next.js stack with dedicated dashboards for club members, treasurers, and administrators using reusable components (NextUI, Tailwind) that satisfy accessibility requirements.
+    \item Building the reimbursement workflow as Next.js API routes on Node.js with MongoDB collections for clubs, requests, budgets, and attachments to enforce audit trails and status tracking.
+    \item Establishing a GitHub Actions pipeline for linting, testing with Jest/RTL, and deploying to MES staging/production branches to maintain development workflow commitments.
+    \item Using cloud storage (e.g., AWS S3) for receipt uploads with secure access controls and integrating OCR services (e.g., Amazon Textract) for automated data extraction.
+    \item Designing the database schema to support scalability for future features like budgeting tools or analytics dashboards.
+    \item Ensuring all sensitive data is encrypted in transit (TLS) and at rest, complying with McMaster University privacy policies.
+  \end{itemize}
 
 %-------------------------------------
 % 24. Requirements Traceability
@@ -878,7 +902,8 @@ instance models, requirements, and data constraints on each other.
    \begin{itemize}
     \item Zhenia Sigayev
       \begin{itemize}[label=$\circ$]
-        \item TODO.
+        \item Splitting up the work was once again an easy process for this deliverable. I believe that everyone was aligned on the project after previous meetings with the MES developers and our own internal meetings.
+        \item Due to thorough prior meetings with the MES, the requirements were planned ahead of time and straightforward to write.
       \end{itemize}
     \item Justin Ho
       \begin{itemize}[label=$\circ$]
@@ -900,7 +925,7 @@ instance models, requirements, and data constraints on each other.
 
   \subsection{How many of your requirements were inspired by speaking to your clients or their proxies?}
     \begin{itemize}
-      \item TODO.
+      \item Nearly all of our requirements arose from speaking with our largest client, the MES. Additionally, our group members have been part of clubs that are overseen by the MES, which made reimbursement requirements gathering much easier. For example, it is apparent from the MES and club side that an approval workflow is necessary for both parties. Furthermore, our discussions showed the importance of strong security requirements.
     \end{itemize}
 
   \subsection{What knowledge and skills will the team collectively need to acquire to
@@ -912,7 +937,9 @@ instance models, requirements, and data constraints on each other.
   \begin{itemize}
     \item Zhenia Sigayev
       \begin{itemize}[label=$\circ$]
-        \item TODO.
+        \item Align on MES reimbursement rules and compliance so workflows, validations, and audits reflect stakeholder expectations.
+        \item Understand NextAuth SSO and granular RBAC that fits privacy mandates and the MES monorepo.
+        \item Evaluate OCR options like Textract or custom CV, and package them in resilient async flows so manual entry stays optional.
       \end{itemize}
     \item Justin Ho
       \begin{itemize}[label=$\circ$]
@@ -936,7 +963,15 @@ instance models, requirements, and data constraints on each other.
   \begin{itemize}
     \item Zhenia Sigayev
       \begin{itemize}[label=$\circ$]
-        \item TODO.
+        \item Created the inital skeleton of the SRS document by integrating SRS-Volere into the normal SRS document.
+        \item The entire "Mandated Constraints" section which includes subsections: Solution Constraints, Current MES Finance Tracker, Cost Constraints, Off-the-Shelf Software, Schedule Constraints, Workflow Constraints, and Enterprise Constraints.
+        \item All of "Terminology, Acronyms, and Technologies" section.
+        \item The subsection "The Current Situation".
+        \item The subsections Functional Requirements, Ease of Use and Learning Requirements, Learning Requirements, Understandability and Politeness Requirements, Accessibility Requirements.
+        \item Completed sections Reusable Components, Off-the-Shelf Solutions, Products That Can Be Copied, Likely Changes, Unlikely Changes, Ideas for Solution.
+        \item Part of "What went well while writing this deliverable?", "What went well while writing this deliverable?"
+        \item Completed the subsection "How many of your requirements were inspired by speaking to your clients or their proxies?"
+        \item Delegated various last-mile remaining sections to all team members.
       \end{itemize}
     \item Justin Ho
       \begin{itemize}[label=$\circ$]
