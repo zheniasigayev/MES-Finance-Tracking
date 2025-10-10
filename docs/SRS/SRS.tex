@@ -193,24 +193,78 @@
 % 3. Stakeholders
 %-------------------------------------
 \section{Stakeholders - Thomas}
-
-  \subsection{McMaster Engineering Society (MES)}
-  
   \subsection{Direct Stakeholders}
-  
-    \subsubsection{MES Club Leadership}
-    Describe in more detail and bullet points.
-
-    \subsubsection{Administrative Staff}
-    \subsubsection{MES Club Members}
-    \subsubsection{MES Student Developers}
+    \subsubsection{Club Leadership}
+      \begin{itemize}
+        \item Description: Members of the executive team of clubs that fall under the MES.  
+        \item Use Cases: 
+          \begin{itemize}
+            \item Review and submit expense reimbursement requests on behalf of their club.
+            \item Track the status of submitted requests.
+            \item Review past reimbursements and budget accordingly
+          \end{itemize}
+      \end{itemize}
+    \subsubsection{Club General Members}
+      \begin{itemize}
+        \item Description: General members of clubs that fall under the MES.
+        \item Use Cases:
+          \begin{itemize}
+            \item Submit expense reimbursement requests for expenses incurred on behalf of their club, pending review of executives.
+          \end{itemize}
+      \end{itemize}
+    \subsubsection{McMaster University Finance}
+      \begin{itemize}
+        \item Description: University staff responsible for auditing and overseeing the financial activities of student organizations.
+        \item Use Cases:
+          \begin{itemize}
+            \item Issue reimbursements to club members based on approved requests.
+            \item Ensure compliance with university financial policies and regulations.
+          \end{itemize}
+      \end{itemize}
 
   \subsection{Indirect Stakeholders}
-    \subsubsection{Faculty Advisors}
+    \subsubsection{MES}
+      \begin{itemize}
+        \item Description: Owns the platform and is responsible for the longterm sustainability, governance, and decisions regarding the platform.
+        \item Use Cases:
+          \begin{itemize}
+            \item Benefit from well-managed clubs and events funded through the MES.
+            \item Access information about club activities and financial transparency.
+          \end{itemize}
+      \end{itemize}
+    \subsubsection{MES Student Developers}
+      \begin{itemize}
+        \item Description: Students hired by the MES to maintain and improve the MES platform, including the finance tracking system.
+        \item Use Cases:
+          \begin{itemize}
+            \item Maintain and update the finance tracking platform as needed.
+            \item Ensure the platform remains secure, reliable, and user-friendly.
+          \end{itemize}
+      \end{itemize}
 
   \subsection{Personas - Thomas}
+    \begin{itemize}
+      \item Wayne, Club President (Age 21): Looking for time-saving way to submit reimbursements
+      \item Alice, Club Member (Age 20): Wants to easily submit expenses for club activities
+      \item Frank, Club VP Finance (Age 21): Needs transparency into club spending and budgets
+      \item Bob, MES Reviewer (Age 25): Needs efficient way to review and approve requests
+      \item Eve, MES Admin (Age 30): Wants to ensure system is secure and compliant
+      \item Charlie, MES Developer (Age 22): Needs maintainable and well-documented codebase
+    \end{itemize}
   \subsection{Priorities Assigned to Stakeholders - Thomas}
+    \begin{itemize}
+      \item Key Users: Club Leadership; would like a easy way to submit and track reimbursements
+      \item Secondary Users: MES Administrators; would like to ensure a secure and compliant way to manage and deliver reimbursements
+      \item Tertiary Users: Casual Users; requirements are low priority
+    \end{itemize}
   \subsection{Stakeholder Participation - Thomas}
+    \begin{itemize}
+      \item Gathering Requirements: Conduct interviews and surveys with club leaders and MES staff to understand key needs and an understanding of the current process and the desired changes.
+      \item Usability Testing: Tangible session to validate and observe the usability of the platform with real users. 
+      \item Feedback and Iteration: Regularly gather feedback from stakeholders during development to ensure the platform meets their needs.
+      \item Training and Support: Provide training sessions and support materials to help stakeholders effectively use the platform.
+      \item Ongoing Engagement: Maintain open communication channels for continuous feedback and improvement after deployment.
+    \end{itemize}
 
 
 %-------------------------------------
@@ -691,7 +745,7 @@ the assumptions.
 
 \afterpage{
 \begin{landscape}
-\begin{table}[h!]
+\begin{table}[ht]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
 \hline
@@ -724,7 +778,7 @@ the assumptions.
 \end{landscape}
 }
 
-\begin{table}[h!]
+\begin{table}[ht]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
 \hline        
@@ -749,7 +803,7 @@ the assumptions.
 \label{Table:trace}
 \end{table}
 
-\begin{table}[h!]
+\begin{table}[ht]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|c|}
 \hline
@@ -808,6 +862,9 @@ instance models, requirements, and data constraints on each other.
 % \end{figure}
 
 \newpage
+
+% Example citation to avoid "I found no \citation commands" warning
+As discussed in \citet{Ref1}, financial tracking systems require careful requirements analysis.
 
 \bibliographystyle {plainnat}
 \bibliography {../../refs/References}
