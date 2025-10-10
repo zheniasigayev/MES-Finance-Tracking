@@ -208,7 +208,7 @@
           \begin{itemize}
             \item Review and submit expense reimbursement requests on behalf of their club.
             \item Track the status of submitted requests.
-            \item Review past reimbursements and budget accordingly
+            \item Review past reimbursements and budget accordingly.
           \end{itemize}
       \end{itemize}
     \subsubsection{Club General Members}
@@ -359,7 +359,8 @@
       \item \textbf{Reimbursement}: The process of repaying a club or team member for approved expenses.
       \item \textbf{Reviewer}: An MES staff member or administrator responsible for reviewing and approving or rejecting expense claims.
       \item \textbf{Submitter}: A club or team member who submits an expense claim for reimbursement.
-      \item \textbf{MES Administrator}: An MES staff member with elevated permissions to manage the finance tracking platform, including user roles and system settings.
+      \item \textbf{MES Student Developer}: Students that work with the MES to update, refine, and update code bases (will not be actively making changes to this application once completed)
+      \item \textbf{MES Administrator}: An MES staff member with elevated permissions to manage the finance tracking platform, including user roles and system settings. They are the only members apart of the MES staff team that will interact with the application.
     \end{itemize}
 
   \subsection{Acronyms}
@@ -434,7 +435,50 @@
 
   \subsection{The Context of the Work - Michael}
   \subsection{Work Partitioning - Michael}
-  \subsection{Specifying a Business Use Case (BUC) - Michael}
+  \subsection{Specifying a Business Use Case (BUC) - Thomas}
+  \begin{itemize}
+    \item BUC 1: Uploading Receipts
+      \begin{itemize}
+        \item \textbf{Precondition:} User has proper club roles to grant permission for receipt uploads
+        \item \textbf{Trigger:} User has valid reciepts that require reimbursement
+        \item \textbf{Steps:}
+          \begin{enumerate}
+            \item User logs into MES Financial Tracker
+            \item User navigates to "Submit Reimbursement" page
+            \item User uploads receipt and clicks "Upload Receipt" button
+          \end{enumerate}
+        \item \textbf{Postcondition:} Receipt is uploaded and stored in database
+      \end{itemize}
+
+    \item BUC 2: Submitting Reimbursement Request 
+      \begin{itemize}
+        \item \textbf{Precondition:} User has proper club roles to grant permission for reimbursement requests
+        \item \textbf{Trigger:} User has recieved notification of receipt upload success and is authorizing expense claim submission
+        \item \textbf{Steps:}
+          \begin{enumerate}
+            \item User logs into MES Financial Tracker
+            \item User navigates to "Submit Reimbursement" page
+            \item User fills out reimbursement form and uploads reciepts 
+            \item User approves of request and clicks "Submit Request" button
+          \end{enumerate}
+        \item \textbf{Postcondition:} Reimbursement request is submitted and stored in database, MES admin is notified of submission 
+      \end{itemize}
+
+    \item BUC 3: Reviewing Reimbursement Request
+      \begin{itemize}
+        \item \textbf{Precondition:} User is an MES admin with proper roles to review reimbursement requests
+        \item \textbf{Trigger:} User recieves notification of new reimbursement request submission
+        \item \textbf{Steps:}
+          \begin{enumerate}
+            \item MES admin logs into MES Financial Tracker
+            \item MES admin navigates to "Review Reimbursements" page
+            \item MES admin reviews reimbursement request details and uploaded reciepts
+            \item MES admin approves or rejects request and clicks "Submit Review" button
+          \end{enumerate}
+        \item \textbf{Postcondition:} Reimbursement request status is updated in database, submitter is notified of review outcome 
+      \end{itemize}
+  \end{itemize}
+
 
 %-------------------------------------
 % 8. Business Data Model and Data Dictionary
@@ -449,11 +493,11 @@
         \item \textbf{Relationship:} MES Admin may approve, reject, request additional information, and administer reimbursements 
       \end{itemize}
     
-    \item Club Admin + General User Entity:
+    \item Club Executive + General User Entity:
       \begin{itemize}
           \item \textbf{Description:} Members apart of a MES club who wishes to submit items for reimbursements
           \item \textbf{Attributes:} Name, macID, Email, clubID, roleID, Phone Number
-          \item \textbf{Relationship:} A club member may submit multiple reimbursement requests. Specified club admin team role grants permission to finalize reimbursement request on behalf of the club
+          \item \textbf{Relationship:} A club member may submit multiple reimbursement requests. Specified club executive team role grants permission to finalize reimbursement request on behalf of the club
         \end{itemize}
 
     \item Club Entity:
@@ -470,9 +514,9 @@
           \item \textbf{Relationship:} A request is linked to a particular club, MES admin team can review the reimbursement and change its status between approved, rejected, pending
         \end{itemize}
     
-    \item Budget Entity:
+    \item Club Finance Entity:
       \begin{itemize}
-          \item \textbf{Description:} Data displayed for budget allocated by MES to a particular club 
+          \item \textbf{Description:} Data displayed for club's financial allocation from MES
           \item \textbf{Attributes:} clubID, totalAmountAllocated, totalAmountSpent, pendingAmount
           \item \textbf{Relationship:} A display of the total resources available for a club 
         \end{itemize}
@@ -796,7 +840,7 @@ the assumptions.
 
 \afterpage{
 \begin{landscape}
-\begin{table}[ht]
+\begin{table}[h!]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
 \hline
