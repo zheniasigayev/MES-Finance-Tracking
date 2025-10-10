@@ -115,14 +115,21 @@
 % 1. Purpose of the Project
 %-------------------------------------
 \section{Purpose of the Project - Thomas}
-
   \subsection{User Business - Thomas}
-
+    The McMaster Engineering Society (MES) seeks a more effective and efficient way to manage and track finances of its over 60 student clubs. Due to the current difficuties of 
+    the manual proces to manage and track reimbursements, the MES needs to streamline the process so reimbursements can occur regularly throughout the year and have them processed
+    quicker to reduce processing times for students. The implementation of our solution will allow student clubs to submit reimbursement requests digitally and in an easier manner, 
+    allow MES reviewers to approve or reject requests efficiently, and provide transparency to all parties involved in the reimbursement process. 
 
   \subsection{Goals of the Project - Thomas}
-  \begin{itemize}
-      \item \textbf{Goal 1:} Brief explanation of goal 1. Add more goals.
-  \end{itemize}
+    The primary goals of the MES Finance Tracking Platform are to:
+    \begin{itemize}
+      \item Provide a user-friendly interface for club members to submit expense reimbursement requests.
+      \item Implement a robust review and approval workflow for MES staff to manage reimbursement requests efficiently.
+      \item Ensure transparency and traceability of all financial transactions related to club reimbursements.
+      \item Maintain data security and privacy in compliance with McMaster University policies.
+      \item Integrate seamlessly with existing MES systems and infrastructure.
+    \end{itemize}
 
 %-------------------------------------
 % 2. System Overview
@@ -196,8 +203,8 @@
   \subsection{Direct Stakeholders}
     \subsubsection{Club Leadership}
       \begin{itemize}
-        \item Description: Members of the executive team of clubs that fall under the MES.  
-        \item Use Cases: 
+        \item \textbf{Description}: Members of the executive team of clubs that fall under the MES.  
+        \item \textbf{Use Cases:}
           \begin{itemize}
             \item Review and submit expense reimbursement requests on behalf of their club.
             \item Track the status of submitted requests.
@@ -206,16 +213,16 @@
       \end{itemize}
     \subsubsection{Club General Members}
       \begin{itemize}
-        \item Description: General members of clubs that fall under the MES.
-        \item Use Cases:
+        \item \textbf{Description}: General members of clubs that fall under the MES.
+        \item \textbf{Use Cases:}
           \begin{itemize}
             \item Submit expense reimbursement requests for expenses incurred on behalf of their club, pending review of executives.
           \end{itemize}
       \end{itemize}
     \subsubsection{McMaster University Finance}
       \begin{itemize}
-        \item Description: University staff responsible for auditing and overseeing the financial activities of student organizations.
-        \item Use Cases:
+        \item \textbf{Description}: University staff responsible for auditing and overseeing the financial activities of student organizations.
+        \item \textbf{Use Cases:}
           \begin{itemize}
             \item Issue reimbursements to club members based on approved requests.
             \item Ensure compliance with university financial policies and regulations.
@@ -225,8 +232,8 @@
   \subsection{Indirect Stakeholders}
     \subsubsection{MES}
       \begin{itemize}
-        \item Description: Owns the platform and is responsible for the longterm sustainability, governance, and decisions regarding the platform.
-        \item Use Cases:
+        \item \textbf{Description}: Owns the platform and is responsible for the longterm sustainability, governance, and decisions regarding the platform.
+        \item \textbf{Use Cases:}
           \begin{itemize}
             \item Benefit from well-managed clubs and events funded through the MES.
             \item Access information about club activities and financial transparency.
@@ -234,8 +241,8 @@
       \end{itemize}
     \subsubsection{MES Student Developers}
       \begin{itemize}
-        \item Description: Students hired by the MES to maintain and improve the MES platform, including the finance tracking system.
-        \item Use Cases:
+        \item \textbf{Description}: Students hired by the MES to maintain and improve the MES platform, including the finance tracking system.
+        \item \textbf{Use Cases:}
           \begin{itemize}
             \item Maintain and update the finance tracking platform as needed.
             \item Ensure the platform remains secure, reliable, and user-friendly.
@@ -409,10 +416,10 @@
 %-------------------------------------
 % 6. Relevant Facts And Assumptions
 %-------------------------------------
-\section{Relevant Facts And Assumptions - Thomas}
-  \subsection{Relevant Facts - Thomas}
-  \subsection{Business Rules - Thomas}
-  \subsection{Assumptions - Thomas}
+\section{Relevant Facts And Assumptions - Michael}
+  \subsection{Relevant Facts - Michael}
+  \subsection{Business Rules - Michael}
+  \subsection{Assumptions - Michael}
 
 %-------------------------------------
 % 7. The Scope of the Work
@@ -432,9 +439,53 @@
 %-------------------------------------
 % 8. Business Data Model and Data Dictionary
 %-------------------------------------
-\section{Business Data Model and Data Dictionary - Michael}
-  \subsection{Business Data Model - Michael}
-  \subsection{Data Dictionary - Michael}
+\section{Business Data Model and Data Dictionary - Thomas}
+  \subsection{Business Data Model - Thomas}
+  \begin{itemize}
+    \item MES Admin User Entity:
+      \begin{itemize}
+        \item \textbf{Description:} An individual associated with McMaster that verifies, validates, and administers the reimbursements
+        \item \textbf{Attributes:} Name, Email, roleID, Phone Number
+        \item \textbf{Relationship:} MES Admin may approve, reject, request additional information, and administer reimbursements 
+      \end{itemize}
+    
+    \item Club Admin + General User Entity:
+      \begin{itemize}
+          \item \textbf{Description:} Members apart of a MES club who wishes to submit items for reimbursements
+          \item \textbf{Attributes:} Name, macID, Email, clubID, roleID, Phone Number
+          \item \textbf{Relationship:} A club member may submit multiple reimbursement requests. Specified club admin team role grants permission to finalize reimbursement request on behalf of the club
+        \end{itemize}
+
+    \item Club Entity:
+      \begin{itemize}
+          \item \textbf{Description:} Club Entity that consists of all club members/those who will be creating reimbursement requests
+          \item \textbf{Attributes:} clubID, clubName
+          \item \textbf{Relationship:} A club entity that submits request on behalf of the club. Members within club entity can be added or removed (only for people with club admin team role)
+        \end{itemize}
+    
+    \item Reimbursement Request Entity:
+      \begin{itemize}
+          \item \textbf{Description:} Reimbursement request that has been approved by club leadership and submitted to MES admin team for review
+          \item \textbf{Attributes:} clubID, requestID, Timestamp, amountRequested, requesetStatus, attachments(recipets)
+          \item \textbf{Relationship:} A request is linked to a particular club, MES admin team can review the reimbursement and change its status between approved, rejected, pending
+        \end{itemize}
+    
+    \item Budget Entity:
+      \begin{itemize}
+          \item \textbf{Description:} Data displayed for budget allocated by MES to a particular club 
+          \item \textbf{Attributes:} clubID, totalAmountAllocated, totalAmountSpent, pendingAmount
+          \item \textbf{Relationship:} A display of the total resources available for a club 
+        \end{itemize}
+
+    \item Role Entity:
+      \begin{itemize}
+          \item \textbf{Description:} List of all roles that can be assigned to an individual
+          \item \textbf{Attributes:} roleID, roleName
+          \item \textbf{Relationship:} Every person at McMaster has an account, no default role assigned. Roles will be later assigned
+        \end{itemize}
+  \end{itemize}
+  \subsection{Data Dictionary - Thomas}
+  N/A (No data dictionary information at this time).
 
 %-------------------------------------
 % 9. Functional Requirements
