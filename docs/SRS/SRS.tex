@@ -115,14 +115,21 @@
 % 1. Purpose of the Project
 %-------------------------------------
 \section{Purpose of the Project - Thomas}
-
   \subsection{User Business - Thomas}
-
+    The McMaster Engineering Society (MES) seeks a more effective and efficient way to manage and track finances of its over 60 student clubs. Due to the current difficuties of 
+    the manual proces to manage and track reimbursements, the MES needs to streamline the process so reimbursements can occur regularly throughout the year and have them processed
+    quicker to reduce processing times for students. The implementation of our solution will allow student clubs to submit reimbursement requests digitally and in an easier manner, 
+    allow MES reviewers to approve or reject requests efficiently, and provide transparency to all parties involved in the reimbursement process. 
 
   \subsection{Goals of the Project - Thomas}
-  \begin{itemize}
-      \item \textbf{Goal 1:} Brief explanation of goal 1. Add more goals.
-  \end{itemize}
+    The primary goals of the MES Finance Tracking Platform are to:
+    \begin{itemize}
+      \item Provide a user-friendly interface for club members to submit expense reimbursement requests.
+      \item Implement a robust review and approval workflow for MES staff to manage reimbursement requests efficiently.
+      \item Ensure transparency and traceability of all financial transactions related to club reimbursements.
+      \item Maintain data security and privacy in compliance with McMaster University policies.
+      \item Integrate seamlessly with existing MES systems and infrastructure.
+    \end{itemize}
 
 %-------------------------------------
 % 2. System Overview
@@ -193,24 +200,78 @@
 % 3. Stakeholders
 %-------------------------------------
 \section{Stakeholders - Thomas}
-
-  \subsection{McMaster Engineering Society (MES)}
-  
   \subsection{Direct Stakeholders}
-  
-    \subsubsection{MES Club Leadership}
-    Describe in more detail and bullet points.
-
-    \subsubsection{Administrative Staff}
-    \subsubsection{MES Club Members}
-    \subsubsection{MES Student Developers}
+    \subsubsection{Club Leadership}
+      \begin{itemize}
+        \item \textbf{Description}: Members of the executive team of clubs that fall under the MES.  
+        \item \textbf{Use Cases:}
+          \begin{itemize}
+            \item Review and submit expense reimbursement requests on behalf of their club.
+            \item Track the status of submitted requests.
+            \item Review past reimbursements and budget accordingly.
+          \end{itemize}
+      \end{itemize}
+    \subsubsection{Club General Members}
+      \begin{itemize}
+        \item \textbf{Description}: General members of clubs that fall under the MES.
+        \item \textbf{Use Cases:}
+          \begin{itemize}
+            \item Submit expense reimbursement requests for expenses incurred on behalf of their club, pending review of executives.
+          \end{itemize}
+      \end{itemize}
+    \subsubsection{McMaster University Finance}
+      \begin{itemize}
+        \item \textbf{Description}: University staff responsible for auditing and overseeing the financial activities of student organizations.
+        \item \textbf{Use Cases:}
+          \begin{itemize}
+            \item Issue reimbursements to club members based on approved requests.
+            \item Ensure compliance with university financial policies and regulations.
+          \end{itemize}
+      \end{itemize}
 
   \subsection{Indirect Stakeholders}
-    \subsubsection{Faculty Advisors}
+    \subsubsection{MES}
+      \begin{itemize}
+        \item \textbf{Description}: Owns the platform and is responsible for the longterm sustainability, governance, and decisions regarding the platform.
+        \item \textbf{Use Cases:}
+          \begin{itemize}
+            \item Benefit from well-managed clubs and events funded through the MES.
+            \item Access information about club activities and financial transparency.
+          \end{itemize}
+      \end{itemize}
+    \subsubsection{MES Student Developers}
+      \begin{itemize}
+        \item \textbf{Description}: Students hired by the MES to maintain and improve the MES platform, including the finance tracking system.
+        \item \textbf{Use Cases:}
+          \begin{itemize}
+            \item Maintain and update the finance tracking platform as needed.
+            \item Ensure the platform remains secure, reliable, and user-friendly.
+          \end{itemize}
+      \end{itemize}
 
   \subsection{Personas - Thomas}
+    \begin{itemize}
+      \item Wayne, Club President (Age 21): Looking for time-saving way to submit reimbursements
+      \item Alice, Club Member (Age 20): Wants to easily submit expenses for club activities
+      \item Frank, Club VP Finance (Age 21): Needs transparency into club spending and budgets
+      \item Bob, MES Reviewer (Age 25): Needs efficient way to review and approve requests
+      \item Eve, MES Admin (Age 30): Wants to ensure system is secure and compliant
+      \item Charlie, MES Developer (Age 22): Needs maintainable and well-documented codebase
+    \end{itemize}
   \subsection{Priorities Assigned to Stakeholders - Thomas}
+    \begin{itemize}
+      \item Key Users: Club Leadership; would like a easy way to submit and track reimbursements
+      \item Secondary Users: MES Administrators; would like to ensure a secure and compliant way to manage and deliver reimbursements
+      \item Tertiary Users: Casual Users; requirements are low priority
+    \end{itemize}
   \subsection{Stakeholder Participation - Thomas}
+    \begin{itemize}
+      \item Gathering Requirements: Conduct interviews and surveys with club leaders and MES staff to understand key needs and an understanding of the current process and the desired changes.
+      \item Usability Testing: Tangible session to validate and observe the usability of the platform with real users. 
+      \item Feedback and Iteration: Regularly gather feedback from stakeholders during development to ensure the platform meets their needs.
+      \item Training and Support: Provide training sessions and support materials to help stakeholders effectively use the platform.
+      \item Ongoing Engagement: Maintain open communication channels for continuous feedback and improvement after deployment.
+    \end{itemize}
 
 
 %-------------------------------------
@@ -298,7 +359,8 @@
       \item \textbf{Reimbursement}: The process of repaying a club or team member for approved expenses.
       \item \textbf{Reviewer}: An MES staff member or administrator responsible for reviewing and approving or rejecting expense claims.
       \item \textbf{Submitter}: A club or team member who submits an expense claim for reimbursement.
-      \item \textbf{MES Administrator}: An MES staff member with elevated permissions to manage the finance tracking platform, including user roles and system settings.
+      \item \textbf{MES Student Developer}: Students that work with the MES to update, refine, and update code bases (will not be actively making changes to this application once completed)
+      \item \textbf{MES Administrator}: An MES staff member with elevated permissions to manage the finance tracking platform, including user roles and system settings. They are the only members apart of the MES staff team that will interact with the application.
     \end{itemize}
 
   \subsection{Acronyms}
@@ -430,15 +492,102 @@
     \end{itemize}
 
     In addition to the mentioned work, communication with the client and testing of the application will be maintained during the entire development process.
-  \subsection{Specifying a Business Use Case (BUC) - Michael}
+  \subsection{Specifying a Business Use Case (BUC) - Thomas}
+  \begin{itemize}
+    \item BUC 1: Uploading Receipts
+      \begin{itemize}
+        \item \textbf{Precondition:} User has proper club roles to grant permission for receipt uploads (any member of a club, general or executive member, can upload receipt)
+        \item \textbf{Trigger:} User has valid receipts that require reimbursement
+        \item \textbf{Steps:}
+          \begin{enumerate}
+            \item User logs into MES Financial Tracker
+            \item User navigates to "Submit Reimbursement" page
+            \item User uploads receipt and clicks "Upload Receipt" button
+          \end{enumerate}
+        \item \textbf{Postcondition:} Receipt is uploaded and stored in database
+      \end{itemize}
+
+    \item BUC 2: Submitting Reimbursement Request 
+      \begin{itemize}
+        \item \textbf{Precondition:} User has proper club roles to grant permission for reimbursement requests (only executive members of a club are allowed to officially submit a created reimbursement request)
+        \item \textbf{Trigger:} User has recieved notification of receipt upload success and is authorizing expense claim submission
+        \item \textbf{Steps:}
+          \begin{enumerate}
+            \item User logs into MES Financial Tracker
+            \item User navigates to "Submit Reimbursement" page
+            \item User fills out reimbursement form and uploads receipts 
+            \item User approves of request and clicks "Submit Request" button
+          \end{enumerate}
+        \item \textbf{Postcondition:} Reimbursement request is submitted and stored in database, MES admin is notified of submission 
+      \end{itemize}
+
+    \item BUC 3: Reviewing Reimbursement Request
+      \begin{itemize}
+        \item \textbf{Precondition:} User is an MES admin with proper roles to review reimbursement requests
+        \item \textbf{Trigger:} User recieves notification of new reimbursement request submission
+        \item \textbf{Steps:}
+          \begin{enumerate}
+            \item MES admin logs into MES Financial Tracker
+            \item MES admin navigates to "Review Reimbursements" page
+            \item MES admin reviews reimbursement request details and uploaded receipts
+            \item MES admin approves or rejects request and clicks "Submit Review" button
+          \end{enumerate}
+        \item \textbf{Postcondition:} Reimbursement request status is updated in database, submitter is notified of review outcome 
+      \end{itemize}
+  \end{itemize}
+
 
 
 %-------------------------------------
 % 8. Business Data Model and Data Dictionary
 %-------------------------------------
-\section{Business Data Model and Data Dictionary - Michael}
-  \subsection{Business Data Model - Michael}
-  \subsection{Data Dictionary - Michael}
+\section{Business Data Model and Data Dictionary - Thomas}
+  \subsection{Business Data Model - Thomas}
+  \begin{itemize}
+    \item MES Admin User Entity:
+      \begin{itemize}
+        \item \textbf{Description:} An individual associated with McMaster that verifies, validates, and administers the reimbursements
+        \item \textbf{Attributes:} Name, Email, roleID, Phone Number
+        \item \textbf{Relationship:} MES Admin may approve, reject, request additional information, and administer reimbursements 
+      \end{itemize}
+    
+    \item Club Executive + General User Entity:
+      \begin{itemize}
+          \item \textbf{Description:} Members apart of a MES club who wishes to submit items for reimbursements
+          \item \textbf{Attributes:} Name, macID, Email, clubID, roleID, Phone Number
+          \item \textbf{Relationship:} A club member may submit multiple reimbursement requests. Specified club executive team role grants permission to finalize reimbursement request on behalf of the club
+        \end{itemize}
+
+    \item Club Entity:
+      \begin{itemize}
+          \item \textbf{Description:} Club Entity that consists of all club members/those who will be creating reimbursement requests
+          \item \textbf{Attributes:} clubID, clubName
+          \item \textbf{Relationship:} A club entity that submits request on behalf of the club. Members within club entity can be added or removed (only for people with club admin team role)
+        \end{itemize}
+    
+    \item Reimbursement Request Entity:
+      \begin{itemize}
+          \item \textbf{Description:} Reimbursement request that has been approved by club leadership and submitted to MES admin team for review
+          \item \textbf{Attributes:} clubID, requestID, Timestamp, amountRequested, requesetStatus, attachments(recipets)
+          \item \textbf{Relationship:} A request is linked to a particular club, MES admin team can review the reimbursement and change its status between approved, rejected, pending
+        \end{itemize}
+    
+    \item Club Finance Entity:
+      \begin{itemize}
+          \item \textbf{Description:} Data displayed for club's financial allocation from MES
+          \item \textbf{Attributes:} clubID, totalAmountAllocated, totalAmountSpent, pendingAmount
+          \item \textbf{Relationship:} A display of the total resources available for a club 
+        \end{itemize}
+
+    \item Role Entity:
+      \begin{itemize}
+          \item \textbf{Description:} List of all roles that can be assigned to an individual
+          \item \textbf{Attributes:} roleID, roleName
+          \item \textbf{Relationship:} Every person at McMaster has an account, no default role assigned. Roles will be later assigned
+        \end{itemize}
+  \end{itemize}
+  \subsection{Data Dictionary - Thomas}
+  N/A (No data dictionary information at this time).
 
 %-------------------------------------
 % 9. Functional Requirements
@@ -782,7 +931,7 @@ the assumptions.
 \end{landscape}
 }
 
-\begin{table}[h!]
+\begin{table}[ht]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
 \hline        
@@ -807,7 +956,7 @@ the assumptions.
 \label{Table:trace}
 \end{table}
 
-\begin{table}[h!]
+\begin{table}[ht]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|c|}
 \hline
@@ -866,6 +1015,9 @@ instance models, requirements, and data constraints on each other.
 % \end{figure}
 
 \newpage
+
+% Example citation to avoid "I found no \citation commands" warning
+As discussed in \citet{Ref1}, financial tracking systems require careful requirements analysis.
 
 \bibliographystyle {plainnat}
 \bibliography {../../refs/References}
