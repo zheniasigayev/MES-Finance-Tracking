@@ -36,9 +36,7 @@
 \toprule
 \textbf{Date} & \textbf{Developer(s)} & \textbf{Change}\\
 \midrule
-Date1 & Name(s) & Description of changes\\
-Date2 & Name(s) & Description of changes\\
-... & ... & ...\\
+Oct 2 & Johnny Qu & Complete document\\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -51,72 +49,128 @@ Date2 & Name(s) & Description of changes\\
 
 \pagenumbering{arabic}
 
-\wss{You are free to modify this template.}
-
 \section{Introduction}
 
-\wss{You can include your definition of what a hazard is here.}
+This document will serve as a hazard analysis of the MES Club Payment Tracking System. This system is a web application designed to streamline the reimbursement process for clubs under the McMaster Engineering Society. As a primarily software system, a hazard is not defined by physical injury, but rather, being related to data integrity, data security, and service availability.
 
 \section{Scope and Purpose of Hazard Analysis}
 
-\wss{You should say what \textbf{loss} could be incurred because of the
-hazards.}
+Hazards in the MES Club Payment Tracking System can cause harm or damage in the following ways.
+\begin{enumerate}
+    \item Financial Harm
+    \item Operational Harm
+    \item Privacy Harm
+    \item Reputational Harm
+\end{enumerate}
 
 \section{System Boundaries and Components}
 
-\wss{Dividing the system into components will help you brainstorm the hazards.
-You shouldn't do a full design of the components, just get a feel for the major
-ones.  For projects that involve hardware, the components will typically include
-each individual piece of hardware.  If your software will have a database, or an
-important library, these are also potential components.}
+Our systems can be broken down into the following functional components
+\begin{enumerate}
+    \item Authentication
+    \item Request Submission
+    \item Budget Tracking
+    \item Notifications
+    \item Administrative Tools
+    \item Data Storage
+\end{enumerate}
 
 \section{Critical Assumptions}
 
-\wss{These assumptions that are made about the software or system.  You should
-minimize the number of assumptions that remove potential hazards.  For instance,
-you could assume a part will never fail, but it is generally better to include
-this potential failure mode.}
+The hazard analysis will be made with the following critical assumptions in mind;
+\begin{enumerate}
+    \item The machines that will be used in deployment are physically secured. This means we assume that no one will have physical access to the machines to perform malicious actions (e.g. reading the hard drive).
+    \item The machines that will be used in deployment are stable and available. For example, they have a consistent and reliable network connection and stable power.
+    \item User devices have minimum requirements to run application (i.e. javascript enabled, adequate network connection).
+\end{enumerate}
 
 \section{Failure Mode and Effect Analysis}
 
-\wss{Include your FMEA table here. This is the most important part of this document.}
-\wss{The safety requirements in the table do not have to have the prefix SR.
-The most important thing is to show traceability to your SRS. You might trace to
-requirements you have already written, or you might need to add new
-requirements.}
-\wss{If no safety requirement can be devised, other mitigation strategies can be
-entered in the table, including strategies involving providing additional
-documentation, and/or test cases.}
+\begin{tabular}{|p{0.15\textwidth}|p{0.15\textwidth}|p{0.15\textwidth}|p{0.15\textwidth}|p{0.15\textwidth}|p{0.15\textwidth}|}
+\hline
+Component & Failure Modes & Failure Effect & Causes of Failure & Risk Priority Number (Likelihood, Severity, Detection) & Recommended Actions \\
+\hline
+Authentication & User cannot log in &  & User forgets authentication details  User mistypes credentials on creation & 5 x 2 x 2 = 20 & Implement authentication reset processes \\
+\hline
+Authentication & Unauthorized Access & Sensitive/private information exposed  Reputational damage & Security vulnerability & 1 x 5 x 5 = 25 & Enforce password strength  Keep externally used packages up to date  Lock account on discovery \\
+\hline
+Submission & Duplicate reimbursement submitted & Incorrect reports  Club underspending & Multiple users submit for the same reimbursement & 3 x 3 x 2 = 18 & Clearly show all submitted   Allow reimbursements to be deleted \\
+\hline
+\end{tabular}
+\begin{tabular}{|p{0.15\textwidth}|p{0.15\textwidth}|p{0.15\textwidth}|p{0.15\textwidth}|p{0.15\textwidth}|p{0.15\textwidth}|}
+\hline
+Submission & Incorrect details submitted & Club overspending & Incorrect image to text parsing  Negligent user & 4 x 3 x 2 = 24 & Allow users to modify submissions pending review \\
+\hline
+Submission & Unable to upload receipts & Unable to provide adequate information to process a reimbursement & Backend logic failure & 3 x 4 x 1 = 12 & Show descriptive errors  Provide support contact \\
+\hline
+Budgeting & Reporting incorrect numbers & Club overspending  MES overspending & Rounding errors & 2 x 4 x 4 = 32 & Ensure all money formats are rounded up and to 2 decimal places \\
+\hline
+\end{tabular}
+\begin{tabular}{|p{0.15\textwidth}|p{0.15\textwidth}|p{0.15\textwidth}|p{0.15\textwidth}|p{0.15\textwidth}|p{0.15\textwidth}|}
+\hline
+Database & Data loss & Incorrect   Loss of users  Loss of clubs  Loss of reimbursement requests & Errors during deploy  Bad database migration  Accidental query execution & 3 x 5 x 3 = 45 & Regularly create database backups \\
+\hline
+Notification & Notification not visible & Users unaware of required actions to complete  Users unaware of reimbursement status & Incorrect email address  Notification reported as junk & 2 x 1 x 4 = 8 & Have multiple delivery channels, including an in app \\
+\hline
+Administrative Tools & Unwanted action performed & User access removed  Incorrect & Negligent user & 3 x 3 x 2 = 18 & Implement reversible actions  For irreversible actions, add confirmation before performing actions \\
+\hline
+Administrative Tools & Abuse of controls & MES Overspending  Reputational damage & Collusion & 1 x 5 x 4 = 20 & Log all actions performed by administrators  Allow administrators to audit each other \\
+\hline
+\end{tabular}
 
 \section{Safety and Security Requirements}
-
-\wss{Newly discovered requirements.  These should also be added to the SRS.  (A
-rationale design process how and why to fake it.)}
+Newly discovered requirements
+\begin{enumerate}
+    \item Database backups must be made on a weekly basis
+    \item Enforce role based access on the database to ensure data uploaded by a user on a club are only visible to users within the same club and administrators.
+    \item Passwords must not be stored in plain text
+    \item Administrative actions must be reversible
+    \item All administrative actions must be logged and visible to all other administrators
+    \item Administrative action logs must not be deletable.
+    \item Dollar amounts should always be rounded up and precise to 2 decimal places.
+\end{enumerate}
 
 \section{Roadmap}
 
-\wss{Which safety requirements will be implemented as part of the capstone timeline?
-Which requirements will be implemented in the future?}
+All the above requirements will be addressed within the timeline of the project.
+
+
+If the project is to be expanded beyond the timeline, here are some future requirements to consider
+\begin{enumerate}
+    \item Training system maintainers with automated recovery drills
+    \item Continuous penetration testing and security audits
+\end{enumerate}
 
 \newpage{}
 
 \section*{Appendix --- Reflection}
 
-\wss{Not required for CAS 741}
-
 \input{../Reflection.tex}
 
 \begin{enumerate}
     \item What went well while writing this deliverable? 
+    \begin{enumerate}
+        \item The deliverable helped us formalize many of the concerns we had been implicitly considering throughout design and development. It encouraged structured thinking about hazards rather than simply listing “things that could go wrong.” Once we established the system components and boundaries, it became easier to identify credible hazards and match them with realistic mitigations. Collaboratively reviewing the document also helped align our team’s understanding of safety and security concepts within a software context.
+    \end{enumerate}
     \item What pain points did you experience during this deliverable, and how
     did you resolve them?
+    \begin{enumerate}
+        \item The FMEA was a little difficult to complete, as it challenged us to seriously consider the depth and breadth of potential system failures. While writing, it was also difficult to discern whether a thought would fall under “failure mode,” “failure effect,” or “cause of failure.” To overcome these issues, we looked at previous examples and the lecture for support, which clarified how to separate symptoms from root causes. We also discussed ambiguous cases as a team to reach consensus and maintain consistency across the table.
+    \end{enumerate}
     \item Which of your listed risks had your team thought of before this
     deliverable, and which did you think of while doing this deliverable? For
     the latter ones (ones you thought of while doing the Hazard Analysis), how
     did they come about?
+    \begin{enumerate}
+        \item Before writing this, we had already identified general data security and authentication concerns—mainly the need for strong access control and proper password storage. However, this deliverable prompted us to recognize additional hazards we had not yet considered, such as administrative misuse of privileges, data corruption during database migrations, and the importance of maintaining audit logs and reversible administrative actions. These insights expanded our understanding of how operational and governance failures can pose just as much risk as purely technical ones.
+    \end{enumerate}
     \item Other than the risk of physical harm (some projects may not have any
     appreciable risks of this form), list at least 2 other types of risk in
     software products. Why are they important to consider?
+    \begin{enumerate}
+        \item Data security: Many software systems collect and store sensitive user data, such as names, contact details, and financial information. If this data is exposed or mishandled, it can lead to identity theft, financial loss, and loss of trust in the organization. Data security risks are critical to consider because breaches can have long-term reputational and legal consequences.
+        \item Authentication and access control: Weak authentication mechanisms can allow unauthorized users to access restricted data or functions, potentially leading to data tampering, impersonation, or financial harm. Proper authentication design—including strong password policies, role-based permissions, and multi-factor authentication—is essential to ensure that users only perform actions appropriate to their role and authority.
+    \end{enumerate}
 \end{enumerate}
 
 \end{document}
