@@ -593,9 +593,9 @@
 % 9. Functional Requirements
 %-------------------------------------
 \section{Functional Requirements}
-  \subsection{Functional Requirements}
-    \begin{itemize}
-      \item The system shall allow MES clubs and teams to submit expense claims.
+  \subsection{Functional Requirements [FRQ]}
+    \begin{enumerate}
+      \item The system shall allow MES clubs and teams to submit expense claims. 
       \item The system shall provide MES reviewers with tools to efficiently review, approve, or reject the reimbursement requests.
       \item The system shall track the status of each expense claim (e.g., submitted, under review, approved, rejected, reimbursed).
       \item The system shall permanently store and retain digital receipt submissions.
@@ -614,16 +614,16 @@ The following 7 sections outline the non-functional requirements for the MES Fin
 % 11. Look and Feel Requirements
 %-------------------------------------
 \section{Look and Feel Requirements}
-    \subsection{Appearance Requirements}
-    \begin{itemize}
+    \subsection{Appearance Requirements [APP]}
+    \begin{enumerate}
         \item The interface should use the McMaster Engineering Society's branding colors and logo.
         \item The design should maintain a clean, modern layout using NextUI and TailwindCSS for consistency.
         \item The application should use responsive design principles to adapt to desktop, tablet, and mobile displays.
         \item Buttons, icons, and navigation components should follow accessible contrast ratios (WCAG 2.1 AA).
     \end{itemize}
 
-    \subsection{Style Requirements}
-    \begin{itemize}
+    \subsection{Style Requirements [STY]}
+    \begin{enumerate}
         \item Typography should match MES branding guidelines, using sans-serif fonts for readability.
         \item UI components must adhere to consistent padding, spacing, and rounded-corner styles.
         \item Notification banners and status indicators (e.g., “Submitted,” “Pending,” “Approved”) should use color cues for clarity.
@@ -633,218 +633,218 @@ The following 7 sections outline the non-functional requirements for the MES Fin
 % 12. Usability and Humanity Requirements
 %-------------------------------------
 \section{Usability and Humanity Requirements}
-  \subsection{Ease of Use and Learning Requirements}
-    \begin{itemize}
+  \subsection{Ease of Use and Learning Requirements [EUL]}
+    \begin{enumerate}
       \item A straightforward optional overview or tutorial should be provided to first-time users.
-    \end{itemize}
+    \end{enumerate}
 
-  \subsection{Personalization and Internationalization Requirements}
-    \begin{itemize}
+  \subsection{Personalization and Internationalization Requirements [PaI]}
+    \begin{enumerate}
       \item The platform will be in English only.
-    \end{itemize}
+    \end{enumerate}
 
-  \subsection{Understandability and Politeness Requirements}
-    \begin{itemize}
+  \subsection{Understandability and Politeness Requirements [UaP]}
+    \begin{enumerate}
       \item The platform will not use offensive language, imagery, symbols, or media of any kind.
       \item All errors and warnings will be communicated in a clear, concise, and polite manner.
-    \end{itemize}
+    \end{enumerate}
 
-  \subsection{Accessibility Requirements}
-    \begin{itemize}
+  \subsection{Accessibility Requirements [ABL]}
+    \begin{enumerate}
       \item Front-end navigation and interactions must comply with WCAG standards to ensure accessibility for users with disabilities.
       \item The platform will allow users to select between light and dark mode themes.
       \item The front-end will use semantic tags (<header>, <main>, <nav>, <footer>, <article>, <button>, etc.) for structure.
       \item All images must have meaningful alternative text (alt).
       \item All functionality must be navigable from a keyboard (i.e., tab to move through content).
-    \end{itemize}
+    \end{enumerate}
 
 %-------------------------------------
 % 13. Performance Requirements
 %-------------------------------------
 \section{Performance Requirements}
-  \subsection{Speed and Latency Requirements}
-    \begin{itemize}
+  \subsection{Speed and Latency Requirements [SaL]}
+    \begin{enumerate}
         \item API response times must average below 1 second for standard database queries and data submissions.
         \item Page load times should not exceed 3 seconds under normal operating conditions on modern browsers.
         \item File uploads (e.g., receipts or invoices) must complete within 5 seconds for files under 10 MB.
-    \end{itemize}
+    \end{enumerate}
 
-  \subsection{Safety-Critical Requirements}
-    \begin{itemize}
+  \subsection{Safety-Critical Requirements [SAF]}
+    \begin{enumerate}
         \item The system must ensure that no reimbursement or financial transaction is executed without MES reviewer approval.
         \item All monetary data must be validated before submission to prevent corruption or duplication.
-    \end{itemize}
+    \end{enumerate}
 
-  \subsection{Precision or Accuracy Requirements}
-    \begin{itemize}
+  \subsection{Precision or Accuracy Requirements [PRE]}
+    \begin{enumerate}
         \item Financial transactions must maintain accuracy up to two decimal places.
         \item All calculations involving funding allocations or reimbursements must be precise and consistent with MES accounting standards.
-    \end{itemize}
+    \end{enumerate}
 
-  \subsection{Robustness or Fault-Tolerance Requirements}
-    \begin{itemize}
+  \subsection{Robustness or Fault-Tolerance Requirements [FLT]}
+    \begin{enumerate}
         \item The system should handle unexpected backend or network failures gracefully, displaying meaningful error messages to users.
         \item Data must be saved incrementally to prevent loss during unexpected session timeouts or browser crashes.
         \item In the event of a failed API request, the system should automatically retry up to three times before reporting failure.
-    \end{itemize}
+    \end{enumerate}
 
-  \subsection{Capacity Requirements}
-    \begin{itemize}
+  \subsection{Capacity Requirements [CAP]}
+    \begin{enumerate}
         \item The system must support at least 500 concurrent users without noticeable degradation in performance.
         \item The database must handle storage for at least 10,000 user records and 100,000 expense claims.
-    \end{itemize}
+    \end{enumerate}
 
-  \subsection{Scalability or Extensibility Requirements}
-    \begin{itemize}
+  \subsection{Scalability or Extensibility Requirements [EXT]}
+    \begin{enumerate}
         \item The system must be designed to allow horizontal scaling (e.g., deploying additional backend instances during high usage).
         \item New features such as additional modules (e.g., club budgeting or analytics dashboards) should be easily integrable without major architectural changes.
-    \end{itemize}
+    \end{enumerate}
 
-  \subsection{Longevity Requirements}
-    \begin{itemize}
+  \subsection{Longevity Requirements [LNG]}
+    \begin{enumerate}
         \item The system is expected to remain operational and maintainable for at least 5 years with regular updates.
         \item Future technology stack upgrades (React, Node.js, MongoDB versions) should not require a full system rewrite.
-    \end{itemize}
+    \end{enumerate}
 
 %-------------------------------------
 % 14. Operational and Environmental Requirements
 %-------------------------------------
 \section{Operational and Environmental Requirements}
-  \subsection{Expected Physical Environment}
-    \begin{itemize}
+  \subsection{Expected Physical Environment [PHY]}
+    \begin{enumerate}
       \item The system will be accessed through desktop and laptop computers using modern browsers (Chrome, Edge, Firefox, Safari).
       \item Users may also access the site via tablets or smartphones with stable internet connectivity.
-    \end{itemize}
+    \end{enumerate}
 
-  \subsection{Wider Environment Requirements}
-    \begin{itemize}
+  \subsection{Wider Environment Requirements [ENV]}
+    \begin{enumerate}
       \item The application will be hosted on cloud infrastructure (e.g., Vercel or AWS) with automatic scaling and uptime monitoring.
       \item The system must operate effectively under typical university network conditions, including campus Wi-Fi and VPN connections.
-    \end{itemize}
+    \end{enumerate}
 
-  \subsection{Requirements for Interfacing with Adjacent Systems}
-    \begin{itemize}
+  \subsection{Requirements for Interfacing with Adjacent Systems [INF]}
+    \begin{enumerate}
       \item The system may integrate with McMaster's Single Sign-On (SSO) or authentication system in the future.
       \item Potential interfaces include email APIs (e.g., SendGrid) for notifications and payment APIs for reimbursement processing.
-    \end{itemize}
+    \end{enumerate}
 
-  \subsection{Productization Requirements}
-    \begin{itemize}
+  \subsection{Productization Requirements [PRO]}
+    \begin{enumerate}
       \item The application should be packaged for deployment using Docker containers to simplify installation and environment configuration.
       \item Versioning of releases must follow semantic versioning conventions (e.g., v1.0.0).
-    \end{itemize}
+    \end{enumerate}
 
-  \subsection{Release Requirements}
-    \begin{itemize}
+  \subsection{Release Requirements [REL]}
+    \begin{enumerate}
       \item New versions of the application must be deployed through GitHub Actions CI/CD pipelines.
       \item Each release must undergo code review and automated testing before deployment to production.
-    \end{itemize}
+    \end{enumerate}
 
 %-------------------------------------
 % 15. Maintainability and Support Requirements
 %-------------------------------------
 \section{Maintainability and Support Requirements}
 
-\subsection{Maintenance Requirements}
-\begin{itemize}
+\subsection{Maintenance Requirements [MNT]}
+\begin{enumerate}
     \item The codebase must adhere to consistent formatting and linting rules enforced by ESLint and Prettier.
     \item All major system dependencies must be updated at least once per academic year to maintain compatibility and security.
-\end{itemize}
+\end{enumerate}
 
-\subsection{Supportability Requirements}
-\begin{itemize}
+\subsection{Supportability Requirements [SUP]}
+\begin{enumerate}
     \item The system should include detailed developer documentation covering setup, deployment, and troubleshooting steps.
     \item MES technical staff or designated maintainers should have access to logs and monitoring dashboards for issue diagnosis.
-\end{itemize}
+\end{enumerate}
 
-\subsection{Adaptability Requirements}
-\begin{itemize}
+\subsection{Adaptability Requirements [ADP]}
+\begin{enumerate}
     \item The application should support easy modification to accommodate policy or procedural changes in MES financial processes.
     \item The UI should allow for additional modules or new forms without major rework to existing code.
-\end{itemize}
+\end{enumerate}
 
 %-------------------------------------
 % 16. Security Requirements
 %-------------------------------------
 \section{Security Requirements}
 
-\subsection{Access Requirements}
-\begin{itemize}
+\subsection{Access Requirements [ACS]}
+\begin{enumerate}
     \item Only authenticated users may access the system.
     \item Role-based access control (RBAC) must be implemented to distinguish between club members, reviewers, and administrators.
-\end{itemize}
+\end{enumerate}
 
-\subsection{Integrity Requirements}
-\begin{itemize}
+\subsection{Integrity Requirements [INT]}
+\begin{enumerate}
     \item All form submissions must be validated both client-side and server-side to prevent tampering.
     \item Database operations must be protected against injection and cross-site scripting (XSS) attacks.
-\end{itemize}
+\end{enumerate}
 
-\subsection{Privacy Requirements}
-\begin{itemize}
+\subsection{Privacy Requirements [PRI]}
+\begin{enumerate}
     \item Personal information such as names and emails must be stored securely in compliance with McMaster University privacy policies.
     \item Sensitive financial data must be encrypted at rest and in transit using TLS 1.2 or higher.
-\end{itemize}
+\end{enumerate}
 
-\subsection{Audit Requirements}
-\begin{itemize}
+\subsection{Audit Requirements [AUD]}
+\begin{enumerate}
     \item Every key action (claim submission, approval, rejection, fund disbursement) must be logged with timestamp, user ID, and action details.
     \item Audit logs must be retained for a minimum of 3 years for accountability and financial review.
-\end{itemize}
+\end{enumerate}
 
-\subsection{Immunity Requirements}
-\begin{itemize}
+\subsection{Immunity Requirements [IMM]}
+\begin{enumerate}
     \item The system must be protected from common web vulnerabilities (e.g., SQL injection, CSRF, XSS).
     \item Rate limiting must be enforced to prevent denial-of-service (DoS) attacks.
-\end{itemize}
+\end{enumerate}
 
 %-------------------------------------
 % 17. Cultural Requirements
 %-------------------------------------
 \section{Cultural Requirements}
 
-\subsection{Cultural Requirements}
-\begin{itemize}
+\subsection{Cultural Requirements [CUL]}
+\begin{enumerate}
     \item The system must use inclusive and gender-neutral language throughout all interfaces.
     \item The design should align with the professional and academic tone of McMaster University and the Engineering Society.
-\end{itemize}
+\end{enumerate}
 
 %-------------------------------------
 % 18. Compliance Requirements
 %-------------------------------------
-\section{Compliance Requirements}
+\section{Compliance Requirements [CMP]}
 
 \subsection{Legal and University Policy Alignment}
-\begin{itemize}
+\begin{enumerate}
   \item All data handling in this system must follow McMaster University's Data and Information Classification Policy (\url{https://secretariat.mcmaster.ca/app/uploads/Data-and-Information-Classification-Policy.pdf}).  All data stored, processed, or transmitted by the application must be classified according to that policy prior to collection.
   \item Personal identifiers (names, emails, student IDs) and financial records must be treated at or above the confidentiality level required by the University (i.e., treated as \textit{confidential} or \textit{higher} per the policy) and handled accordingly.
   \item A Data Protection Impact Assessment (DPIA) or equivalent privacy review must be completed before production deployment.
-\end{itemize}
+\end{enumerate}
 
-\subsection{Storage, Encryption, and Infrastructure}
-\begin{itemize}
+\subsection{Storage, Encryption, and Infrastructure [SEI]}
+\begin{enumerate}
   \item Sensitive and confidential data must be stored only on approved infrastructure that meets McMaster security controls (e.g., approved cloud providers or on-prem systems with equivalent protections).
   \item All network traffic carrying user or financial data must use TLS 1.2+; sensitive fields (e.g., banking details, full student numbers) must be encrypted at rest with strong algorithms and key management.
   \item Backups containing sensitive data must be encrypted and retained only per the retention policy.
-\end{itemize}
+\end{enumerate}
 
-\subsection{Access Control, Audit, and Logging}
-\begin{itemize}
+\subsection{Access Control, Audit, and Logging [AUL]}
+\begin{enumerate}
   \item Enforce role-based access control (RBAC) with least privilege; administrative access must require multi-factor authentication where available.
   \item Maintain tamper-resistant audit logs for all key actions (submission, approval, rejection, data exports). Audit logs must be protected, monitored, and retained in accordance with university and MES retention rules (minimum three years for finance/audit logs as stated elsewhere in this SRS).
-\end{itemize}
+\end{enumerate}
 
-\subsection{Retention, Disposal, and Legal Holds}
-\begin{itemize}
+\subsection{Retention, Disposal, and Legal Holds [RDL]}
+\begin{enumerate}
   \item Implement data retention and secure disposal processes that conform to McMaster retention schedules and MES auditing requirements. Support legal holds to prevent deletion when required.
-\end{itemize}
+\end{enumerate}
 
-\subsection{Standards Compliance Requirements}
-\begin{itemize}
+\subsection{Standards Compliance Requirements [STD]}
+\begin{enumerate}
     \item The software must conform to standard web development best practices (HTML5, CSS3, ECMAScript 6+).
     \item Accessibility and usability must meet WCAG 2.1 AA compliance.
     \item Version control, branching, and commit message standards must comply with MES development guidelines.
-\end{itemize}
+\end{enumerate}
 
 %-------------------------------------
 % 19. Open Issues
@@ -916,124 +916,94 @@ The following 7 sections outline the non-functional requirements for the MES Fin
 %-------------------------------------
 % 24. Requirements Traceability
 %-------------------------------------
-\section{Requirements Traceability - Michael (both matrix tables)}
+\section{Requirements Traceability}
 
-The purpose of the traceability matrices is to provide easy references on what
-has to be additionally modified if a certain component is changed.  Every time a
-component is changed, the items in the column of that component that are marked
-with an ``X'' may have to be modified as well.  Table~\ref{Table:trace} shows the
-dependencies of theoretical models, general definitions, data definitions, and
-instance models with each other. Table~\ref{Table:R_trace} shows the
-dependencies of instance models, requirements, and data constraints on each
-other. Table~\ref{Table:A_trace} shows the dependencies of theoretical models,
-general definitions, data definitions, instance models, and likely changes on
-the assumptions.
 
-\plt{You will have to modify these tables for your problem.}
-
-\plt{The traceability matrix is not generally symmetric.  If GD1 uses A1, that
-  means that GD1's derivation or presentation requires invocation of A1.  A1
-  does not use GD1.  A1 is ``used by'' GD1.}
-
-\plt{The traceability matrix is challenging to maintain manually.  Please do
-  your best.  In the future tools (like Drasil) will make this much easier.}
-
-\afterpage{
-\begin{landscape}
-\begin{table}[h!]
 \centering
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
 \hline
-	& \aref{A_OnlyThermalEnergy}& \aref{A_hcoeff}& \aref{A_mixed}& \aref{A_tpcm}& \aref{A_const_density}& \aref{A_const_C}& \aref{A_Newt_coil}& \aref{A_tcoil}& \aref{A_tlcoil}& \aref{A_Newt_pcm}& \aref{A_charge}& \aref{A_InitTemp}& \aref{A_OpRangePCM}& \aref{A_OpRange}& \aref{A_htank}& \aref{A_int_heat}& \aref{A_vpcm}& \aref{A_PCM_state}& \aref{A_Pressure} \\
+	& \texttt{APP-1} & \texttt{APP-2} & \texttt{APP-3} & \texttt{APP-4} & \texttt{STY-1} & \texttt{STY-2} & \texttt{STY-3} & \texttt{STY-4} & \texttt{EUL-1} & \texttt{ABL-1} \\
 \hline
-\tref{T_COE}        & X& & & & & & & & & & & & & & & & & & \\ \hline
-\tref{T_SHE}        & & & & & & & & & & & & & & & & & & & \\ \hline
-\tref{T_LHE}        & & & & & & & & & & & & & & & & & & & \\ \hline
-\dref{NL}           & & X& & & & & & & & & & & & & & & & & \\ \hline
-\dref{ROCT}         & & & X& X& X& X& & & & & & & & & & & & & \\ \hline
-\ddref{FluxCoil}    & & & & & & & X& X& X& & & & & & & & & & \\ \hline
-\ddref{FluxPCM}     & & & X& X& & & & & & X& & & & & & & & & \\ \hline
-\ddref{D_HOF}       & & & & & & & & & & & & & & & & & & & \\ \hline
-\ddref{D_MF}        & & & & & & & & & & & & & & & & & & & \\ \hline
-\iref{ewat}         & & & & & & & & & & & X& X& & X& X& X& & & X \\ \hline
-\iref{epcm}         & & & & & & & & & & & & X& X& & & X& X& X& \\ \hline
-\iref{I_HWAT}       & & & & & & & & & & & & & & X& & & & & X \\ \hline
-\iref{I_HPCM}       & & & & & & & & & & & & & X& & & & & X & \\ \hline
-\lcref{LC_tpcm}     & & & & X& & & & & & & & & & & & & & & \\ \hline
-\lcref{LC_tcoil}    & & & & & & & & X& & & & & & & & & & & \\ \hline
-\lcref{LC_tlcoil}   & & & & & & & & & X& & & & & & & & & & \\ \hline
-\lcref{LC_charge}   & & & & & & & & & & & X& & & & & & & & \\ \hline
-\lcref{LC_InitTemp} & & & & & & & & & & & & X& & & & & & & \\ \hline
-\lcref{LC_htank}    & & & & & & & & & & & & & & & X& & & & \\
-\hline
+\texttt{FRQ-1} &  &  &  &  &  &  & X &  &  &  \\ \hline
+\texttt{FRQ-2} &  & X &  &  & X & X & X &  &  &  \\ \hline
+\texttt{FRQ-3} &  & X &  &  & X & X & X &  &  &  \\ \hline
+\texttt{FRQ-4} &  &  &  &  &  &  & X &  &  &  \\ \hline
+\texttt{FRQ-5} & X & X &  &  & X & X & X &  &  &  \\ \hline
+\texttt{FRQ-6} &  & X &  &  & X & X & X &  &  &  \\ \hline
 \end{tabular}
-\caption{Traceability Matrix Showing the Connections Between Assumptions and Other Items}
-\label{Table:A_trace}
-\end{table}
-\end{landscape}
-}
 
-\begin{table}[ht]
-\centering
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
-\hline        
-	& \tref{T_COE}& \tref{T_SHE}& \tref{T_LHE}& \dref{NL}& \dref{ROCT} & \ddref{FluxCoil}& \ddref{FluxPCM} & \ddref{D_HOF}& \ddref{D_MF}& \iref{ewat}& \iref{epcm}& \iref{I_HWAT}& \iref{I_HPCM} \\
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
 \hline
-\tref{T_COE}     & & & & & & & & & & & & & \\ \hline
-\tref{T_SHE}     & & & X& & & & & & & & & & \\ \hline
-\tref{T_LHE}     & & & & & & & & & & & & & \\ \hline
-\dref{NL}        & & & & & & & & & & & & & \\ \hline
-\dref{ROCT}      & X& & & & & & & & & & & & \\ \hline
-\ddref{FluxCoil} & & & & X& & & & & & & & & \\ \hline
-\ddref{FluxPCM}  & & & & X& & & & & & & & & \\ \hline
-\ddref{D_HOF}    & & & & & & & & & & & & & \\ \hline
-\ddref{D_MF}     & & & & & & & & X& & & & & \\ \hline
-\iref{ewat}      & & & & & X& X& X& & & & X& & \\ \hline
-\iref{epcm}      & & & & & X& & X& & X& X& & & X \\ \hline
-\iref{I_HWAT}    & & X& & & & & & & & & & & \\ \hline
-\iref{I_HPCM}    & & X& X& & & & X& X& X& & X& & \\
+	& \texttt{ABL-2} & \texttt{ABL-3} & \texttt{ABL-4} & \texttt{ABL-5} & \texttt{SAF-1} & \texttt{SAF-2} & \texttt{PRE-1} & \texttt{PRE-2} & \texttt{FLT-1} & \texttt{FLT-2} \\
 \hline
+\texttt{FRQ-1} &  &  &  &  &  & X & X &  &  &  \\ \hline
+\texttt{FRQ-2} &  &  &  &  & X & X &  &  &  &  \\ \hline
+\texttt{FRQ-3} &  &  &  &  & X & X & X &  &  &  \\ \hline
+\texttt{FRQ-4} &  &  & X &  &  & X &  &  &  & X \\ \hline
+\texttt{FRQ-5} &  &  &  &  & X & X & X &  &  &  \\ \hline
+\texttt{FRQ-6} &  &  &  &  & X & X & X &  &  &  \\ \hline
 \end{tabular}
-\caption{Traceability Matrix Showing the Connections Between Items of Different Sections}
-\label{Table:trace}
-\end{table}
 
-\begin{table}[ht]
-\centering
-\begin{tabular}{|c|c|c|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
 \hline
-	& \iref{ewat}& \iref{epcm}& \iref{I_HWAT}& \iref{I_HPCM}& \ref{sec_DataConstraints}& \rref{R_RawInputs}& \rref{R_MassInputs} \\
+	& \texttt{FLT-3} & \texttt{CAP-1} & \texttt{CAP-2} & \texttt{EXT-1} & \texttt{EXT-2} & \texttt{LNG-1} & \texttt{LNG-2} & \texttt{PHY-1} & \texttt{PHY-2} & \texttt{ENV-1} \\
 \hline
-\iref{ewat}            & & X& & & & X& X \\ \hline
-\iref{epcm}            & X& & & X& & X& X \\ \hline
-\iref{I_HWAT}          & & & & & & X& X \\ \hline
-\iref{I_HPCM}          & & X& & & & X& X \\ \hline
-\rref{R_RawInputs}     & & & & & & & \\ \hline
-\rref{R_MassInputs}    & & & & & & X& \\ \hline
-\rref{R_CheckInputs}   & & & & & X& & \\ \hline
-\rref{R_OutputInputs}  & X& X& & & & X& X \\ \hline
-\rref{R_TempWater}     & X& & & & & & \\ \hline 
-\rref{R_TempPCM}       & & X& & & & & \\ \hline
-\rref{R_EnergyWater}   & & & X& & & & \\ \hline
-\rref{R_EnergyPCM}     & & & & X& & & \\ \hline
-\rref{R_VerifyOutput}  & & & X& X& & & \\ \hline
-\rref{R_timeMeltBegin} & & X& & & & & \\ \hline
-\rref{R_timeMeltEnd}   & & X& & & & & \\ 
-\hline
+\texttt{FRQ-1} & X &  & X &  &  &  &  &  &  &  \\ \hline
+\texttt{FRQ-2} & X &  & X &  &  &  & X &  &  &  \\ \hline
+\texttt{FRQ-3} & X & X & X &  &  &  & X &  &  &  \\ \hline
+\texttt{FRQ-4} & X &  & X &  &  &  &  &  &  &  \\ \hline
+\texttt{FRQ-5} & X &  & X &  &  &  & X &  &  &  \\ \hline
+\texttt{FRQ-6} & X &  & X &  &  &  & X &  &  &  \\ \hline
 \end{tabular}
-\caption{Traceability Matrix Showing the Connections Between Requirements and Instance Models}
-\label{Table:R_trace}
-\end{table}
 
-The purpose of the traceability graphs is also to provide easy references on
-what has to be additionally modified if a certain component is changed.  The
-arrows in the graphs represent dependencies. The component at the tail of an
-arrow is depended on by the component at the head of that arrow. Therefore, if a
-component is changed, the components that it points to should also be
-changed. Figure~\ref{Fig_ATrace} shows the dependencies of theoretical models,
-general definitions, data definitions, instance models, likely changes, and
-assumptions on each other. Figure~\ref{Fig_RTrace} shows the dependencies of
-instance models, requirements, and data constraints on each other.
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+	& \texttt{ENV-2} & \texttt{INF-1} & \texttt{INF-2} & \texttt{PRO-1} & \texttt{PRO-2} & \texttt{REL-1} & \texttt{REL-2} & \texttt{MNT-1} & \texttt{MNT-2} & \texttt{SUP-1} \\
+\hline
+\texttt{FRQ-1} &  &  &  &  &  &  &  &  & X &  \\ \hline
+\texttt{FRQ-2} &  &  &  &  &  &  & X &  & X &  \\ \hline
+\texttt{FRQ-3} &  &  & X &  &  &  & X &  & X &  \\ \hline
+\texttt{FRQ-4} &  &  &  &  &  &  &  &  & X &  \\ \hline
+\texttt{FRQ-5} &  &  &  &  &  &  & X &  & X &  \\ \hline
+\texttt{FRQ-6} &  &  &  &  &  &  & X &  & X &  \\ \hline
+\end{tabular}
+
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+	& \texttt{SUP-2} & \texttt{ADP-1} & \texttt{ADP-2} & \texttt{ACS-1} & \texttt{ACS-2} & \texttt{INT-1} & \texttt{INT-2} & \texttt{PRI-1} & \texttt{PRI-2} & \texttt{AUD-1} \\
+\hline
+\texttt{FRQ-1} &  &  &  &  &  & X &  & X &  & X \\ \hline
+\texttt{FRQ-2} &  &  & X &  & X & X &  & X &  & X \\ \hline
+\texttt{FRQ-3} &  &  & X &  & X & X &  & X &  & X \\ \hline
+\texttt{FRQ-4} &  &  &  &  &  & X & X & X & X & X \\ \hline
+\texttt{FRQ-5} & X &  & X &  & X & X &  & X &  & X \\ \hline
+\texttt{FRQ-6} &  &  & X &  & X & X &  & X &  & X \\ \hline
+\end{tabular}
+
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+	& \texttt{AUD-2} & \texttt{IMM-1} & \texttt{IMM-2} & \texttt{CUL-1} & \texttt{CUL-2} & \texttt{SEI-1} & \texttt{SEI-2} & \texttt{SEI-3} & \texttt{AUL-1} & \texttt{AUL-2} \\
+\hline
+\texttt{FRQ-1} &  &  &  &  &  & X &  &  &  & X \\ \hline
+\texttt{FRQ-2} & X &  &  &  &  & X &  &  & X & X \\ \hline
+\texttt{FRQ-3} & X &  &  &  &  & X &  &  & X & X \\ \hline
+\texttt{FRQ-4} &  &  &  &  &  & X & X & X &  & X \\ \hline
+\texttt{FRQ-5} & X &  &  &  &  & X &  &  & X & X \\ \hline
+\texttt{FRQ-6} & X &  &  &  &  & X &  &  & X & X \\ \hline
+\end{tabular}
+
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+	& \texttt{RDL-1} & \texttt{STD-1} & \texttt{STD-2} & \texttt{STD-3} \\
+\hline
+\texttt{FRQ-1} &  &  &  &  \\ \hline
+\texttt{FRQ-2} & X &  &  & X \\ \hline
+\texttt{FRQ-3} & X &  &  & X \\ \hline
+\texttt{FRQ-4} & X &  &  &  \\ \hline
+\texttt{FRQ-5} & X &  &  & X \\ \hline
+\texttt{FRQ-6} & X &  &  & X \\ \hline
+\end{tabular}
+
 
 % \begin{figure}[h!]
 % 	\begin{center}
