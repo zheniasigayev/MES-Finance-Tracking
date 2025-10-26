@@ -92,6 +92,12 @@ This document ... \wss{provide an introductory blurb and roadmap of the
 \wss{Say what software is being tested.  Give its name and a brief overview of
   its general functions.}
 
+The MES Finance Tracking Platform is a web application that centralizes club reimbursement submissions, 
+reviews, and approvals for the MES with role based access and receipt storage. The front end user interface 
+will be tested for usability and functionality to ensure a smooth user experience. The back end data storage
+will be tested for data integrity and security to ensure sensitive financial information is protected. The database
+will be tested for performance and reliability to ensure quick access to financial records. 
+
 \subsection{Objectives}
 
 \wss{State what is intended to be accomplished.  The objective will be around
@@ -110,6 +116,20 @@ limitations in your resources for verification and validation.  You can't do eve
 so what are you going to prioritize?  As an example, if your system depends on an 
 external library, you can explicitly state that you will assume that external library 
 has already been verified by its implementation team.}
+
+\noindent In Scope Objectives:
+\begin{itemize}
+  \item Demonstrate software correctness of end-to-end user interface reimbursement workflow
+  \item Ensure data integrity and security of sensitive financial information 
+  \item Meet all performance/capacity targets for database access times
+  \item Ensure financial accuracy of reimbursement camera captures and calculations
+\end{itemize}
+
+\noindent Out of Scope Objectives:
+\begin{itemize}
+  \item Comprehensive usability testing for all potential user personas due to limited resources.
+\end{itemize}
+
 
 \subsection{Extras}
 
