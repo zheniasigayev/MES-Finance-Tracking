@@ -69,7 +69,7 @@ in.}
   \toprule		
   \textbf{symbol} & \textbf{description}\\
   \midrule 
-  T & Test\\
+  BUC & Business Use Cases\\
   \bottomrule
 \end{tabular}\\
 
@@ -140,6 +140,8 @@ been approved by the course instructor as included in your problem statement.
 You can use a pull request to update your extras (in TeamComposition.csv or
 Repos.csv) if your plan changes as a result of the VnV planning exercise.}
 
+N/A 
+
 \subsection{Relevant Documentation}
 
 \wss{Reference relevant documentation.  This will definitely include your SRS
@@ -148,7 +150,18 @@ Repos.csv) if your plan changes as a result of the VnV planning exercise.}
   is done, they will be written.  You can create BibTeX entries for your
   documents and within those entries include a hyperlink to the documents.}
 
-\citet{SRS}
+% \citet{SRS}
+\begin{itemize}
+  \item SRS Documentation
+  \item Hazard Analysis Documentation
+  \item Problem Statement and Goals Documentation
+  \item Design documents
+  \item Module Guide Documentation
+  \item Module Interface Specification Documentation
+  \item Development Plan Documentation
+  \item Unit Testing Plan Documentation
+\end{itemize}
+
 
 \wss{Don't just list the other documents.  You should explain why they are relevant and 
 how they relate to your VnV efforts.}
@@ -160,9 +173,17 @@ how they relate to your VnV efforts.}
 
 \subsection{Verification and Validation Team}
 
-\wss{Your teammates.  Maybe your supervisor.
-  You should do more than list names.  You should say what each person's role is
-  for the project's verification.  A table is a good way to summarize this information.}
+\noindent
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.5cm} >{\raggedright\arraybackslash}p{3.5cm} X}
+\toprule
+\textbf{Name} & \textbf{Role} & \textbf{Responsibilities}\\
+\midrule
+Thomas, Justin, Zhenia, Michael, Johnny & Member of MES Finance Tracker Development Team & Development, correctness and usability testing.\\
+Luke & Capstone Project Supervisor & Outline all requirements and ensure all requirements have been met and considered.\\
+Member of MES Finance Team & Stakeholder & Provide feedback on usability and correctness of financial calculations.\\
+Member of MES Clubs & Stakeholder & Provide feedback on usability and correctness of reimbursement workflow.\\
+\bottomrule
+\end{tabularx}
 
 \subsection{SRS Verification}
 
@@ -178,6 +199,21 @@ issue tracker?}
 
 \wss{Maybe create an SRS checklist?}
 
+\noindent\textbf{Formal SRS Inspection} \\
+\noindent\textbf{Individuals Involved:} Team Members, Luke (Supervisor) \\
+\noindent\textbf{Inputs:} SRS Document and Checklist of Requirements and BUC \\
+\noindent\textbf{Procedure:}
+\begin{enumerate}
+  \item Pre-read: all reviewers must read, annotate the SRS documentation, and prepare list of any questions and concerns.
+  \item Meeting Walkthrough: reviewers meet to discuss if all requirements listed within the SRS are \emph{clear, verifiable, traceable} and have been met.
+  They will also discuss if each BUC has been captured completely and accurately.
+  \item Log defects, classify (major/minor), assign owners.
+  \item Re-review and redo the process; sign-off when exit criteria are met.
+\end{enumerate}
+\noindent\textbf{End Criteria:} All major defects resolved; each requirement marked \emph{clear, verifiable, traceable}. \\
+\noindent\textbf{Outputs:} Logged defects with resolutions; signed-off SRS document verification. \\
+
+
 \subsection{Design Verification}
 
 \wss{Plans for design verification}
@@ -185,6 +221,41 @@ issue tracker?}
 \wss{The review will include reviews by your classmates}
 
 \wss{Create a checklists?}
+
+\noindent\textbf{Task-Based Validation with Stakeholders} \\
+\noindent\textbf{Individuals Involved:} Team Members, MES Finance Team, Club Executives \\
+\noindent\textbf{Inputs:} SRS Document and Checklist of Requirements and BUC, Each Stakeholder will provide list of desired functionality from the application \\
+\noindent\textbf{Procedure:}
+\begin{enumerate}
+  \item Pre-read: all team members must review stakeholder desired functionality list and list questions or concerns where applicable.
+  \item Meeting Walkthrough: reviewers meet to discuss with each individual stakeholder to see if requirements have been met.
+  They will also discuss if each BUC has been captured completely, accurately, and is satisfactory compared to their initial list.
+  \item Log defects, classify (major/minor), assign owners.
+  \item Re-review and redo the process; sign-off when exit criteria are met.
+\end{enumerate}
+\noindent\textbf{End Criteria:} All stakeholders are satisfied with the apps functionality and each requirement marked \emph{clear, verifiable, traceable}. \\
+\noindent\textbf{Outputs:} Logged defects with resolutions; signed-off SRS document verification. 
+
+\noindent\textbf{Checklist to be Used for Design Verification} \\
+\begin{itemize}
+  \item Pages use consistent layout and design
+  \item Buttons and links look clickable, disabled and hover states are differentiated
+  \item Forms are easy to understand and fill out, with clear labels, units/currencies, and instructions
+  \item Important actions are visually prominent
+  \item Empty states explain what to do next
+  \item Member can submit reimbursement with all required fields and receipt uploads
+  \item File uploads only accept allowable types/sizes; oversized files return error message
+  \item Reviewers can open request, see all details, and Approve/Reject with comments 
+  \item Notifications are sent/shown at the correct times (upon submission and decision)
+  \item Members can see their own requests and current statuses easily 
+  \item Amounts always show 2 decimal points and use the correct currency symbol
+  \item Dates and times are clearly outlined 
+  \item Each role can only access their permitted features, information, and actions
+  \item Approved requests are unable to be edited or resubmitted
+  \item Sensitive pages require login, and sessions time out after period of inactivity
+  \item Admin features are simple and hard to misuse
+  \item Backups/restore plan exists and receipts are included
+\end{itemize}
 
 \subsection{Verification and Validation Plan Verification}
 
@@ -244,6 +315,17 @@ The feedback from your supervisor will be very useful for improving your project
 as a Rev 0 demo for the supervisor.}
 
 \wss{This section might reference back to the SRS verification section.}
+
+\noindent\textbf{Stakeholder UAT Against Acceptance Criteria} \\
+\noindent\textbf{Individuals Involved:} Team Members, MES Finance Team, Club Executives \\
+\noindent\textbf{Points of Clarification:}
+\begin{enumerate}
+  \item Ensure all MES software acceptance criteria have been met and incorporated into the final product.
+  \item Ensure application workflow meets the needs of club executives and MES finance team members.
+  \item Ensure all performance and capacity targets have been met in terms of concurrent users, API response times, and database access times.
+  \item Ensure all financial calculations and camera receipt captures are accurate and reliable.
+  \item Ensure application is usable and intuitive for all intended user personas during Rev 0 demo
+\end{enumerate}
 
 \section{System Tests}
 
