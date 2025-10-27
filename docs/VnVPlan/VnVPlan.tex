@@ -332,6 +332,10 @@ as a Rev 0 demo for the supervisor.}
 \wss{There should be text between all headings, even if it is just a roadmap of
 the contents of the subsections.}
 
+This section describes the planned system tests for verifying the MES Finance Tracking Platform. 
+Each subsection corresponds to one or more functional requirements defined in the SRS.
+ The goal is to ensure that all reimbursement-related workflows—submission, review, and status tracking—perform as intended.
+
 \subsection{Tests for Functional Requirements}
 
 \wss{Subsets of the tests may be in related, so this section is divided into
@@ -341,116 +345,259 @@ the contents of the subsections.}
 \wss{Include a blurb here to explain why the subsections below
   cover the requirements.  References to the SRS would be good here.}
 
-\subsubsection{Area of Testing1}
+The following tests verify that the MES Finance Tracking Platform correctly implements the functional requirements defined in Section 9.1 of the SRS. 
+These tests ensure that all features related to reimbursement submission, review, and audit logging behave as expected.
 
-\wss{It would be nice to have a blurb here to explain why the subsections below
-  cover the requirements.  References to the SRS would be good here.  If a section
-  covers tests for input constraints, you should reference the data constraints
-  table in the SRS.}
-		
-\paragraph{Title for Test}
+\subsubsection{Area of Testing — Reimbursement Submission}
 
-\begin{enumerate}
+This area covers \textbf{Functional Requirements FRQ-1} and \textbf{FRQ-4}, ensuring that club members can submit expense claims with attached digital receipts and that data is permanently stored.
 
-\item{test-id1\\}
+\textbf{Title for Test:} Submit Expense Reimbursement Request \\
+\textbf{Test-id:} FRQ-1-SUBMIT
 
-Control: Manual versus Automatic
-					
-Initial State: 
-					
-Input: 
-					
-Output: \wss{The expected result for the given inputs.  Output is not how you
-are going to return the results of the test.  The output is the expected
-result.}
+\begin{itemize}
+    \item \textbf{Control:} Manual versus Automatic \\
+    Automatic (performed using UI automation with manual verification)
+    \item \textbf{Initial State:} \\
+    The user is logged in as a valid club member with an existing club ID. No reimbursement requests are currently active for that user.
+    \item \textbf{Input:} \\
+    Receipt file (PDF or image $\leq$10 MB), amount = \$100, reimbursement form fields completed.
+    \item \textbf{Output (Expected Result):} \\
+    The request appears in the user’s dashboard with status = ``Submitted.'' The uploaded receipt is stored and accessible under that request.
+    \item \textbf{Test Case Derivation:} \\
+    Based on BUC-2 (``Submitting Reimbursement Request'') and FRQ-1/FRQ-4 in the SRS. Confirms form submission, file upload, and database persistence.
+    \item \textbf{How Test Will Be Performed:} \\
+    Using Cypress or Playwright to automate UI submission, then verifying MongoDB entries and front-end confirmation.
+\end{itemize}
 
-Test Case Derivation: \wss{Justify the expected value given in the Output field}
-					
-How test will be performed: 
-					
-\item{test-id2\\}
+\subsubsection{Area of Testing — Reimbursement Review Workflow}
 
-Control: Manual versus Automatic
-					
-Initial State: 
-					
-Input: 
-					
-Output: \wss{The expected result for the given inputs}
+This area verifies \textbf{FRQ-2}, \textbf{FRQ-3}, and \textbf{FRQ-5}, ensuring that MES reviewers can view submissions, approve/reject them, and that actions are recorded in the audit trail.
 
-Test Case Derivation: \wss{Justify the expected value given in the Output field}
+\textbf{Title for Test:} Review and Approve Reimbursement Request \\
+\textbf{Test-id:} FRQ-2-REVIEW
 
-How test will be performed: 
+\begin{itemize}
+    \item \textbf{Control:} Manual versus Automatic \\
+    Semi-automatic (UI actions by MES reviewer, back-end verification automated)
+    \item \textbf{Initial State:} \\
+    A reimbursement request exists in ``Submitted'' status. MES reviewer is logged in with admin privileges.
+    \item \textbf{Input:} \\
+    Reviewer selects request $\rightarrow$ clicks ``Approve'' $\rightarrow$ enters approval note.
+    \item \textbf{Output (Expected Result):} \\
+    Request status = ``Approved.'' Submitter is notified. Audit log records: \{timestamp, reviewerID, action: Approved\}.
+    \item \textbf{Test Case Derivation:} \\
+    Based on BUC-3 (``Reviewing Reimbursement Request'') and FRQ-2/FRQ-5 in the SRS.
+    \item \textbf{How Test Will Be Performed:} \\
+    UI interaction test plus backend log verification using database queries to ensure audit trail persistence.
+\end{itemize}
 
-\end{enumerate}
+\subsubsection{Area of Testing — Reimbursement Status Tracking}
 
-\subsubsection{Area of Testing2}
+This test verifies \textbf{FRQ-3} and \textbf{FRQ-6}, ensuring that submitters and authorized users can view real-time reimbursement statuses.
 
-...
+\textbf{Title for Test:} View Reimbursement Status \\
+\textbf{Test-id:} FRQ-3-STATUS
+
+\begin{itemize}
+    \item \textbf{Control:} Manual versus Automatic \\
+    Automatic (API and UI check)
+    \item \textbf{Initial State:} \\
+    Multiple reimbursement requests exist with different statuses (submitted, under review, approved).
+    \item \textbf{Input:} \\
+    User navigates to the ``My Requests'' page or queries the API endpoint \texttt{/api/reimbursements}.
+    \item \textbf{Output (Expected Result):} \\
+    The UI displays the correct status for each request. The API returns accurate data matching the database state.
+    \item \textbf{Test Case Derivation:} \\
+    Derived from FRQ-3 and FRQ-6, validating that access is role-based and statuses are synchronized with the database.
+    \item \textbf{How Test Will Be Performed:} \\
+    Automated API tests (Postman/pytest) and front-end UI verification to cross-validate consistency.
+\end{itemize}
+
+\subsubsection{Area of Testing — Receipt Persistence and Security}
+
+This area validates the data integrity requirement from \textbf{FRQ-4} and \textbf{Security Requirements INT-1, PRI-1}.
+
+\textbf{Title for Test:} Verify Receipt Storage Security \\
+\textbf{Test-id:} FRQ-4-STORAGE
+
+\begin{itemize}
+    \item \textbf{Control:} Automatic
+    \item \textbf{Initial State:} \\
+    One reimbursement submission with a receipt attached.
+    \item \textbf{Input:} \\
+    Query the database and storage bucket for the receipt file.
+    \item \textbf{Output (Expected Result):} \\
+    Receipt file is encrypted at rest (per SRS Section 16.3), accessible only to authorized users, and retrievable without corruption.
+    \item \textbf{Test Case Derivation:} \\
+    From FRQ-4 and SRS Section 16 (INT, PRI).
+    \item \textbf{How Test Will Be Performed:} \\
+    Check encryption metadata and permissions via the cloud storage API (AWS S3 or Vercel storage).
+\end{itemize}
+
+\subsubsection{Area of Testing — Audit Logging}
+
+This area ensures \textbf{FRQ-5} is satisfied by verifying audit log entries for all major actions.
+
+\textbf{Title for Test:} Audit Log Verification \\
+\textbf{Test-id:} FRQ-5-AUDIT
+
+\begin{itemize}
+    \item \textbf{Control:} Automatic
+    \item \textbf{Initial State:} \\
+    System contains multiple reimbursement records with various user actions.
+    \item \textbf{Input:} \\
+    Run log export query for ``Approve'' or ``Reject'' events.
+    \item \textbf{Output (Expected Result):} \\
+    Each event entry includes timestamp, userID, actionType, and status change. Logs persist for at least 3 years per SRS Section 16.4.
+    \item \textbf{Test Case Derivation:} \\
+    Derived from FRQ-5 and Audit Requirements [AUD-1, AUD-2].
+    \item \textbf{How Test Will Be Performed:} \\
+    Automated test script queries audit collection and validates schema and retention policies.
+\end{itemize}
+
 
 \subsection{Tests for Nonfunctional Requirements}
 
-\wss{The nonfunctional requirements for accuracy will likely just reference the
-  appropriate functional tests from above.  The test cases should mention
-  reporting the relative error for these tests.  Not all projects will
-  necessarily have nonfunctional requirements related to accuracy.}
+The following tests verify that the MES Finance Tracking Platform meets the nonfunctional requirements defined in the SRS. These include performance, usability, security, and maintainability tests to ensure the system is robust, efficient, and user-friendly.
 
-\wss{For some nonfunctional tests, you won't be setting a target threshold for
-passing the test, but rather describing the experiment you will do to measure
-the quality for different inputs.  For instance, you could measure speed versus
-the problem size.  The output of the test isn't pass/fail, but rather a summary
-table or graph.}
+\subsubsection{Area of Testing — Performance and Latency}
 
-\wss{Tests related to usability could include conducting a usability test and
-  survey.  The survey will be in the Appendix.}
+This area covers \textbf{Speed and Latency Requirements [SaL]} and partially overlaps with \textbf{Robustness or Fault-Tolerance Requirements [FLT]}.
 
-\wss{Static tests, review, inspections, and walkthroughs, will not follow the
-format for the tests given below.}
+\textbf{Title for Test:} API and Page Load Performance Test \\
+\textbf{Test-id:} NFL-SAL-1
 
-\wss{If you introduce static tests in your plan, you need to provide details.
-How will they be done?  In cases like code (or document) walkthroughs, who will
-be involved? Be specific.}
+\begin{itemize}
+    \item \textbf{Control:} Automatic
+    \item \textbf{Initial State:} \\
+    System deployed to staging environment with seeded database (100 clubs, 1,000 reimbursement requests).
+    \item \textbf{Input:} \\
+    Execute 100 concurrent API requests for reimbursement data and record response times. Load homepage and dashboard in Chrome using Lighthouse.
+    \item \textbf{Output (Expected Result):} \\
+    API response times average below 1 second; page load times under 3 seconds; file uploads ($<10$ MB) complete within 5 seconds.
+    \item \textbf{Test Case Derivation:} \\
+    Derived from SRS Section 13.1 [SaL-1, SaL-2, SaL-3].
+    \item \textbf{How Test Will Be Performed:} \\
+    Automated load testing with tools such as JMeter or Locust, combined with Lighthouse performance scoring. Results summarized in a table comparing observed times to SRS thresholds.
+\end{itemize}
 
-\subsubsection{Area of Testing1}
-		
-\paragraph{Title for Test}
+\subsubsection{Area of Testing — Usability and Accessibility}
 
-\begin{enumerate}
+This area validates \textbf{Ease of Use and Learning [EUL]}, \textbf{Accessibility [ABL]}, and \textbf{Style [STY]} requirements.
 
-\item{test-id1\\}
+\textbf{Title for Test:} Usability and Accessibility Evaluation \\
+\textbf{Test-id:} NFL-USAB-1
 
-Type: Functional, Dynamic, Manual, Static etc.
-					
-Initial State: 
-					
-Input/Condition: 
-					
-Output/Result: 
-					
-How test will be performed: 
-					
-\item{test-id2\\}
+\begin{itemize}
+    \item \textbf{Control:} Manual (survey-based)
+    \item \textbf{Initial State:} \\
+    A functioning system prototype accessible by 5 test users representing different roles (club member, executive, MES reviewer).
+    \item \textbf{Input:} \\
+    Users perform typical tasks (submit reimbursement, review request, check status). Afterward, they complete a usability survey using a 5-point Likert scale.
+    \item \textbf{Output (Expected Result):} \\
+    Average ease-of-use rating $\geq$ 4/5. All UI components are keyboard-navigable and meet WCAG 2.1 AA color contrast.
+    \item \textbf{Test Case Derivation:} \\
+    Based on SRS Sections 11 and 12, especially [EUL-1] and [ABL-1 – ABL-5].
+    \item \textbf{How Test Will Be Performed:} \\
+    Observation-based usability session followed by survey analysis. Accessibility verified with automated tools (axe-core, Lighthouse accessibility audits).
+\end{itemize}
 
-Type: Functional, Dynamic, Manual, Static etc.
-					
-Initial State: 
-					
-Input: 
-					
-Output: 
-					
-How test will be performed: 
+\subsubsection{Area of Testing — Security and Privacy}
 
-\end{enumerate}
+This area ensures compliance with \textbf{Access [ACS]}, \textbf{Integrity [INT]}, and \textbf{Privacy [PRI]} requirements.
 
-\subsubsection{Area of Testing2}
+\textbf{Title for Test:} Role-Based Access and Data Protection Test \\
+\textbf{Test-id:} NFL-SEC-1
 
-...
+\begin{itemize}
+    \item \textbf{Control:} Automatic with manual verification
+    \item \textbf{Initial State:} \\
+    Test users include a general member, club executive, and MES admin, each authenticated with proper roles.
+    \item \textbf{Input:} \\
+    Attempt unauthorized access to restricted endpoints (e.g., reviewing reimbursements as a non-admin). Submit tampered form payloads.
+    \item \textbf{Output (Expected Result):} \\
+    Unauthorized requests receive HTTP 403 responses; input validation prevents injection/XSS; all communication uses HTTPS (TLS 1.2+). Sensitive fields are encrypted in the database.
+    \item \textbf{Test Case Derivation:} \\
+    Derived from SRS Section 16: [ACS-1, INT-1, PRI-1].
+    \item \textbf{How Test Will Be Performed:} \\
+    Automated penetration testing with OWASP ZAP or Burp Suite; verification of encryption and RBAC through API inspection and code review.
+\end{itemize}
+
+\subsubsection{Area of Testing — Maintainability and Supportability}
+
+This area validates \textbf{Maintenance [MNT]} and \textbf{Supportability [SUP]} requirements.
+
+\textbf{Title for Test:} Code Quality and Documentation Compliance \\
+\textbf{Test-id:} NFL-MNT-1
+
+\begin{itemize}
+    \item \textbf{Control:} Static test (manual review and CI enforcement)
+    \item \textbf{Initial State:} \\
+    Project repository set up with ESLint and Prettier configuration as specified in the SRS.
+    \item \textbf{Input:} \\
+    Run code through linting and formatting checks; review developer documentation for completeness.
+    \item \textbf{Output (Expected Result):} \\
+    No critical linting errors; documentation covers setup, deployment, and troubleshooting. All dependencies are updated to current minor versions.
+    \item \textbf{Test Case Derivation:} \\
+    Derived from SRS Section 15 [MNT-1, SUP-1, SUP-2].
+    \item \textbf{How Test Will Be Performed:} \\
+    CI pipeline enforces linting and formatting. Manual inspection ensures documentation matches environment setup and maintenance requirements.
+\end{itemize}
+
 
 \subsection{Traceability Between Test Cases and Requirements}
 
 \wss{Provide a table that shows which test cases are supporting which
   requirements.}
+
+  This table maps the high-level Functional Requirements to the supporting Non-Functional Requirements that must be considered during testing to ensure the system's overall quality, security, and performance.
+
+\vspace{0.5cm}
+
+\begin{longtable}{p{0.4\linewidth} p{0.55\linewidth}}
+\caption{Traceability Matrix for MES Finance Tracking Platform} \\
+\toprule
+\textbf{Functional Requirement (FRQ)} & \textbf{Supporting Non-Functional Requirement IDs (NFR)} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Functional Requirement (FRQ)} & \textbf{Supporting Non-Functional Requirement IDs (NFR)} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{FRQ-1:} The system shall allow MES clubs and teams to submit expense claims. &
+EUL-1, UaP-2, ABL-1, ABL-3, ABL-5, SaL-1, SaL-2, FLT-2, CAP-1, ACS-1, ACS-2, INT-1, PRI-1, PRI-2, AUD-1, CUL-1, SEI-2, AUL-1, STD-1, STD-2 \\
+\midrule
+\textbf{FRQ-2:} The system shall provide MES reviewers with tools to efficiently review, approve, or reject the reimbursement requests. &
+APP-1, APP-2, STY-3, EUL-1, ABL-1, ABL-5, SaL-1, PRE-1, FLT-1, CAP-1, ACS-1, ACS-2, INT-1, PRI-1, PRI-2, AUD-1, AUD-2, CUL-1, SEI-2, AUL-1, AUL-2, STD-1, STD-2 \\
+\midrule
+\textbf{FRQ-3:} The system shall track the status of each expense claim (e.g., submitted, under review, approved, rejected, reimbursed). &
+APP-2, STY-3, ABL-1, SaL-1, SaL-2, FLT-3, CAP-2, EXT-2, LNG-2, ACS-1, ACS-2, PRI-1, AUD-1, AUD-2, SEI-2, AUL-2, STD-1 \\
+\midrule
+\textbf{FRQ-4:} The system shall permanently store and retain digital receipt submissions. &
+SaL-3, PRE-1, FLT-2, CAP-2, LNG-1, PRI-1, PRI-2, AUD-2, SEI-1, SEI-2, SEI-3, AUL-2, RDL-1, STD-1 \\
+\midrule
+\textbf{FRQ-5:} The system shall maintain an audit trail that records who submitted, reviewed, approved, or denied each expense claim. &
+FLT-2, CAP-2, LNG-1, ACS-2, PRI-2, AUD-1, AUD-2, IMM-1, SEI-2, SEI-3, AUL-1, AUL-2, RDL-1, STD-1, STD-3 \\
+\midrule
+\textbf{FRQ-6:} The system shall enable access to club expense submissions to the submitters, and other club members with a role greater or equal to that of the submitter, or MES administrators and approvers. &
+APP-3, ABL-1, ABL-5, SaL-1, SaL-2, CAP-1, EXT-2, ACS-1, ACS-2, INT-1, PRI-1, PRI-2, AUD-1, SEI-2, AUL-1, AUL-2, STD-1, STD-2 \\
+\bottomrule
+\end{longtable}
+
+\subsection*{Legend: Non-Functional Requirement Categories}
+\begin{itemize}
+    \item \textbf{APP / STY:} Look and Feel Requirements (Appearance, Style)
+    \item \textbf{EUL / UaP / ABL:} Usability and Humanity Requirements (Ease of Use, Understandability, Accessibility)
+    \item \textbf{SaL / PRE / FLT / CAP / EXT / LNG:} Performance Requirements (Speed, Precision, Fault-Tolerance, Capacity, Extensibility, Longevity)
+    \item \textbf{ACS / INT / PRI / AUD / IMM:} Security Requirements (Access, Integrity, Privacy, Audit, Immunity)
+    \item \textbf{CUL:} Cultural Requirements
+    \item \textbf{SEI / AUL / RDL / STD:} Compliance Requirements (Storage/Encryption/Infrastructure, Access/Audit/Logging, Retention/Disposal, Standards)
+\end{itemize}
+
+\noindent This matrix ensures that for every function the system performs, the corresponding quality attributes are verified through specific test cases.
 
 \section{Unit Test Description}
 
