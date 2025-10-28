@@ -292,6 +292,43 @@ verified.  Techniques for this include review and mutation testing.}
 
 \wss{Create a checklists?}
 
+\noindent\textbf{Objective: }
+Ensure that the V\&V Plan accurately defines all verification and validation
+activities, aligns with the SRS and design documentation, and includes
+measurable procedures for system and unit testing.
+
+\noindent\textbf{Individuals Involved: } Team Members, Luke (Supervisor), Peer Reviewers
+
+\noindent\textbf{Inputs: } Current version of the V\&V Plan, SRS, Design, and Unit Testing documents
+
+\noindent\textbf{Procedure: }
+\begin{enumerate}
+  \item All reviewers read and annotate the plan, marking unclear, inconsistent, or incomplete sections.
+  \item The team presents the plan to peers and the supervisor, who assess completeness, coverage, and clarity.
+  \item Reviewers confirm that all required sections (team roles, verification methods, validation methods, test case traceability, and schedules) are properly included and justified.
+  \item Any missing or unclear items are documented, categorized (minor/major), and assigned for correction.
+  \item The plan is updated and re-evaluated until all checklist items are satisfied.
+\end{enumerate}
+
+\noindent\textbf{Exit Criteria: } all major issues have been resolved, every section meets consistency and completeness standards, plan is reviewed by supervisor.
+
+\noindent\textbf{Outputs: } Review log containing identified issues and resolutions and final version version of the V\&V Plan.
+
+\noindent\textbf{Verification Checklist:}
+
+\begin{itemize}
+  \item All sections of the V\&V Plan are present and clearly labeled.
+  \item Objectives and scope are clearly defined and align with the SRS.
+  \item Verification and validation methods are feasible and well justified.
+  \item Roles and responsibilities of team members are specified.
+  \item Traceability between requirements, design, and test cases is clear.
+  \item Testing procedures and success criteria are measurable and realistic.
+  \item Inputs, outputs, and review artifacts are well defined.
+  \item Peer and supervisor review process is documented.
+  \item Formatting, consistency, and terminology conform to standards.
+  \item All identified issues or inconsistencies have been resolved.
+\end{itemize}
+
 \subsection{Implementation Verification}
 
 \wss{You should at least point to the tests listed in this document and the unit
@@ -301,9 +338,55 @@ verified.  Techniques for this include review and mutation testing.}
   verification of the implementation.  Potential techniques include code
   walkthroughs, code inspection, static analyzers, etc.}
 
-\wss{The final class presentation in CAS 741 could be used as a code
-walkthrough.  There is also a possibility of using the final presentation (in
-CAS741) for a partial usability survey.}
+\wss{The final class presentation in CAS 741 could be used as a code walkthrough.  There is also a possibility of using the final presentation (in CAS741) for a partial usability survey.}
+
+\noindent\textbf{Objective:}
+Ensure the correctness, quality, and maintainability of the codebase and its compliance with requirements through systematic testing and review.
+
+\noindent\textbf{Relation to Other Documents:} The system-level tests described in this document validate the integrated behavior of the MES Finance Tracking Platform, while the unit-level tests verify the correctness of individual components and modules.
+
+\noindent\textbf{Verification Activities:}
+\begin{enumerate}
+  \item \textbf{Code Walkthroughs:} Conducted bi-weekly among developers to ensure code readability, adherence to the design specification, and appropriate documentation.
+  Each walkthrough focuses on newly implemented modules or functions to confirm alignment with the Module Interface Specification (MIS).
+  
+  \item \textbf{Code Inspections:} Performed at key development milestones. Each inspection evaluates code clarity, conformance to coding standards, naming conventions,
+  and consistency across modules. Defects and deviations are logged and resolved prior to integration.
+  
+  \item \textbf{Static Analysis:} Automated static analyzers (e.g., \texttt{ESLint} for JavaScript / TypeScript) will be used to detect syntax errors, potential vulnerabilities, and code smells. Additional tools such as \texttt{Prettier} will enforce formatting consistency. Code quality metrics, including cyclomatic complexity and unused dependency checks, will be collected to ensure maintainability.
+  
+  \item \textbf{Unit Testing:} Each module will undergo automated testing with a minimum of 80\% code coverage. Unit tests verify logical correctness, handle boundary conditions, and confirm expected output against defined input cases.
+  
+  \item \textbf{Integration Verification:} Conducted after all modules pass their unit tests. Integration testing ensures modules interface correctly and data flows as defined in the MIS. Errors detected during integration will be logged and traced back to responsible modules.
+  
+  \item \textbf{System and Acceptance Testing:} System tests validate the complete software against functional and nonfunctional requirements. Stakeholder User Acceptance Testing (UAT) will confirm that the application meets all acceptance criteria.
+\end{enumerate}
+
+\noindent\textbf{Inputs:}
+\begin{itemize}
+  \item Implementation codebase and supporting libraries
+  \item Unit testing plan and results
+  \item Static analysis reports and linting logs
+  \item Integration and system test reports
+  \item MIS and design documentation
+\end{itemize}
+
+\noindent\textbf{Outputs:}
+\begin{itemize}
+  \item Verified implementation source code
+  \item Code inspection and walkthrough reports
+  \item Static analysis summaries and coverage metrics
+  \item Approved unit, integration, and system test results
+\end{itemize}
+
+\noindent\textbf{End Criteria:}
+\begin{itemize}
+  \item All modules pass unit and integration tests without critical defects.
+  \item Static analysis yields no unresolved warnings or high-severity vulnerabilities.
+  \item Implementation verified to meet all functional and nonfunctional requirements.
+  \item Supervisor and stakeholders approve code quality and testing outcomes.
+\end{itemize}
+
 
 \subsection{Automated Testing and Verification Tools}
 
