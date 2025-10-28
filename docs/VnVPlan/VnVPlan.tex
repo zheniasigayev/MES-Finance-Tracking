@@ -154,13 +154,38 @@ N/A
 % \citet{SRS}
 \begin{itemize}
   \item SRS Documentation
+    \begin{itemize}
+      \item The SRS is the formal documentation of the functional and non-functional requirements for the project.
+      All requirements that must be verified and validated are specified and elaborated on in the SRS.
+    \end{itemize}
   \item Hazard Analysis Documentation
+    \begin{itemize}
+      \item Due to the project's nature of processing and storing financial data, many non-functional requirements 
+      arise from hazards related to the security and integrity of data handling. Previously discovered hazards can also inform
+      caution points during the verification and validation processes.
+    \end{itemize}
   \item Problem Statement and Goals Documentation
-  \item Design documents
-  \item Module Guide Documentation
-  \item Module Interface Specification Documentation
+    \begin{itemize}
+      \item Validation of the requirements proposed in the SRS must relate to the overall goals of the project. The \textit{Problem Statement
+      and Goals} documentation includes these high-level goals of the project, and is the primary source of information when the client and/or
+      supervisors cannot be reached for clarification. 
+    \end{itemize}
   \item Development Plan Documentation
+    \begin{itemize}
+      \item The development process is to achieve the goals and meet the requirements of the project. In the case that any requirements
+      are later invalidated, the plans for development must be modified correspondingly. 
+    \end{itemize}
+  \item Design Documentation
+    \begin{itemize}
+      \item The software must be designed such that it meets the verification methods outlined in the VnV. For requirements that can be
+      unit-tested, specifics will be included in the unit testing documentation. Many qualitative requirements, however, must be manually
+      evaluated according to the procedures set forth in this document.
+    \end{itemize}
   \item Unit Testing Plan Documentation
+    \begin{itemize}
+      \item The \textit{Unit Testing Plan} documentation will be required to reference the VnV Plan for outlined procedures for automatic
+      tests, where applicable.
+    \end{itemize}
 \end{itemize}
 
 
@@ -296,6 +321,36 @@ that document.}
 
 \wss{The details of this section will likely evolve as you get closer to the
   implementation.}
+
+
+To ensure efficiency and consistency in testing, automated testing and verification
+tools will be utilized where possible. As the project spans a wide spread of technologies,
+languages, and frameworks, multiple domain-specific tools will be required. The following
+section outlines the portions of testing where automated testing tools will be employed; 
+specific tools may not yet be specified at the current stage of the project, but potentially
+applicable tools will be included as examples. 
+
+\begin{itemize}
+  \item \textbf{Linting and Style:} Linting and style tools will be used to improve and preserve
+  code readability and maintainability.
+  \begin{itemize}
+    \item \textbf{Tools:} Pylint (Python), ESLint (Javascript)
+  \end{itemize}
+  \item \textbf{Unit Testing:} Unit testing will be performed for each part of the project. Due 
+  to the project's large technical scope, multiple unit testing suits may be required across 
+  different languages/frameworks.
+  \begin{itemize}
+    \item \textbf{Tools:} pytest (Python), Jest/Cypress/Playwright (Javascript), Postman (API)
+  \end{itemize}
+  \item \textbf{Load Testing:} As the system is expected to be used for many MES-affiliated clubs, 
+  load testing on the APIs and database to ensure availability and scalability.
+  \begin{itemize}
+    \item \textbf{Tools:} JMeter (Java-based), Locust (Python-based)
+  \end{itemize} 
+  \item \textbf{Test Scripts:} Any testing functionality not covered by existing tools but requires
+  automatic processing may be faciliated through custom testing scripts. As an example, this may 
+  include scripts that routinely verify database integrity through queries.
+\end{itemize}
 
 \subsection{Software Validation}
 
@@ -850,6 +905,22 @@ graduate attribute of Lifelong Learning.
   \item The main challenge was balancing specificity in test cases with our current level of implementation knowledge. I addressed this by focusing on clear inputs and expected outputs while maintaining flexibility for later refinement.
   \item I need to develop proficiency in end-to-end testing for our Next.js application, particularly testing workflows that span the frontend, API, and database layers.
   \item I'll pursue hands-on experimentation with Cypress or Playwright on our existing codebase, as I learn best through practical application rather than theoretical study.
+\end{enumerate}
+
+\noindent\textbf{Michael's Reflection:}
+\begin{enumerate}
+  \item Similiar to some of our previous deliverables, I think that a lot of the information required to complete the deliverable was already collected before we started working on the deliverable. 
+  Although the documents were kind of designed to be completed in this order because of their dependencies on each other, it's good that the content we had previously written was meaningful enough to ease
+  work on this deliverable.
+  \item There was some uncertainty regarding some of what information is required for each section of the document; the rubric provides a very high-level overview statement, while I personally was lost on some of the acronyms and expected information.
+  I suspect the lectures would have answered some of my questions, but through cross-referencing the pink advice text, past works, and discussing with group members, I think we were able to not spend too much time blocked by a lack of information.
+  \item For sure a lot of testing knowledge across various subdomains and languages will need to be acquired. For myself, although I have some knowledge about setting up linters and custom scripts, I don't have any formal experience with running comprehensive
+  unit testing suites. Developing the testing and software at the same time, or really any "test-driven" development is a skill I will have to acquire for this project.
+  \item I think for me, the most practical approach will be to kind of learn the systems as I go through trial and error and online resources, without focusing too much on perfecting my understanding based on ideal theory. There's still a lot of work we will have to do alongside verification and
+  validation, so I anticipate that spending time to go out of my way and learn the testing systems from top to bottom will be impractical. Instead, maybe letting team members that are more experienced plan out the systems, and then contributing through adding
+  regular unit tests, running custom tests, etc, will give me a better intuitive understanding of testing. Another approach might be to communicate more with my team members and kind of learn from them in a tutor-like relationship. This approach would see me trying to bolster my understanding quickly
+  early on, and then leverage the new knowledge and skills to be able to contribute broadly to the VnV process later on. To be honest, I think maybe I haven't laid two approaches that are selectable: I think that depending on the development situation and my teammates preferences,
+  one of the approaches will naturally be the one I pursue.
 \end{enumerate}
 
 \end{document}
