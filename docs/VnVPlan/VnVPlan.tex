@@ -322,6 +322,36 @@ that document.}
 \wss{The details of this section will likely evolve as you get closer to the
   implementation.}
 
+
+To ensure efficiency and consistency in testing, automated testing and verification
+tools will be utilized where possible. As the project spans a wide spread of technologies,
+languages, and frameworks, multiple domain-specific tools will be required. The following
+section outlines the portions of testing where automated testing tools will be employed; 
+specific tools may not yet be specified at the current stage of the project, but potentially
+applicable tools will be included as examples. 
+
+\begin{itemize}
+  \item \textbf{Linting and Style:} Linting and style tools will be used to improve and preserve
+  code readability and maintainability.
+  \begin{itemize}
+    \item \textbf{Tools:} Pylint (Python), ESLint (Javascript)
+  \end{itemize}
+  \item \textbf{Unit Testing:} Unit testing will be performed for each part of the project. Due 
+  to the project's large technical scope, multiple unit testing suits may be required across 
+  different languages/frameworks.
+  \begin{itemize}
+    \item \textbf{Tools:} pytest (Python), Jest/Cypress/Playwright (Javascript), Postman (API)
+  \end{itemize}
+  \item \textbf{Load Testing:} As the system is expected to be used for many MES-affiliated clubs, 
+  load testing on the APIs and database to ensure availability and scalability.
+  \begin{itemize}
+    \item \textbf{Tools:} JMeter (Java-based), Locust (Python-based)
+  \end{itemize} 
+  \item \textbf{Test Scripts:} Any testing functionality not covered by existing tools but requires
+  automatic processing may be faciliated through custom testing scripts. As an example, this may 
+  include scripts that routinely verify database integrity through queries.
+\end{itemize}
+
 \subsection{Software Validation}
 
 \wss{If there is any external data that can be used for validation, you should
