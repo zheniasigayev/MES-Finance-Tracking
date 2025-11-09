@@ -190,123 +190,111 @@ in a hierarchy decomposed by secrets in Table \ref{TblMH}. The modules listed
 below, which are leaves in the hierarchy tree, are the modules that will
 actually be implemented.
 
-\begin{description}
-\item [\refstepcounter{mnum} \mthemnum \label{mHH}:] Hardware-Hiding Module
-\item ...
-\end{description}
+\textbf{M1:} Hardware-Hiding Module
+\textbf{M2:} User Interface Module
+\textbf{M3:} Request Handler Module
+\textbf{M4:} Receipt Processing Module
+\textbf{M5:} Notification Module
+\textbf{M6:} Authentication Module
+\textbf{M7:} Data Model Module
+\textbf{M8:} Audit Logging Module
 
-
-\begin{table}[h!]
+\begin{table}[h]
 \centering
-\begin{tabular}{p{0.3\textwidth} p{0.6\textwidth}}
-\toprule
-\textbf{Level 1} & \textbf{Level 2}\\
-\midrule
-
-{Hardware-Hiding Module} & ~ \\
-\midrule
-
-\multirow{7}{0.3\textwidth}{Behaviour-Hiding Module} & ?\\
-& ?\\
-& ?\\
-& ?\\
-& ?\\
-& ?\\
-& ?\\ 
-& ?\\
-\midrule
-
-\multirow{3}{0.3\textwidth}{Software Decision Module} & {?}\\
-& ?\\
-& ?\\
-\bottomrule
-
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Level 1} & \textbf{Level 2} \\
+Hardware-Hiding Module & \textbullet~M1: Hardware Hiding Module \\
+Behaviour-Hiding Module & \textbullet~M2: User Interface Module \\
+                         & \textbullet~M3: Request Handler Module \\
+                         & \textbullet~M4: Receipt Processing Module \\
+                         & \textbullet~M5: Notification Module \\
+Software Decision Module & \textbullet~M6: Authentication Module \\
+                         & \textbullet~M7: Data Model Module \\
+                         & \textbullet~M8: Audit Logging Module \\
 \end{tabular}
 \caption{Module Hierarchy}
-\label{TblMH}
+\label{tab:hierarchy}
 \end{table}
 
-\section{Connection Between Requirements and Design} \label{SecConnection}
+\section{Connection Between Requirements and Design}
 
-The design of the system is intended to satisfy the requirements developed in
-the SRS. In this stage, the system is decomposed into modules. The connection
-between requirements and modules is listed in Table~\ref{TblRT}.
+The design of the system is intended to satisfy the requirements developed in the SRS. In this stage, the system is decomposed into modules. The connection between requirements and modules is listed in Table 2.
 
-\wss{The intention of this section is to document decisions that are made
-  ``between'' the requirements and the design.  To satisfy some requirements,
-  design decisions need to be made.  Rather than make these decisions implicit,
-  they are explicitly recorded here.  For instance, if a program has security
-  requirements, a specific design decision may be made to satisfy those
-  requirements with a password.}
+The primary design decision is to structure the application as a client-server web application using the Next.js full-stack framework. This allows for a clear separation between the front-end UI (Behaviour-Hiding) and the back-end business logic and data management (Software Decision), while the Hardware-Hiding module is provided by the underlying Node.js runtime and cloud platform (Vercel/AWS). This architecture directly supports key non-functional requirements like security (PRI, IMM), performance (SaL), and maintainability (MNT).
 
-\section{Module Decomposition} \label{SecMD}
+\section{Module Decomposition}
 
-Modules are decomposed according to the principle of ``information hiding''
-proposed by \citet{ParnasEtAl1984}. The \emph{Secrets} field in a module
-decomposition is a brief statement of the design decision hidden by the
-module. The \emph{Services} field specifies \emph{what} the module will do
-without documenting \emph{how} to do it. For each module, a suggestion for the
-implementing software is given under the \emph{Implemented By} title. If the
-entry is \emph{OS}, this means that the module is provided by the operating
-system or by standard programming language libraries.  \emph{\progname{}} means the
-module will be implemented by the \progname{} software.
+Modules are decomposed according to the principle of "information hiding" proposed by Parnas et al. (1984). The \textit{Secrets} field in a module decomposition is a brief statement of the design decision hidden by the module. The \textit{Services} field specifies \textit{what} the module will do without documenting \textit{how} to do it. For each module, a suggestion for the implementing software is given under the \textit{Implemented By} title. If the entry is \textit{OS}, this means that the module is provided by the operating system or by standard programming language libraries. \textit{MES Finance Platform} means the module will be implemented by this project.
 
-Only the leaf modules in the hierarchy have to be implemented. If a dash
-(\emph{--}) is shown, this means that the module is not a leaf and will not have
-to be implemented.
+Only the leaf modules in the hierarchy have to be implemented.
 
-\subsection{Hardware Hiding Modules (\mref{mHH})}
+\subsection{Hardware Hiding Modules (M1)}
 
-\begin{description}
-\item[Secrets:]The data structure and algorithm used to implement the virtual
-  hardware.
-\item[Services:]Serves as a virtual hardware used by the rest of the
-  system. This module provides the interface between the hardware and the
-  software. So, the system can use it to display outputs or to accept inputs.
-\item[Implemented By:] OS
-\end{description}
+\textbf{Secrets:} The data structure and algorithm used to implement the virtual hardware (e.g., server infrastructure, cloud platform APIs).\\
+\textbf{Services:} Serves as a virtual hardware used by the rest of the system. This module provides the interface between the hardware (e.g., Vercel/AWS servers, file storage) and the software. So, the system can use it to display outputs or to accept inputs.\\
+\textbf{Implemented By:} OS (Node.js runtime, Vercel/AWS)
 
 \subsection{Behaviour-Hiding Module}
 
-\begin{description}
-\item[Secrets:]The contents of the required behaviours.
-\item[Services:]Includes programs that provide externally visible behaviour of
-  the system as specified in the software requirements specification (SRS)
-  documents. This module serves as a communication layer between the
-  hardware-hiding module and the software decision module. The programs in this
-  module will need to change if there are changes in the SRS.
-\item[Implemented By:] --
-\end{description}
+\textbf{Secrets:} The contents of the required behaviours.\\
+\textbf{Services:} Includes programs that provide externally visible behaviour of the system as specified in the software requirements specification (SRS) documents. This module serves as a communication layer between the hardware-hiding module and the software decision module. The programs in this module will need to change if there are changes in the SRS.\\
+\textbf{Implemented By:} -
 
-\subsubsection{Input Format Module (\mref{mInput})}
+\subsubsection{User Interface Module (M2)}
 
-\begin{description}
-\item[Secrets:]The format and structure of the input data.
-\item[Services:]Converts the input data into the data structure used by the
-  input parameters module.
-\item[Implemented By:] [Your Program Name Here]
-\item[Type of Module:] [Record, Library, Abstract Object, or Abstract Data Type]
-  [Information to include for leaf modules in the decomposition by secrets tree.]
-\end{description}
+\textbf{Secrets:} The specific UI components, layouts, and client-side navigation logic.\\
+\textbf{Services:} Provides the visual interface for users to interact with the system. Renders forms for submitting reimbursement requests, dashboards for viewing request status, and admin panels for reviewing requests. Handles client-side validation and user input.\\
+\textbf{Implemented By:} MES Finance Platform (Next.js/React, NextUI, TailwindCSS)\\
+\textbf{Type of Module:} Abstract Object
 
-\subsubsection{Etc.}
+\subsubsection{Request Handler Module (M3)}
 
+\textbf{Secrets:} The workflow and business logic for processing reimbursement requests (submission, review, approval, rejection).\\
+\textbf{Services:} Provides API endpoints for creating, reading, updating, and deleting reimbursement requests. Enforces business rules (e.g., only club executives can submit, only admins can approve). Manages the state transitions of a request (e.g., from 'submitted' to 'approved').\\
+\textbf{Implemented By:} MES Finance Platform (Next.js API Routes, Node.js)\\
+\textbf{Type of Module:} Abstract Object
+
+\subsubsection{Receipt Processing Module (M4)}
+
+\textbf{Secrets:} The algorithms and external services used for processing receipt images (e.g., OCR service integration, file storage management).\\
+\textbf{Services:} Handles the upload, storage (e.g., to AWS S3), and processing of receipt images. Extracts relevant data (amount, date, vendor) using OCR technology.\\
+\textbf{Implemented By:} MES Finance Platform (Node.js, AWS Textract/S3)\\
+\textbf{Type of Module:} Abstract Object
+
+\subsubsection{Notification Module (M5)}
+
+\textbf{Secrets:} The specific services and templates used for external communication (e.g., email, in-app alerts).\\
+\textbf{Services:} Sends notifications to users based on system events (e.g., request submitted, request reviewed, payment issued). Abstracts the underlying communication channel.\\
+\textbf{Implemented By:} MES Finance Platform (Node.js, SendGrid or similar)\\
+\textbf{Type of Module:} Abstract Object
 
 \subsection{Software Decision Module}
 
-\begin{description}
-\item[Secrets:] The design decision based on mathematical theorems, physical
-  facts, or programming considerations. The secrets of this module are
-  \emph{not} described in the SRS.
-\item[Services:] Includes data structure and algorithms used in the system that
-  do not provide direct interaction with the user. 
-  % Changes in these modules are more likely to be motivated by a desire to
-  % improve performance than by externally imposed changes.
-\item[Implemented By:] --
-\end{description}
+\textbf{Secrets:} The design decision based on mathematical theorems, physical facts, or programming considerations. The secrets of this module are \textit{not} described in the SRS.\\
+\textbf{Services:} Includes data structure and algorithms used in the system that do not provide direct interaction with the user.\\
+\textbf{Implemented By:} -
 
-\subsubsection{Etc.}
+\subsubsection{Authentication Module (M6)}
 
+\textbf{Secrets:} The protocol and algorithms for verifying user identity and managing sessions.\\
+\textbf{Services:} Provides services for user authentication (login/logout) and authorization (RBAC). Determines if a user has the required role (club member, executive, MES admin) to perform an action.\\
+\textbf{Implemented By:} MES Finance Platform (NextAuth.js)\\
+\textbf{Type of Module:} Abstract Object
+
+\subsubsection{Data Model Module (M7)}
+
+\textbf{Secrets:} The structure and schema of the persistent data and the database management system itself.\\
+\textbf{Services:} Provides a consistent interface for all data persistence and retrieval operations. Manages connections to the database (MongoDB). Defines and enforces the data schema for Users, Clubs, Reimbursement Requests, etc.\\
+\textbf{Implemented By:} MES Finance Platform (MongoDB, Mongoose ODM)\\
+\textbf{Type of Module:} Abstract Data Type
+
+\subsubsection{Audit Logging Module (M8)}
+
+\textbf{Secrets:} The format and storage mechanism for the audit trail.\\
+\textbf{Services:} Records immutable logs of significant system actions (e.g., request submission, approval, status change) along with user ID and timestamp, as required by the SRS.\\
+\textbf{Implemented By:} MES Finance Platform (Node.js, MongoDB)\\
+\textbf{Type of Module:} Abstract Object
 \section{Traceability Matrix} \label{SecTM}
 
 This section shows two traceability matrices: between the modules and the
