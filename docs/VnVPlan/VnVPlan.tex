@@ -154,13 +154,38 @@ N/A
 % \citet{SRS}
 \begin{itemize}
   \item SRS Documentation
+    \begin{itemize}
+      \item The SRS is the formal documentation of the functional and non-functional requirements for the project.
+      All requirements that must be verified and validated are specified and elaborated on in the SRS.
+    \end{itemize}
   \item Hazard Analysis Documentation
+    \begin{itemize}
+      \item Due to the project's nature of processing and storing financial data, many non-functional requirements 
+      arise from hazards related to the security and integrity of data handling. Previously discovered hazards can also inform
+      caution points during the verification and validation processes.
+    \end{itemize}
   \item Problem Statement and Goals Documentation
-  \item Design documents
-  \item Module Guide Documentation
-  \item Module Interface Specification Documentation
+    \begin{itemize}
+      \item Validation of the requirements proposed in the SRS must relate to the overall goals of the project. The \textit{Problem Statement
+      and Goals} documentation includes these high-level goals of the project, and is the primary source of information when the client and/or
+      supervisors cannot be reached for clarification. 
+    \end{itemize}
   \item Development Plan Documentation
+    \begin{itemize}
+      \item The development process is to achieve the goals and meet the requirements of the project. In the case that any requirements
+      are later invalidated, the plans for development must be modified correspondingly. 
+    \end{itemize}
+  \item Design Documentation
+    \begin{itemize}
+      \item The software must be designed such that it meets the verification methods outlined in the VnV. For requirements that can be
+      unit-tested, specifics will be included in the unit testing documentation. Many qualitative requirements, however, must be manually
+      evaluated according to the procedures set forth in this document.
+    \end{itemize}
   \item Unit Testing Plan Documentation
+    \begin{itemize}
+      \item The \textit{Unit Testing Plan} documentation will be required to reference the VnV Plan for outlined procedures for automatic
+      tests, where applicable.
+    \end{itemize}
 \end{itemize}
 
 
@@ -267,6 +292,43 @@ verified.  Techniques for this include review and mutation testing.}
 
 \wss{Create a checklists?}
 
+\noindent\textbf{Objective: }
+Ensure that the V\&V Plan accurately defines all verification and validation
+activities, aligns with the SRS and design documentation, and includes
+measurable procedures for system and unit testing.
+
+\noindent\textbf{Individuals Involved: } Team Members, Luke (Supervisor), Peer Reviewers
+
+\noindent\textbf{Inputs: } Current version of the V\&V Plan, SRS, Design, and Unit Testing documents
+
+\noindent\textbf{Procedure: }
+\begin{enumerate}
+  \item All reviewers read and annotate the plan, marking unclear, inconsistent, or incomplete sections.
+  \item The team presents the plan to peers and the supervisor, who assess completeness, coverage, and clarity.
+  \item Reviewers confirm that all required sections (team roles, verification methods, validation methods, test case traceability, and schedules) are properly included and justified.
+  \item Any missing or unclear items are documented, categorized (minor/major), and assigned for correction.
+  \item The plan is updated and re-evaluated until all checklist items are satisfied.
+\end{enumerate}
+
+\noindent\textbf{Exit Criteria: } all major issues have been resolved, every section meets consistency and completeness standards, plan is reviewed by supervisor.
+
+\noindent\textbf{Outputs: } Review log containing identified issues and resolutions and final version version of the V\&V Plan.
+
+\noindent\textbf{Verification Checklist:}
+
+\begin{itemize}
+  \item All sections of the V\&V Plan are present and clearly labeled.
+  \item Objectives and scope are clearly defined and align with the SRS.
+  \item Verification and validation methods are feasible and well justified.
+  \item Roles and responsibilities of team members are specified.
+  \item Traceability between requirements, design, and test cases is clear.
+  \item Testing procedures and success criteria are measurable and realistic.
+  \item Inputs, outputs, and review artifacts are well defined.
+  \item Peer and supervisor review process is documented.
+  \item Formatting, consistency, and terminology conform to standards.
+  \item All identified issues or inconsistencies have been resolved.
+\end{itemize}
+
 \subsection{Implementation Verification}
 
 \wss{You should at least point to the tests listed in this document and the unit
@@ -276,9 +338,55 @@ verified.  Techniques for this include review and mutation testing.}
   verification of the implementation.  Potential techniques include code
   walkthroughs, code inspection, static analyzers, etc.}
 
-\wss{The final class presentation in CAS 741 could be used as a code
-walkthrough.  There is also a possibility of using the final presentation (in
-CAS741) for a partial usability survey.}
+\wss{The final class presentation in CAS 741 could be used as a code walkthrough.  There is also a possibility of using the final presentation (in CAS741) for a partial usability survey.}
+
+\noindent\textbf{Objective:}
+Ensure the correctness, quality, and maintainability of the codebase and its compliance with requirements through systematic testing and review.
+
+\noindent\textbf{Relation to Other Documents:} The system-level tests described in this document validate the integrated behavior of the MES Finance Tracking Platform, while the unit-level tests verify the correctness of individual components and modules.
+
+\noindent\textbf{Verification Activities:}
+\begin{enumerate}
+  \item \textbf{Code Walkthroughs:} Conducted bi-weekly among developers to ensure code readability, adherence to the design specification, and appropriate documentation.
+  Each walkthrough focuses on newly implemented modules or functions to confirm alignment with the Module Interface Specification (MIS).
+  
+  \item \textbf{Code Inspections:} Performed at key development milestones. Each inspection evaluates code clarity, conformance to coding standards, naming conventions,
+  and consistency across modules. Defects and deviations are logged and resolved prior to integration.
+  
+  \item \textbf{Static Analysis:} Automated static analyzers (e.g., \texttt{ESLint} for JavaScript / TypeScript) will be used to detect syntax errors, potential vulnerabilities, and code smells. Additional tools such as \texttt{Prettier} will enforce formatting consistency. Code quality metrics, including cyclomatic complexity and unused dependency checks, will be collected to ensure maintainability.
+  
+  \item \textbf{Unit Testing:} Each module will undergo automated testing with a minimum of 80\% code coverage. Unit tests verify logical correctness, handle boundary conditions, and confirm expected output against defined input cases.
+  
+  \item \textbf{Integration Verification:} Conducted after all modules pass their unit tests. Integration testing ensures modules interface correctly and data flows as defined in the MIS. Errors detected during integration will be logged and traced back to responsible modules.
+  
+  \item \textbf{System and Acceptance Testing:} System tests validate the complete software against functional and nonfunctional requirements. Stakeholder User Acceptance Testing (UAT) will confirm that the application meets all acceptance criteria.
+\end{enumerate}
+
+\noindent\textbf{Inputs:}
+\begin{itemize}
+  \item Implementation codebase and supporting libraries
+  \item Unit testing plan and results
+  \item Static analysis reports and linting logs
+  \item Integration and system test reports
+  \item MIS and design documentation
+\end{itemize}
+
+\noindent\textbf{Outputs:}
+\begin{itemize}
+  \item Verified implementation source code
+  \item Code inspection and walkthrough reports
+  \item Static analysis summaries and coverage metrics
+  \item Approved unit, integration, and system test results
+\end{itemize}
+
+\noindent\textbf{End Criteria:}
+\begin{itemize}
+  \item All modules pass unit and integration tests without critical defects.
+  \item Static analysis yields no unresolved warnings or high-severity vulnerabilities.
+  \item Implementation verified to meet all functional and nonfunctional requirements.
+  \item Supervisor and stakeholders approve code quality and testing outcomes.
+\end{itemize}
+
 
 \subsection{Automated Testing and Verification Tools}
 
@@ -296,6 +404,36 @@ that document.}
 
 \wss{The details of this section will likely evolve as you get closer to the
   implementation.}
+
+
+To ensure efficiency and consistency in testing, automated testing and verification
+tools will be utilized where possible. As the project spans a wide spread of technologies,
+languages, and frameworks, multiple domain-specific tools will be required. The following
+section outlines the portions of testing where automated testing tools will be employed; 
+specific tools may not yet be specified at the current stage of the project, but potentially
+applicable tools will be included as examples. 
+
+\begin{itemize}
+  \item \textbf{Linting and Style:} Linting and style tools will be used to improve and preserve
+  code readability and maintainability.
+  \begin{itemize}
+    \item \textbf{Tools:} Pylint (Python), ESLint (Javascript)
+  \end{itemize}
+  \item \textbf{Unit Testing:} Unit testing will be performed for each part of the project. Due 
+  to the project's large technical scope, multiple unit testing suits may be required across 
+  different languages/frameworks.
+  \begin{itemize}
+    \item \textbf{Tools:} pytest (Python), Jest/Cypress/Playwright (Javascript), Postman (API)
+  \end{itemize}
+  \item \textbf{Load Testing:} As the system is expected to be used for many MES-affiliated clubs, 
+  load testing on the APIs and database to ensure availability and scalability.
+  \begin{itemize}
+    \item \textbf{Tools:} JMeter (Java-based), Locust (Python-based)
+  \end{itemize} 
+  \item \textbf{Test Scripts:} Any testing functionality not covered by existing tools but requires
+  automatic processing may be faciliated through custom testing scripts. As an example, this may 
+  include scripts that routinely verify database integrity through queries.
+\end{itemize}
 
 \subsection{Software Validation}
 
@@ -741,8 +879,47 @@ The definition of the test cases will call for SYMBOLIC\_CONSTANTS.
 Their values are defined in this section for easy maintenance.
 
 \subsection{Usability Survey Questions?}
+  \textbf{Ease of Use}
+  \begin{enumerate}
+      \item On a scale of 1--5, how easy was it to submit a reimbursement request with all required information and receipt uploads?
+      \item How intuitive did you find the navigation between different sections of the platform (dashboard, submission form, request status)?
+      \item Did you encounter any confusing terminology or unclear instructions while using the system?
+  \end{enumerate}
 
-\wss{This is a section that would be appropriate for some projects.}
+  \textbf{Efficiency}
+  \begin{enumerate}
+      \item Approximately how long did it take you to complete your first reimbursement submission?
+      \item Did the system provide adequate feedback during file uploads and form submission processes?
+      \item Were you able to quickly locate and check the status of your previous reimbursement requests?
+  \end{enumerate}
+
+  \textbf{Role-Specific Functionality}
+  \begin{itemize}
+      \item \textbf{For Reviewers:} How easy was it to view all relevant details needed to approve or reject a reimbursement request?
+      \item \textbf{For Club Members:} Did you feel confident that your submission was successful after completing the form?
+      \item \textbf{For Admins:} How efficiently could you access and manage reimbursement data across multiple clubs?
+  \end{itemize}
+
+  \textbf{Accessibility and Design}
+  \begin{enumerate}
+      \item Were all buttons, links, and interactive elements clearly identifiable and easy to click/tap?
+      \item Did the color contrast and text sizing make the interface comfortable to read?
+      \item Were you able to complete all tasks using only your keyboard (without a mouse)?
+  \end{enumerate}
+
+  \textbf{Error Handling}
+  \begin{enumerate}
+      \item If you encountered any errors, were the error messages clear and helpful in resolving the issue?
+      \item Did the system prevent you from making mistakes (e.g., uploading invalid file types, missing required fields)?
+      \item How satisfied were you with the system's response when attempting actions you didn't have permission for?
+  \end{enumerate}
+
+  \textbf{Overall Satisfaction}
+  \begin{enumerate}
+      \item On a scale of 1--5, how likely are you to recommend this platform to other MES clubs?
+      \item What feature or aspect of the platform did you find most helpful or well-designed?
+      \item What improvements would you suggest to make the platform easier to use?
+  \end{enumerate}
 
 \newpage{}
 \section*{Appendix --- Reflection}
@@ -789,6 +966,52 @@ graduate attribute of Lifelong Learning.
   for how to perform the tests, while the practical method will be used by me to actually implement the tests and measure performance
   on our project. I believe that the practical method will be more effective for me as I learn best by trying and learning
   from my mistakes.
+\end{enumerate}
+
+\noindent\textbf{Justin's Reflection:}
+\begin{enumerate}
+  \item For this deliverable, something that went well was the we took initiative to take on work instead of handing out work deliberatly.
+  This shows that we are all motivated to complete the deliverable and that we trust each other pick up work to share the workload. Its better than 
+  how we previously handled work delegation because theres more autonomy and less micromanagement.
+  \item A pain point was aligning out understanding of the deliverable structure and content. Even though we are relatively on the same page, specifics about the 
+  requirements and content were inconsistent amongst group members. This caused isseus when deciding how we wanted to create test cases and what should be included. The main resolution
+  involved having more discussions and clarifying our understanding of the deliverable requirements.
+  \item To properly complete this project, we needed to learn different possible methods to perform dynamic testing for the front end UI framework and how to measure and report database access and API 
+  response times. For me, there was a lack of knowledge on different technologies that would allow me to create automated test cases, which is essential for the testing portion of the project.
+  \item To acquire the knowledge and skills needed, I want to take more time to find all the possible tools and technologies that can be applied to a situation, compared to just picking from the ones I already know.
+  I can also try to learn from others who have more experience in testing and ask for their recommendations on what tools to use. I will most likely pursue the second option because I believe learning from others is more efficient and effective.
+\end{enumerate}
+
+\noindent\textbf{Zhenia's Reflection:}
+\begin{enumerate}
+  \item What went well was our team's ability to self-organize and take ownership of different sections without extensive coordination. This autonomous approach was more efficient than our previous deliverables and allowed us to complete the work on time.
+  \item The main challenge was balancing specificity in test cases with our current level of implementation knowledge. I addressed this by focusing on clear inputs and expected outputs while maintaining flexibility for later refinement.
+  \item I need to develop proficiency in end-to-end testing for our Next.js application, particularly testing workflows that span the frontend, API, and database layers.
+  \item I'll pursue hands-on experimentation with Cypress or Playwright on our existing codebase, as I learn best through practical application rather than theoretical study.
+\end{enumerate}
+
+\noindent\textbf{Michael's Reflection:}
+\begin{enumerate}
+  \item Similiar to some of our previous deliverables, I think that a lot of the information required to complete the deliverable was already collected before we started working on the deliverable. 
+  Although the documents were kind of designed to be completed in this order because of their dependencies on each other, it's good that the content we had previously written was meaningful enough to ease
+  work on this deliverable.
+  \item There was some uncertainty regarding some of what information is required for each section of the document; the rubric provides a very high-level overview statement, while I personally was lost on some of the acronyms and expected information.
+  I suspect the lectures would have answered some of my questions, but through cross-referencing the pink advice text, past works, and discussing with group members, I think we were able to not spend too much time blocked by a lack of information.
+  \item For sure a lot of testing knowledge across various subdomains and languages will need to be acquired. For myself, although I have some knowledge about setting up linters and custom scripts, I don't have any formal experience with running comprehensive
+  unit testing suites. Developing the testing and software at the same time, or really any "test-driven" development is a skill I will have to acquire for this project.
+  \item I think for me, the most practical approach will be to kind of learn the systems as I go through trial and error and online resources, without focusing too much on perfecting my understanding based on ideal theory. There's still a lot of work we will have to do alongside verification and
+  validation, so I anticipate that spending time to go out of my way and learn the testing systems from top to bottom will be impractical. Instead, maybe letting team members that are more experienced plan out the systems, and then contributing through adding
+  regular unit tests, running custom tests, etc, will give me a better intuitive understanding of testing. Another approach might be to communicate more with my team members and kind of learn from them in a tutor-like relationship. This approach would see me trying to bolster my understanding quickly
+  early on, and then leverage the new knowledge and skills to be able to contribute broadly to the VnV process later on. To be honest, I think maybe I haven't laid two approaches that are selectable: I think that depending on the development situation and my teammates preferences,
+  one of the approaches will naturally be the one I pursue.
+\end{enumerate}
+
+\noindent\textbf{Johnny's Reflection:}
+\begin{enumerate}
+  \item This deliverable felt relatively easier to write than the other ones. I think since we all have good software development experience (which includes testing), we were able to draw on our previous experiences to help us complete this deliverable.
+  \item There were not many pain points I encountered while writing this deliverable. Some of the sections were a little confusing, but this was resolved within our meeting with our TA.
+  \item Learning how to set up the entire testing suite will be something that we have learn. Our group members have experience working with testing tools in established codebases, but I think we lack the experience of actually setting up the testing tools from scratch.
+  \item 
 \end{enumerate}
 
 \end{document}
