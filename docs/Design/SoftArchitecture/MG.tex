@@ -65,16 +65,24 @@ This section records information for easy reference.
   \textbf{symbol} & \textbf{description}\\
   \midrule 
   AC & Anticipated Change\\
+  API & Application Programming Interface \\
+  BUC & Business Use Case \\
+  CI/CD & Continuous Integration/Continuous Deployment \\
   DAG & Directed Acyclic Graph \\
+  FRQ & Functional Requirement \\
   M & Module \\
   MG & Module Guide \\
+  MES & McMaster Engineering Society \\
+  OCR & Optical Character Recognition \\
   OS & Operating System \\
+  RBAC & Role-Based Access Control \\
   R & Requirement\\
-  SC & Scientific Computing \\
   SRS & Software Requirements Specification\\
-  \progname & Explanation of program name\\
+  SSO & Single Sign-On \\
   UC & Unlikely Change \\
-  \wss{etc.} & \wss{...}\\
+  UI & User Interface \\
+  UX & User Experience \\
+  WCAG & Web Content Accessibility Guidelines \\
   \bottomrule
 \end{tabular}\\
 
@@ -153,20 +161,18 @@ unlikely changes are listed in Section \ref{SecUchange}.
 Anticipated changes are the source of the information that is to be hidden
 inside the modules. Ideally, changing one of the anticipated changes will only
 require changing the one module that hides the associated decision. The approach
-adapted here is called design for
-change.
+adapted here is called design for change.
 
 \begin{description}
-\item[\refstepcounter{acnum} \actheacnum \label{acHardware}:] The specific
-  hardware on which the software is running.
-\item[\refstepcounter{acnum} \actheacnum \label{acInput}:] The format of the
-  initial input data.
-\item ...
+\item[\refstepcounter{acnum} \actheacnum \label{acOCR}:] The specific OCR service used for receipt processing (e.g., Amazon Textract vs. Google Vision API).
+\item[\refstepcounter{acnum} \actheacnum \label{acStorage}:] The cloud storage provider for receipt files (e.g., AWS S3 vs. Google Cloud Storage).
+\item[\refstepcounter{acnum} \actheacnum \label{acNotification}:] The notification service provider (e.g., SendGrid vs. Nodemailer vs. custom solution).
+\item[\refstepcounter{acnum} \actheacnum \label{acAuth}:] The authentication provider and protocol (e.g., NextAuth.js configuration, SSO integration).
+\item[\refstepcounter{acnum} \actheacnum \label{acUI}:] The specific UI component library and styling framework (e.g., NextUI vs. custom components).
+\item[\refstepcounter{acnum} \actheacnum \label{acDatabase}:] The database technology (e.g., MongoDB vs. PostgreSQL migration).
+\item[\refstepcounter{acnum} \actheacnum \label{acWorkflow}:] The reimbursement approval workflow and business rules.
+\item[\refstepcounter{acnum} \actheacnum \label{acAPIs}:] External API integrations (e.g., payment processing, email services).
 \end{description}
-
-\wss{Anticipated changes relate to changes that would be made in requirements,
-design or implementation choices.  They are not related to changes that are made
-at run-time, like the values of parameters.}
 
 \subsection{Unlikely Changes} \label{SecUchange}
 
@@ -178,9 +184,10 @@ will potentially need to be modified. Hence, it is not intended that these
 decisions will be changed.
 
 \begin{description}
-\item[\refstepcounter{ucnum} \uctheucnum \label{ucIO}:] Input/Output devices
-  (Input: File and/or Keyboard, Output: File, Memory, and/or Screen).
-\item ...
+\item[\refstepcounter{ucnum} \uctheucnum \label{ucWeb}:] The system will be a web-based application accessible through browsers.
+\item[\refstepcounter{ucnum} \uctheucnum \label{ucJavaScript}:] The core technology stack will remain JavaScript/TypeScript based (React/Next.js/Node.js).
+\item[\refstepcounter{ucnum} \uctheucnum \label{ucMES}:] The system will be integrated with the MES monorepo and development practices.
+\item[\refstepcounter{ucnum} \uctheucnum \label{ucMcMaster}:] The system will comply with McMaster University policies and serve MES clubs.
 \end{description}
 
 \section{Module Hierarchy} \label{SecMH}
@@ -190,40 +197,35 @@ in a hierarchy decomposed by secrets in Table \ref{TblMH}. The modules listed
 below, which are leaves in the hierarchy tree, are the modules that will
 actually be implemented.
 
-\textbf{M1:} Hardware-Hiding Module
-\textbf{M2:} User Interface Module
-\textbf{M3:} Request Handler Module
-\textbf{M4:} Receipt Processing Module
-\textbf{M5:} Notification Module
-\textbf{M6:} Authentication Module
-\textbf{M7:} Data Model Module
-\textbf{M8:} Audit Logging Module
-
 \begin{table}[h]
 \centering
-\begin{tabular}{|l|l|}
-\hline
+\begin{tabular}{p{0.3\textwidth} p{0.6\textwidth}}
+\toprule
 \textbf{Level 1} & \textbf{Level 2} \\
+\midrule
 Hardware-Hiding Module & \textbullet~M1: Hardware Hiding Module \\
+\hline
 Behaviour-Hiding Module & \textbullet~M2: User Interface Module \\
                          & \textbullet~M3: Request Handler Module \\
                          & \textbullet~M4: Receipt Processing Module \\
                          & \textbullet~M5: Notification Module \\
+\hline
 Software Decision Module & \textbullet~M6: Authentication Module \\
                          & \textbullet~M7: Data Model Module \\
                          & \textbullet~M8: Audit Logging Module \\
+\bottomrule
 \end{tabular}
 \caption{Module Hierarchy}
-\label{tab:hierarchy}
+\label{TblMH}
 \end{table}
 
-\section{Connection Between Requirements and Design}
+\section{Connection Between Requirements and Design} \label{SecConnection}
 
-The design of the system is intended to satisfy the requirements developed in the SRS. In this stage, the system is decomposed into modules. The connection between requirements and modules is listed in Table 2.
+The design of the system is intended to satisfy the requirements developed in the SRS. In this stage, the system is decomposed into modules. The connection between requirements and modules is listed in Table \ref{TblRT}.
 
 The primary design decision is to structure the application as a client-server web application using the Next.js full-stack framework. This allows for a clear separation between the front-end UI (Behaviour-Hiding) and the back-end business logic and data management (Software Decision), while the Hardware-Hiding module is provided by the underlying Node.js runtime and cloud platform (Vercel/AWS). This architecture directly supports key non-functional requirements like security (PRI, IMM), performance (SaL), and maintainability (MNT).
 
-\section{Module Decomposition}
+\section{Module Decomposition} \label{SecMD}
 
 Modules are decomposed according to the principle of "information hiding" proposed by Parnas et al. (1984). The \textit{Secrets} field in a module decomposition is a brief statement of the design decision hidden by the module. The \textit{Services} field specifies \textit{what} the module will do without documenting \textit{how} to do it. For each module, a suggestion for the implementing software is given under the \textit{Implemented By} title. If the entry is \textit{OS}, this means that the module is provided by the operating system or by standard programming language libraries. \textit{MES Finance Platform} means the module will be implemented by this project.
 
@@ -231,118 +233,170 @@ Only the leaf modules in the hierarchy have to be implemented.
 
 \subsection{Hardware Hiding Modules (M1)}
 
-\textbf{Secrets:} The data structure and algorithm used to implement the virtual hardware (e.g., server infrastructure, cloud platform APIs).\\
-\textbf{Services:} Serves as a virtual hardware used by the rest of the system. This module provides the interface between the hardware (e.g., Vercel/AWS servers, file storage) and the software. So, the system can use it to display outputs or to accept inputs.\\
-\textbf{Implemented By:} OS (Node.js runtime, Vercel/AWS)
+\begin{description}
+\item[Secrets:] The data structure and algorithm used to implement the virtual hardware (e.g., server infrastructure, cloud platform APIs).
+\item[Services:] Serves as a virtual hardware used by the rest of the system. This module provides the interface between the hardware (e.g., file storage, network) and the software. So, the system can use it to display outputs or to accept inputs.
+\item[Implemented By:] OS (Node.js runtime, Vercel/AWS cloud platform)
+\end{description}
 
 \subsection{Behaviour-Hiding Module}
 
-\textbf{Secrets:} The contents of the required behaviours.\\
-\textbf{Services:} Includes programs that provide externally visible behaviour of the system as specified in the software requirements specification (SRS) documents. This module serves as a communication layer between the hardware-hiding module and the software decision module. The programs in this module will need to change if there are changes in the SRS.\\
-\textbf{Implemented By:} -
+\begin{description}
+\item[Secrets:] The contents of the required behaviours.
+\item[Services:] Includes programs that provide externally visible behaviour of the system as specified in the software requirements specification (SRS) documents. This module serves as a communication layer between the hardware-hiding module and the software decision module. The programs in this module will need to change if there are changes in the SRS.
+\item[Implemented By:] -
+\end{description}
 
 \subsubsection{User Interface Module (M2)}
 
-\textbf{Secrets:} The specific UI components, layouts, and client-side navigation logic.\\
-\textbf{Services:} Provides the visual interface for users to interact with the system. Renders forms for submitting reimbursement requests, dashboards for viewing request status, and admin panels for reviewing requests. Handles client-side validation and user input.\\
-\textbf{Implemented By:} MES Finance Platform (Next.js/React, NextUI, TailwindCSS)\\
-\textbf{Type of Module:} Abstract Object
+\begin{description}
+\item[Secrets:] The specific UI components, layouts, and client-side navigation logic.
+\item[Services:] Provides the visual interface for users to interact with the system. Renders forms for submitting reimbursement requests, dashboards for viewing request status, and admin panels for reviewing requests. Handles client-side validation and user input. Implements responsive design and accessibility requirements (WCAG).
+\item[Implemented By:] MES Finance Platform (Next.js/React, NextUI, TailwindCSS)
+\item[Type of Module:] Abstract Object
+\end{description}
 
 \subsubsection{Request Handler Module (M3)}
 
-\textbf{Secrets:} The workflow and business logic for processing reimbursement requests (submission, review, approval, rejection).\\
-\textbf{Services:} Provides API endpoints for creating, reading, updating, and deleting reimbursement requests. Enforces business rules (e.g., only club executives can submit, only admins can approve). Manages the state transitions of a request (e.g., from 'submitted' to 'approved').\\
-\textbf{Implemented By:} MES Finance Platform (Next.js API Routes, Node.js)\\
-\textbf{Type of Module:} Abstract Object
+\begin{description}
+\item[Secrets:] The workflow and business logic for processing reimbursement requests (submission, review, approval, rejection).
+\item[Services:] Provides API endpoints for creating, reading, updating, and deleting reimbursement requests. Enforces business rules (e.g., only club executives can submit, only admins can approve). Manages the state transitions of a request (e.g., from 'submitted' to 'approved'). Handles budget allocation checks and financial validations.
+\item[Implemented By:] MES Finance Platform (Next.js API Routes, Node.js)
+\item[Type of Module:] Abstract Object
+\end{description}
 
 \subsubsection{Receipt Processing Module (M4)}
 
-\textbf{Secrets:} The algorithms and external services used for processing receipt images (e.g., OCR service integration, file storage management).\\
-\textbf{Services:} Handles the upload, storage (e.g., to AWS S3), and processing of receipt images. Extracts relevant data (amount, date, vendor) using OCR technology.\\
-\textbf{Implemented By:} MES Finance Platform (Node.js, AWS Textract/S3)\\
-\textbf{Type of Module:} Abstract Object
+\begin{description}
+\item[Secrets:] The algorithms and external services used for processing receipt images (e.g., OCR service integration, file storage management).
+\item[Services:] Handles the upload, storage (e.g., to AWS S3), and processing of receipt images. Extracts relevant data (amount, date, vendor) using OCR technology. Validates file formats and sizes. Provides secure access to stored receipts.
+\item[Implemented By:] MES Finance Platform (Node.js, AWS Textract/S3)
+\item[Type of Module:] Abstract Object
+\end{description}
 
 \subsubsection{Notification Module (M5)}
 
-\textbf{Secrets:} The specific services and templates used for external communication (e.g., email, in-app alerts).\\
-\textbf{Services:} Sends notifications to users based on system events (e.g., request submitted, request reviewed, payment issued). Abstracts the underlying communication channel.\\
-\textbf{Implemented By:} MES Finance Platform (Node.js, SendGrid or similar)\\
-\textbf{Type of Module:} Abstract Object
+\begin{description}
+\item[Secrets:] The specific services and templates used for external communication (e.g., email, in-app alerts).
+\item[Services:] Sends notifications to users based on system events (e.g., request submitted, request reviewed, payment issued). Abstracts the underlying communication channel. Manages notification templates and delivery status.
+\item[Implemented By:] MES Finance Platform (Node.js, SendGrid or similar)
+\item[Type of Module:] Abstract Object
+\end{description}
 
 \subsection{Software Decision Module}
 
-\textbf{Secrets:} The design decision based on mathematical theorems, physical facts, or programming considerations. The secrets of this module are \textit{not} described in the SRS.\\
-\textbf{Services:} Includes data structure and algorithms used in the system that do not provide direct interaction with the user.\\
-\textbf{Implemented By:} -
+\begin{description}
+\item[Secrets:] The design decision based on mathematical theorems, physical facts, or programming considerations. The secrets of this module are \textit{not} described in the SRS.
+\item[Services:] Includes data structure and algorithms used in the system that do not provide direct interaction with the user.
+\item[Implemented By:] -
+\end{description}
 
 \subsubsection{Authentication Module (M6)}
 
-\textbf{Secrets:} The protocol and algorithms for verifying user identity and managing sessions.\\
-\textbf{Services:} Provides services for user authentication (login/logout) and authorization (RBAC). Determines if a user has the required role (club member, executive, MES admin) to perform an action.\\
-\textbf{Implemented By:} MES Finance Platform (NextAuth.js)\\
-\textbf{Type of Module:} Abstract Object
+\begin{description}
+\item[Secrets:] The protocol and algorithms for verifying user identity and managing sessions.
+\item[Services:] Provides services for user authentication (login/logout) and authorization (RBAC). Determines if a user has the required role (club member, executive, MES admin) to perform an action. Manages user sessions and secure token handling.
+\item[Implemented By:] MES Finance Platform (NextAuth.js)
+\item[Type of Module:] Abstract Object
+\end{description}
 
 \subsubsection{Data Model Module (M7)}
 
-\textbf{Secrets:} The structure and schema of the persistent data and the database management system itself.\\
-\textbf{Services:} Provides a consistent interface for all data persistence and retrieval operations. Manages connections to the database (MongoDB). Defines and enforces the data schema for Users, Clubs, Reimbursement Requests, etc.\\
-\textbf{Implemented By:} MES Finance Platform (MongoDB, Mongoose ODM)\\
-\textbf{Type of Module:} Abstract Data Type
+\begin{description}
+\item[Secrets:] The structure and schema of the persistent data and the database management system itself.
+\item[Services:] Provides a consistent interface for all data persistence and retrieval operations. Manages connections to the database (MongoDB). Defines and enforces the data schema for Users, Clubs, Reimbursement Requests, Budgets, etc. Ensures data integrity and relationships.
+\item[Implemented By:] MES Finance Platform (MongoDB, Mongoose ODM)
+\item[Type of Module:] Abstract Data Type
+\end{description}
 
 \subsubsection{Audit Logging Module (M8)}
 
-\textbf{Secrets:} The format and storage mechanism for the audit trail.\\
-\textbf{Services:} Records immutable logs of significant system actions (e.g., request submission, approval, status change) along with user ID and timestamp, as required by the SRS.\\
-\textbf{Implemented By:} MES Finance Platform (Node.js, MongoDB)\\
-\textbf{Type of Module:} Abstract Object
+\begin{description}
+\item[Secrets:] The format and storage mechanism for the audit trail.
+\item[Services:] Records immutable logs of significant system actions (e.g., request submission, approval, status change) along with user ID and timestamp, as required by the SRS. Provides querying capabilities for audit review and compliance reporting.
+\item[Implemented By:] MES Finance Platform (Node.js, MongoDB)
+\item[Type of Module:] Abstract Object
+\end{description}
+
 \section{Traceability Matrix} \label{SecTM}
 
-This section shows two traceability matrices: between the modules and the
-requirements and between the modules and the anticipated changes.
+This section shows two traceability matrices: between the modules and the requirements and between the modules and the anticipated changes.
 
-% the table should use mref, the requirements should be named, use something
-% like fref
+% Traceability between Requirements and Modules
 \begin{table}[H]
 \centering
 \begin{tabular}{p{0.2\textwidth} p{0.6\textwidth}}
 \toprule
 \textbf{Req.} & \textbf{Modules}\\
 \midrule
-R1 & \mref{mHH}, \mref{mInput}, \mref{mParams}, \mref{mControl}\\
-R2 & \mref{mInput}, \mref{mParams}\\
-R3 & \mref{mVerify}\\
-R4 & \mref{mOutput}, \mref{mControl}\\
-R5 & \mref{mOutput}, \mref{mODEs}, \mref{mControl}, \mref{mSeqDS}, \mref{mSolver}, \mref{mPlot}\\
-R6 & \mref{mOutput}, \mref{mODEs}, \mref{mControl}, \mref{mSeqDS}, \mref{mSolver}, \mref{mPlot}\\
-R7 & \mref{mOutput}, \mref{mEnergy}, \mref{mControl}, \mref{mSeqDS}, \mref{mPlot}\\
-R8 & \mref{mOutput}, \mref{mEnergy}, \mref{mControl}, \mref{mSeqDS}, \mref{mPlot}\\
-R9 & \mref{mVerifyOut}\\
-R10 & \mref{mOutput}, \mref{mODEs}, \mref{mControl}\\
-R11 & \mref{mOutput}, \mref{mODEs}, \mref{mEnergy}, \mref{mControl}\\
+FRQ-1: Submit expense claims & M2, M3, M6, M7\\
+FRQ-2: Review/approve/reject requests & M2, M3, M6, M7\\
+FRQ-3: Track claim status & M2, M3, M7\\
+FRQ-4: Store digital receipts & M3, M4, M7\\
+FRQ-5: Maintain audit trail & M3, M7, M8\\
+FRQ-6: Access control for submissions & M2, M3, M6, M7\\
+APP-1: MES branding & M2\\
+APP-2: Clean, modern layout & M2\\
+APP-3: Responsive design & M2\\
+APP-4: Accessible contrast ratios & M2\\
+EUL-1: First-time user tutorial & M2\\
+ABL-1: WCAG compliance & M2\\
+ABL-2: Light/dark mode & M2\\
+ABL-3: Semantic HTML & M2\\
+ABL-4: Image alt text & M2\\
+ABL-5: Keyboard navigation & M2\\
+SaL-1: API response times & M1, M3, M7\\
+SaL-2: Page load times & M1, M2\\
+SaL-3: File upload times & M1, M4\\
+SAF-1: No unauthorized reimbursements & M3, M6\\
+SAF-2: Monetary data validation & M3, M7\\
+PRE-1: Financial precision & M3, M7\\
+FLT-1: Graceful error handling & M1, M2, M3\\
+FLT-2: Incremental data saving & M2, M7\\
+FLT-3: API retry logic & M3\\
+CAP-1: Concurrent users & M1, M3, M7\\
+CAP-2: Database capacity & M1, M7\\
+EXT-1: Horizontal scaling & M1, M3, M7\\
+EXT-2: Feature extensibility & M2, M3, M7\\
+LNG-1: 5-year operational lifespan & M1, M2, M3, M7\\
+LNG-2: Technology upgrades & All Modules\\
+ACS-1: Authentication required & M6\\
+ACS-2: Role-based access control & M6, M3\\
+INT-1: Form validation & M2, M3\\
+INT-2: Security protections & M3, M6, M7\\
+PRI-1: Secure data storage & M7\\
+PRI-2: Data encryption & M1, M7\\
+AUD-1: Action logging & M3, M8\\
+AUD-2: Log retention & M7, M8\\
+IMM-1: Vulnerability protection & M3, M6\\
+IMM-2: Rate limiting & M3\\
+MNT-1: Code formatting & All Modules\\
+MNT-2: Dependency updates & All Modules\\
+SUP-1: Developer documentation & All Modules\\
+SUP-2: Monitoring access & M1, M8\\
+ADP-1: Policy adaptability & M3\\
+ADP-2: UI extensibility & M2\\
 \bottomrule
 \end{tabular}
 \caption{Trace Between Requirements and Modules}
 \label{TblRT}
 \end{table}
 
+% Traceability between Anticipated Changes and Modules
 \begin{table}[H]
 \centering
 \begin{tabular}{p{0.2\textwidth} p{0.6\textwidth}}
 \toprule
 \textbf{AC} & \textbf{Modules}\\
 \midrule
-\acref{acHardware} & \mref{mHH}\\
-\acref{acInput} & \mref{mInput}\\
-\acref{acParams} & \mref{mParams}\\
-\acref{acVerify} & \mref{mVerify}\\
-\acref{acOutput} & \mref{mOutput}\\
-\acref{acVerifyOut} & \mref{mVerifyOut}\\
-\acref{acODEs} & \mref{mODEs}\\
-\acref{acEnergy} & \mref{mEnergy}\\
-\acref{acControl} & \mref{mControl}\\
-\acref{acSeqDS} & \mref{mSeqDS}\\
-\acref{acSolver} & \mref{mSolver}\\
-\acref{acPlot} & \mref{mPlot}\\
+\acref{acOCR} & M4\\
+\acref{acStorage} & M4\\
+\acref{acNotification} & M5\\
+\acref{acAuth} & M6\\
+\acref{acUI} & M2\\
+\acref{acDatabase} & M7\\
+\acref{acWorkflow} & M3\\
+\acref{acAPIs} & M3, M5\\
 \bottomrule
 \end{tabular}
 \caption{Trace Between Anticipated Changes and Modules}
@@ -351,53 +405,56 @@ R11 & \mref{mOutput}, \mref{mODEs}, \mref{mEnergy}, \mref{mControl}\\
 
 \section{Use Hierarchy Between Modules} \label{SecUse}
 
-In this section, the uses hierarchy between modules is
-provided. \citet{Parnas1978} said of two programs A and B that A {\em uses} B if
-correct execution of B may be necessary for A to complete the task described in
-its specification. That is, A {\em uses} B if there exist situations in which
-the correct functioning of A depends upon the availability of a correct
-implementation of B.  Figure \ref{FigUH} illustrates the use relation between
-the modules. It can be seen that the graph is a directed acyclic graph
-(DAG). Each level of the hierarchy offers a testable and usable subset of the
-system, and modules in the higher level of the hierarchy are essentially simpler
-because they use modules from the lower levels.
-
-\wss{The uses relation is not a data flow diagram.  In the code there will often
-be an import statement in module A when it directly uses module B.  Module B
-provides the services that module A needs.  The code for module A needs to be
-able to see these services (hence the import statement).  Since the uses
-relation is transitive, there is a use relation without an import, but the
-arrows in the diagram typically correspond to the presence of import statement.}
-
-\wss{If module A uses module B, the arrow is directed from A to B.}
-
-\begin{figure}[H]
-\centering
-%\includegraphics[width=0.7\textwidth]{UsesHierarchy.png}
-\caption{Use hierarchy among modules}
-\label{FigUH}
-\end{figure}
-
-%\section*{References}
+In this section, the uses hierarchy between modules is provided. \citet{Parnas1978} said of two programs A and B that A {\em uses} B if correct execution of B may be necessary for A to complete the task described in its specification. That is, A {\em uses} B if there exist situations in which the correct functioning of A depends upon the availability of a correct implementation of B. Figure \ref{FigUH} illustrates the use relation between the modules. It can be seen that the graph is a directed acyclic graph (DAG). Each level of the hierarchy offers a testable and usable subset of the system, and modules in the higher level of the hierarchy are essentially simpler because they use modules from the lower levels.
 
 \section{User Interfaces}
 
-\wss{Design of user interface for software and hardware.  Attach an appendix if
-needed. Drawings, Sketches, Figma}
+The user interface will be designed as a responsive web application using Next.js/React with NextUI components and TailwindCSS for styling. Key interface components include:
+
+\begin{itemize}
+\item \textbf{Login Portal}: Role-based access with McMaster SSO integration
+\item \textbf{Club Member Dashboard}: View budget, submit requests, track status
+\item \textbf{Reimbursement Submission Form}: Upload receipts, enter expense details
+\item \textbf{Admin Review Panel}: Approve/reject requests, manage clubs/users
+\item \textbf{Audit Trail Viewer}: Access logs and financial reports
+\end{itemize}
+
+The interface will follow MES branding guidelines and WCAG 2.1 AA accessibility standards.
 
 \section{Design of Communication Protocols}
 
-\wss{If appropriate}
+The system will use the following communication protocols:
+
+\begin{itemize}
+\item \textbf{RESTful APIs}: For frontend-backend communication using JSON format
+\item \textbf{HTTPS/TLS 1.2+}: For all network communications to ensure security
+\item \textbf{JWT Tokens}: For authentication and session management
+\item \textbf{WebSockets}: Optional for real-time notifications (future enhancement)
+\item \textbf{SMTP/Email API}: For notification delivery to users
+\end{itemize}
 
 \section{Timeline}
 
-\wss{Schedule of tasks and who is responsible}
+The development timeline is structured as follows:
 
-\wss{You can point to GitHub if this information is included there}
+\begin{itemize}
+\item \textbf{March 2026}: Complete module implementation and unit testing
+\item \textbf{April 2026}: Integration testing and security review
+\item \textbf{May 2026}: User acceptance testing and deployment to staging
+\item \textbf{June 2026}: Production deployment and documentation handover
+\end{itemize}
 
-\bibliographystyle {plainnat}
-\bibliography{../../../refs/References}
+Team responsibilities:
+\begin{itemize}
+\item \textbf{Zhenia Sigayev}: Authentication Module (M6), Audit Logging (M8)
+\item \textbf{Justin Ho}: User Interface Module (M2), Styling and Accessibility
+\item \textbf{Thomas Wang}: Request Handler Module (M3), Business Logic
+\item \textbf{Michael Shi}: Data Model Module (M7), Database Design
+\item \textbf{Johnny Qu}: Receipt Processing (M4), Notification Module (M5)
+\item \textbf{All}: Integration testing, documentation, and deployment
+\end{itemize}
 
-\newpage{}
+
+\newpage
 
 \end{document}
