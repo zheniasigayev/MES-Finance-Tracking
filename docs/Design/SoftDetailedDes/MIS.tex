@@ -21,12 +21,12 @@
 \usepackage{fullpage}
 
 \hypersetup{
-bookmarks=true,     % show bookmarks bar?
-colorlinks=true,       % false: boxed links; true: colored links
-linkcolor=red,          % color of internal links (change box color with linkbordercolor)
-citecolor=blue,      % color of links to bibliography
-filecolor=magenta,  % color of file links
-urlcolor=cyan          % color of external links
+bookmarks=true,
+colorlinks=true,
+linkcolor=red,
+citecolor=blue,
+filecolor=magenta,
+urlcolor=cyan
 }
 
 \usepackage{array}
@@ -35,6 +35,17 @@ urlcolor=cyan          % color of external links
 
 \input{../../Comments}
 \input{../../Common}
+
+% Counters and helpers reused from the Module Guide for referencing AC/UC/M ids
+\newcounter{acnum}
+\newcommand{\actheacnum}{AC\theacnum}
+\newcommand{\acref}[1]{AC\ref{#1}}
+\newcounter{ucnum}
+\newcommand{\uctheucnum}{UC\theucnum}
+\newcommand{\uref}[1]{UC\ref{#1}}
+\newcounter{mnum}
+\newcommand{\mthemnum}{M\themnum}
+\newcommand{\mref}[1]{M\ref{#1}}
 
 \begin{document}
 
@@ -62,9 +73,27 @@ Date 2 & 1.1 & Notes\\
 
 \section{Symbols, Abbreviations and Acronyms}
 
-See SRS Documentation at \wss{give url}
+The base set of abbreviations is defined in the Software Requirements Specification (SRS) for \progname{}. Additional terms that appear for the first time in this MIS are summarized in Table~\ref{TblSymbols}.
 
-\wss{Also add any additional symbols, abbreviations or acronyms}
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{l l}
+\toprule
+\textbf{Term} & \textbf{Description}\\
+\midrule
+JWT & JSON Web Token used for representing authenticated sessions\\
+OCR & Optical Character Recognition service used for receipt extraction\\
+SLA & Service Level Agreement metrics that drive \texttt{SaL-*} requirements\\
+SSO & Single Sign-On workflow backed by the McMaster identity provider\\
+DOM & Browser Document Object Model exposed to the UI layer\\
+IdP & Identity Provider for authentication\\
+Idempotency Key & Unique token that prevents duplicate submissions (used in APIs)\\
+\bottomrule
+\end{tabular}
+\caption{Additional abbreviations used in the MIS}
+\label{TblSymbols}
+\end{table}
 
 \newpage
 
@@ -76,113 +105,146 @@ See SRS Documentation at \wss{give url}
 
 \section{Introduction}
 
-The following document details the Module Interface Specifications for
-\wss{Fill in your project name and description}
+\progname{} (the MES Finance Tracking Platform) modernizes the reimbursement workflow for MES clubs by centralizing submissions, approvals, and record keeping. This Module Interface Specification (MIS) translates the problem narrative in the Problem Statement and Development Plan, together with the requirements captured in the SRS, into precise interfaces for every module defined in the Module Guide (MG). Each specification details the exported syntax and semantics so development teams can implement, test, and integrate their assigned module without ambiguity.
 
-Complementary documents include the System Requirement Specifications
-and Module Guide.  The full documentation and implementation can be
-found at \url{...}.  \wss{provide the url for your repo}
+Complementary documents include the SRS for behavioural intent and the MG for architectural decomposition. The latest implementation and documentation set are hosted at \url{https://github.com/McMaster-Engineering-Society/MES-Finance-Tracking}.
 
 \section{Notation}
 
-\wss{You should describe your notation.  You can use what is below as
-  a starting point.}
+The structure of the MIS for modules follows \citet{HoffmanAndStrooper1995}, with the adaptation that template modules follow \citet{GhezziEtAl2003}. The mathematical notation uses the conventions from Chapter~3 of \citet{HoffmanAndStrooper1995}. The operator `:=` denotes simultaneous assignment and conditional rules follow $(c_1 \Rightarrow r_1 \mid \dots \mid c_n \Rightarrow r_n)$.
 
-The structure of the MIS for modules comes from \citet{HoffmanAndStrooper1995},
-with the addition that template modules have been adapted from
-\cite{GhezziEtAl2003}.  The mathematical notation comes from Chapter 3 of
-\citet{HoffmanAndStrooper1995}.  For instance, the symbol := is used for a
-multiple assignment statement and conditional rules follow the form $(c_1
-\Rightarrow r_1 | c_2 \Rightarrow r_2 | ... | c_n \Rightarrow r_n )$.
+The primitive data types used by \progname{} are listed in Table~\ref{TblPrimitiveTypes}. Derived data types are defined in Section~\ref{SecDerivedTypes}. Sequences are lists whose elements share a type and are denoted $\langle \rangle$. Strings are sequences of characters. Tuples are ordered collections that may combine heterogeneous types. $\mathcal{P}(X)$ denotes the power set of $X$.
 
-The following table summarizes the primitive data types used by \progname. 
-
-\begin{center}
+\begin{table}[h]
+\centering
 \renewcommand{\arraystretch}{1.2}
-\noindent 
-\begin{tabular}{l l p{7.5cm}} 
-\toprule 
-\textbf{Data Type} & \textbf{Notation} & \textbf{Description}\\ 
+\begin{tabular}{l l p{7.5cm}}
+\toprule
+\textbf{Data Type} & \textbf{Notation} & \textbf{Description}\\
 \midrule
-character & char & a single symbol or digit\\
-integer & $\mathbb{Z}$ & a number without a fractional component in (-$\infty$, $\infty$) \\
-natural number & $\mathbb{N}$ & a number without a fractional component in [1, $\infty$) \\
-real & $\mathbb{R}$ & any number in (-$\infty$, $\infty$)\\
+character & char & A single symbol or digit\\
+integer & $\mathbb{Z}$ & Whole numbers in $(-\infty, \infty)$\\
+natural number & $\mathbb{N}$ & Whole numbers in $[0, \infty)$\\
+real & $\mathbb{R}$ & Real numbers in $(-\infty, \infty)$\\
+boolean & bool & $\{\texttt{true}, \texttt{false}\}$\\
 \bottomrule
-\end{tabular} 
-\end{center}
+\end{tabular}
+\caption{Primitive data types}
+\label{TblPrimitiveTypes}
+\end{table}
 
-\noindent
-The specification of \progname \ uses some derived data types: sequences, strings, and
-tuples. Sequences are lists filled with elements of the same data type. Strings
-are sequences of characters. Tuples contain a list of values, potentially of
-different types. In addition, \progname \ uses functions, which
-are defined by the data types of their inputs and outputs. Local functions are
-described by giving their type signature followed by their specification.
+\subsection{Core Abstract Data Types}
+\label{SecDerivedTypes}
+
+Identifiers are modeled as opaque strings (UUIDs) to avoid leaking storage details:
+
+\begin{description}
+\item[UserID, ClubID, RequestID, ReceiptID, NotificationID, AuditID:] Unique strings identifying the respective domain concept.
+\item[SessionToken, RefreshToken:] Signed strings that represent authenticated sessions per \texttt{ACS-*}.
+\item[Timestamp:] UTC instant in ISO~8601 format.
+\item[URI:] Locator of a resource accessible through HTTPS or object storage.
+\item[Binary:] Sequence of bytes.
+\item[Money:] Tuple $(amount \in \mathbb{R}, currency \in \text{ISO4217})$ with precision constraints from \texttt{PRE-1}.
+\item[CredentialInput:] Structure containing the SSO provider identifier and opaque credential payload delivered by the browser.
+\item[LineItem:] $(description: \text{String}, quantity \in \mathbb{N}^+, unitCost \in \mathbb{R}_{\geq 0})$.
+\item[SecretKey/SecretValue:] Strings describing infrastructure secrets.
+\end{description}
+
+Composite records used throughout the MIS are:
+
+\begin{itemize}
+\item UserContext $=(userId: \text{UserID}, role: \text{Role}, clubs: \mathcal{P}(\text{ClubID}), session: \text{SessionToken})$.
+\item RequestDraft $=(clubId, amount: \text{Money}, expenseDate: \text{Timestamp}, category: \text{String}, description: \text{String}, lineItems: \langle \text{LineItem} \rangle, receipts: \langle \text{ReceiptID} \rangle)$.
+\item RequestRecord extends RequestDraft with $(requestId, status: \text{RequestStatus}, submittedBy: \text{UserID}, createdAt: \text{Timestamp}, updatedAt: \text{Timestamp}, timeline: \langle \text{StatusChange} \rangle)$.
+\item RequestSummary is the projection $(requestId, clubId, status, amount, createdAt, updatedAt)$ for list views.
+\item RequestFilter $=(clubIds: \mathcal{P}(\text{ClubID}), statuses: \mathcal{P}(\text{RequestStatus}), dateRange: \text{TimeRange}, searchTerm: \text{String})$.
+\item RequestPatch stores partial updates: $(fields: \text{Map<String, Any>}, receipts: \langle \text{ReceiptID} \rangle)$.
+\item ReceiptUploadMetadata $=(filename, contentType, byteSize \leq 10\,\text{MB}, sourceDevice)$.
+\item ReceiptMetadata $=(receiptId, requestId?, storageUri: \text{URI}, checksum: \text{String}, ocrData: \text{Map<String, String>}, uploadedAt: \text{Timestamp})$.
+\item BudgetSnapshot $=(clubId, totalAllocated: \text{Money}, totalSpent: \text{Money}, pendingAmount: \text{Money}, lastUpdated: \text{Timestamp})$.
+\item WorkflowEvent $=(requestId, previousStatus, newStatus, actor: \text{UserID}, timestamp: \text{Timestamp}, comment: \text{String})$.
+\item NotificationTemplate $=(templateId, channel: \text{NotificationChannel}, subject, body, placeholders: \mathcal{P}(\text{String}))$.
+\item PendingNotification $=(notificationId, event: \text{WorkflowEvent}, targets: \langle \text{UserID} \rangle, template: \text{NotificationTemplate}, earliestSend: \text{Timestamp}, status: \text{NotificationStatus})$.
+\item DispatchReport $=(sent: \langle \text{NotificationID} \rangle, failed: \langle (\text{NotificationID}, \text{ErrorCode}) \rangle)$.
+\item WorkflowConfig $=(allowedTransitions: \mathcal{P}(\text{RequestStatus} \times \text{RequestStatus}), budgetRules: \text{Map<String, Any>})$.
+\item StatusChange $=(status: \text{RequestStatus}, timestamp, actor, notes: \text{String})$.
+\item AuditEvent $=(auditId, actor: \text{UserID}, action: \text{String}, subjectId: \text{String}, metadata: \text{Map<String, String}>, timestamp)$.
+\item AuditFilter $=(actors: \mathcal{P}(\text{UserID}), actions: \mathcal{P}(\text{String}), subjects: \mathcal{P}(\text{String}), timeRange: \text{TimeRange})$.
+\item AuditExport $=(content: \text{Binary}, format: \text{ExportFormat}, generatedAt: \text{Timestamp})$.
+\item DeploymentConfig $=(region: \text{String}, environment: \{\texttt{local}, \texttt{staging}, \texttt{prod}\}, featureFlags: \text{Map<String, bool>})$.
+\item RuntimeContext $=(processId: \text{String}, networkAdapters: \mathcal{P}(\text{String}), secrets: \mathcal{P}(\text{SecretKey}))$.
+\item MetricRecord $=(name: \text{String}, value: \mathbb{R}, timestamp: \text{Timestamp}, labels: \text{Map<String, String>})$.
+\item TimeRange $=(start: \text{Timestamp}, end: \text{Timestamp})$ with $start \leq end$.
+\end{itemize}
+
+Enumerations:
+
+\begin{itemize}
+\item Role $::= \{\texttt{club\_member}, \texttt{club\_exec}, \texttt{mes\_reviewer}, \texttt{mes\_admin}\}$.
+\item RequestStatus $::= \{\texttt{Draft}, \texttt{Submitted}, \texttt{UnderReview}, \texttt{Approved}, \texttt{Rejected}, \texttt{Reimbursed}\}$.
+\item ReminderType $::= \{\texttt{SubmissionReminder}, \texttt{ReviewReminder}, \texttt{BudgetThreshold}\}$.
+\item NotificationChannel $::= \{\texttt{Email}, \texttt{InApp}\}$ and NotificationStatus $::= \{\texttt{Pending}, \texttt{Sent}, \texttt{Failed}\}$.
+\item ExportFormat $::= \{\texttt{CSV}, \texttt{JSON}, \texttt{PDF}\}$.
+\item ErrorCode $::= \{\texttt{Unauthorized}, \texttt{ValidationFailed}, \texttt{NotFound}, \texttt{Conflict}, \texttt{StorageFailure}, \texttt{ExternalFailure}, \texttt{RuntimeFault}\}$.
+\end{itemize}
+
+The generic result type is $Result(T) ::= Success(value: T) \mid Failure(code: \text{ErrorCode}, message: \text{String})$. The special type \texttt{Unit} represents the empty tuple.
 
 \section{Module Decomposition}
 
-The following table is taken directly from the Module Guide document for this project.
+The MIS follows the module hierarchy validated in the MG (Table~\ref{TblMISMH}). Only the leaf modules require implementation effort, but the hardware-hiding module is documented for completeness.
 
-\begin{table}[h!]
+\begin{table}[h]
 \centering
 \begin{tabular}{p{0.3\textwidth} p{0.6\textwidth}}
 \toprule
 \textbf{Level 1} & \textbf{Level 2}\\
 \midrule
-
-{Hardware-Hiding} & ~ \\
+Hardware-Hiding Module & \textbullet~M1: Hardware Hiding Module\\
 \midrule
-
-\multirow{7}{0.3\textwidth}{Behaviour-Hiding} & Input Parameters\\
-& Output Format\\
-& Output Verification\\
-& Temperature ODEs\\
-& Energy Equations\\ 
-& Control Module\\
-& Specification Parameters Module\\
+Behaviour-Hiding Module & \textbullet~M2: User Interface Module\\
+& \textbullet~M3: Request Handler Module\\
+& \textbullet~M4: Receipt Processing Module\\
+& \textbullet~M5: Notification Module\\
 \midrule
-
-\multirow{3}{0.3\textwidth}{Software Decision} & {Sequence Data Structure}\\
-& ODE Solver\\
-& Plotting\\
+Software Decision Module & \textbullet~M6: Authentication Module\\
+& \textbullet~M7: Data Model Module\\
+& \textbullet~M8: Audit Logging Module\\
 \bottomrule
-
 \end{tabular}
-\caption{Module Hierarchy}
-\label{TblMH}
+\caption{Module hierarchy followed in the MIS}
+\label{TblMISMH}
 \end{table}
 
 \newpage
-~\newpage
 
-\section{MIS of \wss{Module Name}} \label{Module} \wss{Use labels for
-  cross-referencing}
-
-\wss{You can reference SRS labels, such as R\ref{R_Inputs}.}
-
-\wss{It is also possible to use \LaTeX for hypperlinks to external documents.}
+\section{MIS of Hardware Hiding Module (M1)}\label{Sec:M1}
 
 \subsection{Module}
 
-\wss{Short name for the module}
+The Hardware Hiding Module encapsulates the Node.js runtime, Vercel/AWS hosting environment, managed object storage, and messaging infrastructure. Its secret is the choice of infrastructure provider (\acref{acStorage}, \acref{acAPIs}) so higher-level modules can treat compute, storage, and external connectivity as abstract capabilities.
 
 \subsection{Uses}
 
+This module is provided by the operating system and cloud platform; it does not use any modules defined within this project.
 
 \subsection{Syntax}
 
 \subsubsection{Exported Constants}
 
+None. Deployment details are supplied at runtime through configuration.
+
 \subsubsection{Exported Access Programs}
 
 \begin{center}
-\begin{tabular}{p{2cm} p{4cm} p{4cm} p{2cm}}
-\hline
-\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
-\hline
-\wss{accessProg} & - & - & - \\
-\hline
+\begin{tabular}{p{3cm} p{5cm} p{4cm} p{2.5cm}}
+\toprule
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\midrule
+provisionRuntime & depConfig: DeploymentConfig & RuntimeContext & RuntimeFault\\
+accessSecret & key: SecretKey & Result(SecretValue) & RuntimeFault\\
+emitTelemetry & metric: MetricRecord & Result(Unit) & RuntimeFault\\
+\bottomrule
 \end{tabular}
 \end{center}
 
@@ -190,44 +252,710 @@ The following table is taken directly from the Module Guide document for this pr
 
 \subsubsection{State Variables}
 
-\wss{Not all modules will have state variables.  State variables give the module
-  a memory.}
+\begin{itemize}
+\item runtimeContext: RuntimeContext --- represents allocated compute, networking, and filesystem resources.
+\item secretCache: Map(SecretKey, SecretValue) --- cached secrets fetched from the platform vault.
+\item telemetryBuffer: $\langle$MetricRecord$\rangle$ --- batch of metrics awaiting transmission to the provider.
+\end{itemize}
 
 \subsubsection{Environment Variables}
 
-\wss{This section is not necessary for all modules.  Its purpose is to capture
-  when the module has external interaction with the environment, such as for a
-  device driver, screen interface, keyboard, file, etc.}
+\begin{itemize}
+\item providerApi --- control plane for Vercel/AWS.
+\item systemClock --- hardware time source used for TLS token expiry.
+\item networkFabric --- physical network links and load balancers.
+\end{itemize}
 
 \subsubsection{Assumptions}
 
-\wss{Try to minimize assumptions and anticipate programmer errors via
-  exceptions, but for practical purposes assumptions are sometimes appropriate.}
+\begin{itemize}
+\item The cloud provider guarantees HTTPS/TLS~1.2+ as mandated by \texttt{INT-2}.
+\item Secrets accessed via accessSecret are rotated and scoped by operations so that leakage cannot violate \texttt{PRI-2}.
+\item providerApi enforces quotas; higher modules are expected to use retry semantics defined in \texttt{FLT-3}.
+\end{itemize}
 
 \subsubsection{Access Routine Semantics}
 
-\noindent \wss{accessProg}():
+\noindent provisionRuntime$(depConfig)$:
 \begin{itemize}
-\item transition: \wss{if appropriate} 
-\item output: \wss{if appropriate} 
-\item exception: \wss{if appropriate} 
+\item transition: runtimeContext is initialized with compute and networking handles derived from depConfig; telemetryBuffer is reset.
+\item output: returns the RuntimeContext describing the provisioned environment.
+\item exception: raises RuntimeFault if providerApi rejects the configuration.
 \end{itemize}
 
-\wss{A module without environment variables or state variables is unlikely to
-  have a state transition.  In this case a state transition can only occur if
-  the module is changing the state of another module.}
+\noindent accessSecret$(key)$:
+\begin{itemize}
+\item transition: secretCache[key] := providerApi.fetch(key) if not cached.
+\item output: Success(secretCache[key]).
+\item exception: Failure(RuntimeFault) if providerApi denies access or the key is missing.
+\end{itemize}
 
-\wss{Modules rarely have both a transition and an output.  In most cases you
-  will have one or the other.}
+\noindent emitTelemetry$(metric)$:
+\begin{itemize}
+\item transition: metric appended to telemetryBuffer; buffer is flushed asynchronously.
+\item output: Success(Unit) once provider acknowledgement is received.
+\item exception: Failure(RuntimeFault) if the telemetry endpoint is unavailable for longer than the SLA retry window.
+\end{itemize}
 
 \subsubsection{Local Functions}
 
-\wss{As appropriate} \wss{These functions are for the purpose of specification.
-  They are not necessarily something that is going to be implemented
-  explicitly.  Even if they are implemented, they are not exported; they only
-  have local scope.}
+flushTelemetryBuffer(): pushes telemetryBuffer to providerApi in bounded batches.
 
-\newpage
+\section{MIS of User Interface Module (M2)}\label{Sec:M2}
+
+\subsection{Module}
+
+The User Interface Module renders the responsive web application (Next.js/React with NextUI and TailwindCSS) that satisfies \texttt{FRQ-1}--\texttt{FRQ-6}, \texttt{APP-*}, \texttt{ABL-*}, and \texttt{EUL-1}. It collects user input, orchestrates client-side validation, and invokes back-end access programs exposed by the lower modules.
+
+\subsection{Uses}
+
+M2 uses M3 for request orchestration, M4 for secure receipt streaming, and M6 for session establishment.
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+None. Styling tokens and localization strings are maintained separately.
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{3.2cm} p{5.5cm} p{3.5cm} p{2.2cm}}
+\toprule
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\midrule
+handleLogin & credentials: CredentialInput & Result(UserContext) & Unauthorized\\
+renderDashboard & ctx: UserContext & ViewModel & Unauthorized\\
+submitRequest & ctx: UserContext, draft: RequestDraft, receiptIds: $\langle$ReceiptID$\rangle$ & Result(RequestID) & ValidationFailed\\
+fetchRequestFeed & ctx: UserContext, filter: RequestFilter & Result($\langle$RequestSummary$\rangle$) & Unauthorized\\
+downloadReceipt & ctx: UserContext, requestId: RequestID, receiptId: ReceiptID & Result(ReceiptBinary) & NotFound\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+\item sessionCache: Map(SessionToken, UserContext) --- mirrors active sessions for optimistic UI updates.
+\item draftCache: Map(UserID, RequestDraft) --- stores unsent drafts to satisfy \texttt{FLT-2}.
+\item viewState: Map(UserID, ViewModel) --- last rendered dashboard per user for accessibility testing.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+\item browserWindow --- DOM exposed by the client device.
+\item localStorage --- persistent key-value storage within the browser sandbox.
+\item deviceCamera --- optional capture device for receipt uploads on mobile.
+\end{itemize}
+
+\subsubsection{Assumptions}
+
+\begin{itemize}
+\item Client browsers support ES2020, Service Workers, and WCAG 2.1 AA features per \texttt{ABL-*}.
+\item Network connectivity is sufficient to maintain HTTPS sessions; degraded states are surfaced via \texttt{FLT-1}.
+\item CredentialInput originates from the official McMaster IdP widget (no manual password handling in the UI).
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent handleLogin$(credentials)$:
+\begin{itemize}
+\item transition: delegates to M6 to exchange CredentialInput for SessionToken; sessionCache[session] := context on success.
+\item output: Success(UserContext) populated from M6 per \texttt{FRQ-6}.
+\item exception: Failure(Unauthorized) if M6 rejects the credentials or device clock drift invalidates the SSO assertion.
+\end{itemize}
+
+\noindent renderDashboard$(ctx)$:
+\begin{itemize}
+\item transition: none (rendering is pure with respect to module state, aside from updating viewState[ctx.userId]).
+\item output: ViewModel containing request summaries from M3 and budget widgets from M3/M7, satisfying \texttt{FRQ-3} and \texttt{APP-*}.
+\item exception: Unauthorized if ctx.session is not present in sessionCache.
+\end{itemize}
+
+\noindent submitRequest$(ctx, draft, receiptIds)$:
+\begin{itemize}
+\item transition: validates draft locally (field constraints, duplication checks), then calls M3::createRequest; draftCache entry for ctx.userId is cleared upon success.
+\item output: Success(RequestID) that tracks the submission required by \texttt{FRQ-1}.
+\item exception: ValidationFailed when client-side validation or M3 rejects the payload; draftCache retains the last attempt to support \texttt{FLT-2}.
+\end{itemize}
+
+\noindent fetchRequestFeed$(ctx, filter)$:
+\begin{itemize}
+\item transition: none; passes filter to M3 and updates viewState.
+\item output: Success list limited to requests the user role can access (\texttt{FRQ-6}).
+\item exception: Unauthorized when ctx.role lacks permission for the requested clubs.
+\end{itemize}
+
+\noindent downloadReceipt$(ctx, requestId, receiptId)$:
+\begin{itemize}
+\item transition: uses M3 for authorization and M4 for the binary stream; no local state mutation.
+\item output: Success(ReceiptBinary) streamed to the browser to satisfy \texttt{FRQ-4}.
+\item exception: NotFound if the receipt does not belong to the given request or has been purged per retention rules.
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+validateDraft(draft): ensures required fields are present, totals match \texttt{PRE-1}, and attachments meet byte limits before delegating to M3.
+
+\section{MIS of Request Handler Module (M3)}\label{Sec:M3}
+
+\subsection{Module}
+
+The Request Handler Module encapsulates the business logic for reimbursement workflows (submission, review, approval, rejection, reimbursement). It enforces the policies tied to \texttt{FRQ-1}--\texttt{FRQ-6}, \texttt{SAF-*}, \acref{acWorkflow}, and coordinates persistence, audit logging, and notifications.
+
+\subsection{Uses}
+
+M3 uses M4 for receipt validation, M5 for notification fan-out, M6 to verify caller context, M7 for persistent storage, and M8 for audit trails.
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+\begin{itemize}
+\item submissionWindow := 90 days --- maximum age of receipts per MES policy.
+\item maxDraftsPerUser := 25 --- soft limit used by the rate limiter.
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{3.5cm} p{5.5cm} p{3.2cm} p{2.2cm}}
+\toprule
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\midrule
+createRequest & ctx: UserContext, draft: RequestDraft & Result(RequestRecord) & ValidationFailed\\
+transitionRequest & ctx: UserContext, requestId: RequestID, newStatus: RequestStatus, notes: String & Result(RequestRecord) & Unauthorized\\
+getRequests & ctx: UserContext, filter: RequestFilter & Result($\langle$RequestRecord$\rangle$) & Unauthorized\\
+getBudgetPosition & ctx: UserContext, clubId: ClubID & Result(BudgetSnapshot) & Unauthorized\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+\item workflowRules: WorkflowConfig --- allowed transitions and budget thresholds for \texttt{SAF-1}.
+\item rateLimiter: Map(UserID, ($\mathbb{N}$, Timestamp)) --- counts submissions per rolling window.
+\item requestCache: Map(RequestID, RequestRecord) --- short-lived cache for repeated reads (max 5 minutes).
+\end{itemize}
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+\item systemClock --- used for SLA timing of \texttt{SaL-1}.
+\item idempotencyStore --- per-request deduplication store using Idempotency Keys.
+\end{itemize}
+
+\subsubsection{Assumptions}
+
+\begin{itemize}
+\item UserContext passed in has already been validated by M6 and includes RBAC claims.
+\item ReceiptIDs listed in draft were created by M4 for the same club.
+\item All persistence errors propagated from M7 are retried based on \texttt{FLT-3}.
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent createRequest$(ctx, draft)$:
+\begin{itemize}
+\item transition: assertRole(ctx, \{\texttt{club\_member}, \texttt{club\_exec}\}); ensure draft.expenseDate lies within submissionWindow; call M4 to confirm receipt associations; persist new RequestRecord via M7; append audit entry through M8; enqueue notifications in M5 for reviewers.
+\item output: Success(RequestRecord) with status \texttt{Submitted}.
+\item exception: ValidationFailed when invariants fail, StorageFailure if M7 rejects the insertion after retries.
+\end{itemize}
+
+\noindent transitionRequest$(ctx, requestId, newStatus, notes)$:
+\begin{itemize}
+\item transition: assertRole for reviewer/administrator; verify $(currentStatus, newStatus) \in workflowRules.allowedTransitions$; persist state change via M7; append StatusChange to timeline; emit audit event (M8) and notifications (M5).
+\item output: Success(updated RequestRecord).
+\item exception: Unauthorized if the user lacks permission or transition invalid; Conflict if the record was concurrently modified.
+\end{itemize}
+
+\noindent getRequests$(ctx, filter)$:
+\begin{itemize}
+\item transition: none (read-only); requestCache warmed for repeated access.
+\item output: Success list filtered for clubs the caller can access (\texttt{FRQ-6}), supporting dashboards per \texttt{FRQ-3}.
+\item exception: Unauthorized when filter requests clubs outside ctx.clubs and ctx.role is not reviewer/admin.
+\end{itemize}
+
+\noindent getBudgetPosition$(ctx, clubId)$:
+\begin{itemize}
+\item transition: none; fetches from M7 and optionally updates requestCache for aggregated fields.
+\item output: Success BudgetSnapshot satisfying transparency goals in the Problem Statement.
+\item exception: Unauthorized when ctx lacks rights for the club.
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+assertRole(ctx, allowedRoles): verifies RBAC claims and throws Unauthorized otherwise.
+
+emitAudit(event): wraps M8::recordEvent with MES-specific metadata (clubId, requestId, role).
+
+\section{MIS of Receipt Processing Module (M4)}\label{Sec:M4}
+
+\subsection{Module}
+
+The Receipt Processing Module stores, secures, and enriches digital receipts. It enforces \texttt{FRQ-4}, \texttt{SaL-3}, \texttt{PRI-1}, \acref{acOCR}, and \acref{acStorage} by abstracting storage/OCR decisions from other modules.
+
+\subsection{Uses}
+
+M4 uses M1 for file/object storage and managed OCR, and M7 for persisting metadata links.
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+\begin{itemize}
+\item maxFileSize := 10 MB --- aligns with \texttt{SaL-3}.
+\item allowedMimeTypes := \{\texttt{image/png}, \texttt{image/jpeg}, \texttt{application/pdf}\}.
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{3.5cm} p{5.5cm} p{3.2cm} p{2.2cm}}
+\toprule
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\midrule
+archiveReceipt & ctx: UserContext, payload: ReceiptBinary, meta: ReceiptUploadMetadata & Result(ReceiptID) & ValidationFailed\\
+extractReceiptData & receiptId: ReceiptID & Result(ReceiptMetadata) & ExternalFailure\\
+streamReceipt & ctx: UserContext, receiptId: ReceiptID & Result(ReceiptBinary) & Unauthorized\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+\item storageBucket: URI --- base location for immutable receipt blobs.
+\item ocrConfig: Map(String, String) --- credentials and endpoint details for the OCR provider.
+\item checksumIndex: Map(ReceiptID, String) --- SHA-256 digest for tamper detection.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+\item objectStore --- managed storage (e.g., S3) accessed through M1.
+\item ocrService --- external OCR API invoked through M1 networking.
+\item virusScanner --- service used to reject unsafe uploads.
+\end{itemize}
+
+\subsubsection{Assumptions}
+
+\begin{itemize}
+\item Payloads forwarded by M2 already enforce client-side limits, but server-side size and type checks are authoritative.
+\item Storage URIs remain valid for the lifetime mandated by \texttt{LNG-1} unless purged per compliance.
+\item OCR provider SLA satisfies \texttt{SaL-3}; failures propagate as ExternalFailure.
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent archiveReceipt$(ctx, payload, meta)$:
+\begin{itemize}
+\item transition: validate ctx.role is authorized for the associated club; verify meta.byteSize $\leq$ maxFileSize and MIME type in allowedMimeTypes; scan payload; stream to objectStore via M1; persist metadata in M7; return assigned ReceiptID.
+\item output: Success(ReceiptID) linked to ctx.userId for traceability.
+\item exception: ValidationFailed if checks fail; StorageFailure when objectStore is unreachable.
+\end{itemize}
+
+\noindent extractReceiptData$(receiptId)$:
+\begin{itemize}
+\item transition: fetch blob from objectStore, invoke ocrService, update ReceiptMetadata.ocrData and timeline.
+\item output: Success updated metadata enabling auto-fill in M2 to reduce manual entry.
+\item exception: ExternalFailure when ocrService cannot parse the file after retry policy.
+\end{itemize}
+
+\noindent streamReceipt$(ctx, receiptId)$:
+\begin{itemize}
+\item transition: none; authorizes via M3 (request ownership) and streams binary from storageBucket.
+\item output: Success binary fulfilling \texttt{FRQ-4}.
+\item exception: Unauthorized if ctx lacks access or NotFound if metadata missing.
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+tagReceipt(meta, ctx): adds MES-specific tags (clubId, requestId) to object metadata for lifecycle policies.
+
+\section{MIS of Notification Module (M5)}\label{Sec:M5}
+
+\subsection{Module}
+
+The Notification Module encapsulates all outbound communication (email, in-app alerts) triggered by workflow events, reminders, and budget thresholds. It realizes \texttt{FRQ-3}, \texttt{IMM-2}, \texttt{FLT-3}, and ensures extensibility per \acref{acNotification}.
+
+\subsection{Uses}
+
+M5 uses M1 for channel delivery (SMTP/API gateways) and M7 for persisting notification state.
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+\begin{itemize}
+\item maxRetries := 3 --- aligns with \texttt{FLT-3}.
+\item reminderCadence := 14 days --- default spacing for SubmissionReminder messages.
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{3.5cm} p{5.5cm} p{3.2cm} p{2.2cm}}
+\toprule
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\midrule
+enqueueStatusNotification & event: WorkflowEvent, targets: $\langle$UserID$\rangle$ & Result(NotificationID) & ExternalFailure\\
+scheduleReminder & clubId: ClubID, reminderType: ReminderType & Result(NotificationID) & ValidationFailed\\
+dispatchPending & currentTime: Timestamp & DispatchReport & ExternalFailure\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+\item notificationQueue: $\langle$PendingNotification$\rangle$ --- ordered by earliestSend.
+\item templateCatalog: Map(String, NotificationTemplate) --- ensures consistent branding per \texttt{APP-*}.
+\item deliveryLog: Map(NotificationID, NotificationStatus) --- referenced by support staff per \texttt{SUP-2}.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+\item emailGateway --- transactional email service (e.g., SendGrid).
+\item inAppChannel --- WebSocket or SSE channel for future extensibility.
+\item jobScheduler --- cron-like service that invokes dispatchPending.
+\end{itemize}
+
+\subsubsection{Assumptions}
+
+\begin{itemize}
+\item Target user emails exist in M7 and are verified through M6.
+\item Channels use TLS and are rate-limited to comply with \texttt{IMM-2}.
+\item clock skew is negligible relative to reminderCadence.
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent enqueueStatusNotification$(event, targets)$:
+\begin{itemize}
+\item transition: select template based on event.newStatus; create PendingNotification entries persisted via M7; update notificationQueue.
+\item output: Success(NotificationID) representing the queued entry.
+\item exception: ExternalFailure when template rendering or persistence fails.
+\end{itemize}
+
+\noindent scheduleReminder$(clubId, reminderType)$:
+\begin{itemize}
+\item transition: compute earliestSend based on reminderCadence and existing PendingNotification entries; persist new entry referencing club leadership users.
+\item output: Success(NotificationID).
+\item exception: ValidationFailed when the club has no eligible recipients or reminder already pending.
+\end{itemize}
+
+\noindent dispatchPending$(currentTime)$:
+\begin{itemize}
+\item transition: for each notification with earliestSend $\leq$ currentTime, attempt delivery via channel defined in template; update deliveryLog and notificationQueue; retries scheduled per maxRetries.
+\item output: DispatchReport enumerating successes and failures for monitoring.
+\item exception: ExternalFailure when channel outages prevent delivery.
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+renderTemplate(template, event): substitutes placeholders with WorkflowEvent data, ensuring financial figures follow \texttt{PRE-1}.
+
+\section{MIS of Authentication Module (M6)}\label{Sec:M6}
+
+\subsection{Module}
+
+The Authentication Module manages identity verification, session issuance, and RBAC claims. It enforces \texttt{ACS-1}, \texttt{ACS-2}, \texttt{INT-2}, \texttt{PRI-2}, and isolates the decision captured by \acref{acAuth}.
+
+\subsection{Uses}
+
+M6 uses M1 for secure cryptographic primitives and secret storage, and M7 for persisting user profiles and role bindings.
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+\begin{itemize}
+\item sessionTTL := 12 hours --- maximum lifetime of an access token.
+\item refreshTTL := 14 days --- lifetime for refresh tokens.
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{3.5cm} p{5.5cm} p{3.2cm} p{2.2cm}}
+\toprule
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\midrule
+authenticate & credentials: CredentialInput & Result(UserContext) & Unauthorized\\
+validateSession & token: SessionToken & Result(UserContext) & Unauthorized\\
+refreshSession & refresh: RefreshToken & Result(SessionToken) & Unauthorized\\
+revokeSession & token: SessionToken & Result(Unit) & Unauthorized\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+\item sessionStore: Map(SessionToken, (UserID, expiry: Timestamp)) --- active sessions.
+\item refreshIndex: Map(RefreshToken, (UserID, expiry)) --- stored hashed refresh tokens.
+\item jwtKeyPair: (publicKey, privateKey) --- signing material for JWTs stored via M1 secrets.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+\item ssoProvider --- McMaster IdP endpoints.
+\item cryptoModule --- HMAC, RSA/ECDSA primitives provided by Node.js.
+\item systemClock --- used for TTL enforcement.
+\end{itemize}
+
+\subsubsection{Assumptions}
+
+\begin{itemize}
+\item CredentialInput arrives over HTTPS directly from the IdP component embedded in M2.
+\item User roles stored in M7 are consistent with MES governance.
+\item Clock skew between ssoProvider and the runtime does not exceed 2 minutes.
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent authenticate$(credentials)$:
+\begin{itemize}
+\item transition: call ssoProvider to validate the assertion; read user profile from M7; issue SessionToken and RefreshToken; persist to sessionStore/refreshIndex.
+\item output: Success(UserContext) containing RBAC claims for \texttt{FRQ-6}.
+\item exception: Unauthorized when IdP rejects the assertion or the account lacks MES affiliation.
+\end{itemize}
+
+\noindent validateSession$(token)$:
+\begin{itemize}
+\item transition: none beyond sliding-session logic (optional) to satisfy \texttt{INT-2}.
+\item output: Success(UserContext) if sessionStore[token] exists and not expired.
+\item exception: Unauthorized otherwise.
+\end{itemize}
+
+\noindent refreshSession$(refresh)$:
+\begin{itemize}
+\item transition: ensure refreshIndex entry is valid; issue new SessionToken; rotate refresh token.
+\item output: Success new SessionToken abiding by sessionTTL.
+\item exception: Unauthorized when refresh token missing or expired.
+\end{itemize}
+
+\noindent revokeSession$(token)$:
+\begin{itemize}
+\item transition: delete token from sessionStore and corresponding refresh entries; propagate revocation events to caches.
+\item output: Success(Unit), supporting forced logouts per \texttt{IMM-1}.
+\item exception: Unauthorized if token unknown (idempotent success is also acceptable).
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+buildUserContext(userRecord): constructs UserContext with clubs and roles from M7 while redacting PII.
+
+\section{MIS of Data Model Module (M7)}\label{Sec:M7}
+
+\subsection{Module}
+
+The Data Model Module encapsulates all persistent storage (MongoDB collections, indexes, transactions). It implements the schemas for users, clubs, budgets, requests, receipts, and audit artifacts, satisfying \texttt{PRI-1}, \texttt{SaL-1}, \texttt{CAP-*}, and the anticipated change \acref{acDatabase}.
+
+\subsection{Uses}
+
+M7 uses M1 for low-level file handles, network connectivity, encryption at rest, and backup primitives.
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+\begin{itemize}
+\item schemaVersion := 3 --- current semantic version of the database schema.
+\item defaultPageSize := 50 --- query pagination size for collection scans.
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{3.8cm} p{5.3cm} p{3.2cm} p{2.2cm}}
+\toprule
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\midrule
+insertRequestRecord & ctx: UserContext, draft: RequestDraft & Result(RequestRecord) & StorageFailure\\
+updateRequestRecord & requestId: RequestID, patch: RequestPatch & Result(RequestRecord) & StorageFailure\\
+queryRequests & filter: RequestFilter & Result($\langle$RequestRecord$\rangle$) & StorageFailure\\
+persistReceiptMetadata & meta: ReceiptMetadata & Result(ReceiptMetadata) & StorageFailure\\
+fetchBudgetSnapshot & clubId: ClubID & Result(BudgetSnapshot) & StorageFailure\\
+storeAuditEvent & event: AuditEvent & Result(AuditID) & StorageFailure\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+\item connectionPool --- handles to MongoDB nodes with automatic failover.
+\item collectionMap --- mapping of logical collections (requests, receipts, budgets, users, audits) to physical names.
+\item migrationHistory --- list of migration scripts applied up to schemaVersion.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+\item mongoCluster --- managed MongoDB service (Replica Set).
+\item storageEncryptionKey --- fetched from M1 secrets for Field Level Encryption.
+\item backupScheduler --- service that triggers snapshots.
+\end{itemize}
+
+\subsubsection{Assumptions}
+
+\begin{itemize}
+\item MongoDB provides ACID transactions for single-document writes, satisfying \texttt{PRI-1}.
+\item Indexes exist on \{clubId, status, createdAt\} to meet \texttt{SaL-1}.
+\item Connectivity to mongoCluster is stable; transient faults are retried before surfacing StorageFailure.
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent insertRequestRecord$(ctx, draft)$:
+\begin{itemize}
+\item transition: create RequestRecord with generated RequestID, status \texttt{Submitted}, metadata from ctx; insert into requests collection; update budget aggregates.
+\item output: Success persisted RequestRecord with createdAt timestamp.
+\item exception: StorageFailure if uniqueness constraints (requestId, receiptIds) would be violated.
+\end{itemize}
+
+\noindent updateRequestRecord$(requestId, patch)$:
+\begin{itemize}
+\item transition: apply patch fields (atomic update); maintain updatedAt timestamp and timeline.
+\item output: Success updated RequestRecord.
+\item exception: StorageFailure if the record is missing or write concern fails.
+\end{itemize}
+
+\noindent queryRequests$(filter)$:
+\begin{itemize}
+\item transition: none; executes aggregation pipeline based on filter with pagination.
+\item output: Success list ordered by createdAt descending.
+\item exception: StorageFailure if query planner fails or connection lost.
+\end{itemize}
+
+\noindent persistReceiptMetadata$(meta)$:
+\begin{itemize}
+\item transition: upsert metadata ensuring receiptId uniqueness; maintain indexes on checksum for deduplication.
+\item output: Success stored metadata.
+\item exception: StorageFailure on write concern errors.
+\end{itemize}
+
+\noindent fetchBudgetSnapshot$(clubId)$:
+\begin{itemize}
+\item transition: none; reads budgets collection and aggregates pending totals from requests.
+\item output: Success BudgetSnapshot used by M2 dashboards.
+\item exception: StorageFailure on read errors.
+\end{itemize}
+
+\noindent storeAuditEvent$(event)$:
+\begin{itemize}
+\item transition: insert audit entry and rotate partitions per retention policy.
+\item output: Success(AuditID) referencing the stored event.
+\item exception: StorageFailure when partition write fails.
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+ensureIndexes(): verifies critical indexes exist before accepting traffic (invoked at application startup).
+
+\section{MIS of Audit Logging Module (M8)}\label{Sec:M8}
+
+\subsection{Module}
+
+The Audit Logging Module records immutable evidence for user and system actions to satisfy \texttt{FRQ-5}, \texttt{AUD-1}, \texttt{AUD-2}, \texttt{SUP-2}, and regulatory expectations from MES. Its secret is the log storage format and retention policy.
+
+\subsection{Uses}
+
+M8 uses M1 for secure timestamping and immutable blob storage, and M7 for indexing audit metadata.
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+\begin{itemize}
+\item retentionPeriod := 7 years --- aligns with MES finance policy.
+\item exportChunkSize := 10{,}000 events per batch.
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{3.5cm} p{5.5cm} p{3.2cm} p{2.2cm}}
+\toprule
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\midrule
+recordEvent & ctx: UserContext, event: AuditEvent & Result(AuditID) & StorageFailure\\
+queryEvents & ctx: UserContext, filter: AuditFilter & Result($\langle$AuditEvent$\rangle$) & Unauthorized\\
+exportEvents & ctx: UserContext, range: TimeRange, format: ExportFormat & Result(AuditExport) & StorageFailure\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+\item retentionPolicy: Map(String, TimeRange) --- determines purge schedule per action type.
+\item signingKey: SecretKey --- used to sign audit digests.
+\item exportTracker: Map(UserID, Timestamp) --- throttles export frequency to prevent abuse.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+\item immutableStore --- write-once storage bucket for exported archives.
+\item monotonicClock --- ensures ordering for tamper detection.
+\item complianceQueue --- channel notifying MES admins about nearing retention cut-offs.
+\end{itemize}
+
+\subsubsection{Assumptions}
+
+\begin{itemize}
+\item Only users with role $\in \{\texttt{mes\_reviewer}, \texttt{mes\_admin}\}$ may call query/export routines.
+\item The storage medium provides append-only guarantees to preserve integrity.
+\item System clock monotonicity is enforced via NTP per \texttt{IMM-1}.
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent recordEvent$(ctx, event)$:
+\begin{itemize}
+\item transition: enrich event.metadata with ctx.role and request/club references; call M7::storeAuditEvent; sign digest and optionally forward to immutableStore; schedule purge job for retentionPeriod.
+\item output: Success(AuditID).
+\item exception: StorageFailure if persistence fails (caller decides whether to retry or halt per criticality).
+\end{itemize}
+
+\noindent queryEvents$(ctx, filter)$:
+\begin{itemize}
+\item transition: none; verifies ctx.role authorization before delegating to M7 query; redacts sensitive metadata for club-level reviewers.
+\item output: Success list ordered descending by timestamp, supporting \texttt{SUP-2}.
+\item exception: Unauthorized if ctx.role lacks privileges.
+\end{itemize}
+
+\noindent exportEvents$(ctx, range, format)$:
+\begin{itemize}
+\item transition: ensure ctx.role is \texttt{mes\_admin}; fetch events chunked by exportChunkSize; package into requested format; store in immutableStore and return download pointer.
+\item output: Success(AuditExport) with signed checksum.
+\item exception: StorageFailure when immutableStore unavailable or query fails.
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+summarizeEvent(events): aggregates high-level statistics (counts by action) for dashboard widgets without exposing raw data.
 
 \bibliographystyle {plainnat}
 \bibliography {../../../refs/References}
@@ -236,35 +964,23 @@ The following table is taken directly from the Module Guide document for this pr
 
 \section{Appendix} \label{Appendix}
 
-\wss{Extra information if required}
+No supplemental material is provided at this time.
 
 \newpage{}
 
 \section*{Appendix --- Reflection}
 
-\wss{Not required for CAS 741 projects}
-
-The information in this section will be used to evaluate the team members on the
-graduate attribute of Problem Analysis and Design.
+The information in this section will be used to evaluate the team members on the graduate attribute of Problem Analysis and Design.
 
 \input{../../Reflection.tex}
 
 \begin{enumerate}
-  \item What went well while writing this deliverable? 
-  \item What pain points did you experience during this deliverable, and how
-    did you resolve them?
-  \item Which of your design decisions stemmed from speaking to your client(s)
-  or a proxy (e.g. your peers, stakeholders, potential users)? For those that
-  were not, why, and where did they come from?
-  \item While creating the design doc, what parts of your other documents (e.g.
-  requirements, hazard analysis, etc), it any, needed to be changed, and why?
-  \item What are the limitations of your solution?  Put another way, given
-  unlimited resources, what could you do to make the project better? (LO\_ProbSolutions)
-  \item Give a brief overview of other design solutions you considered.  What
-  are the benefits and tradeoffs of those other designs compared with the chosen
-  design?  From all the potential options, why did you select the documented design?
-  (LO\_Explores)
+  \item What went well while writing this deliverable?
+  \item What pain points did you experience during this deliverable, and how did you resolve them?
+  \item Which of your design decisions stemmed from speaking to your client(s) or a proxy (e.g. your peers, stakeholders, potential users)? For those that were not, why, and where did they come from?
+  \item While creating the design doc, what parts of your other documents (e.g. requirements, hazard analysis, etc), it any, needed to be changed, and why?
+  \item What are the limitations of your solution? Put another way, given unlimited resources, what could you do to make the project better? (LO\_ProbSolutions)
+  \item Give a brief overview of other design solutions you considered. What are the benefits and tradeoffs of those other designs compared with the chosen design? From all the potential options, why did you select the documented design? (LO\_Explores)
 \end{enumerate}
-
 
 \end{document}
