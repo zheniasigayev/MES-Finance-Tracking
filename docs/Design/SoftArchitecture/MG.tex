@@ -405,8 +405,6 @@ ADP-2: UI extensibility & M2\\
 
 \section{Use Hierarchy Between Modules} \label{SecUse}
 
-The use hierarchy instantiates the three-level decomposition summarized in Table~\ref{TblMH}: M1 abstracts the hardware boundary, software decision modules (M6--M8) publish cohesive services above that boundary, and behaviour-hiding modules (M2--M5) rely exclusively on those services. Because every path in the graph terminates at M1, any prefix of the hierarchy forms a testable, incrementally deployable subset of the platform and respects the DAG criterion from \citet{Parnas1978}.
-
 \begin{description}
 \item[\textbf{M2} uses $\{M3, M4, M6\}$:] Screens and flows render request data provided by M3 and push user actions back through its APIs, which keeps \texttt{FRQ-1}--\texttt{FRQ-3} behaviour identical across clients. Upload widgets stream binaries to M4 so that the receipt constraints in \texttt{FRQ-4} and \texttt{SaL-3} are enforced once instead of being re-implemented in the browser. Role-aware rendering and secure navigation rely on session hooks from M6, satisfying \texttt{FRQ-6}, \texttt{APP-3}, and the accessibility targets in \texttt{ABL}.
 \item[\textbf{M3} uses $\{M4, M5, M6, M7, M8\}$:] Request lifecycle logic calls M6 first to confirm the actor's role (\texttt{FRQ-6}, \texttt{SAF-1}), persists changes through M7 to preserve transactional integrity and the latency/capacity bounds in \texttt{SaL-1} and \texttt{CAP-1}, and records each transition via M8 (\texttt{FRQ-5}, \texttt{AUD-1}, \texttt{AUD-2}). When payloads contain receipts, M3 streams to M4 to reuse validation and OCR logic mandated by \texttt{FRQ-4}. Workflow outcomes emit events to M5 so stakeholders receive acknowledgements and escalations without embedding channel logic in the handler.
@@ -416,25 +414,6 @@ The use hierarchy instantiates the three-level decomposition summarized in Table
 \item[\textbf{M7} uses $M1$:] The data model sits directly atop the managed database and backup facilities exposed by M1. By isolating queries, schema migrations, and replication hooks here, the system respects \acref{acDatabase} while insulating \texttt{FRQ-1}--\texttt{FRQ-5}, \texttt{SaL-1}, \texttt{CAP-2}, and \texttt{LNG-2} from upstream change.
 \item[\textbf{M8} uses $\{M1, M7\}$:] Audit events are appended to the durable stores defined by M7 and flushed to immutable storage supplied by M1 (e.g., append-only buckets or managed log services). This architecture keeps \texttt{FRQ-5}, \texttt{AUD-1}, \texttt{AUD-2}, and \texttt{SUP-2} compliant without burdening request handlers with vendor-specific retention logic.
 \end{description}
-
-\begin{table}[H]
-\centering
-\begin{tabular}{p{0.25\textwidth}p{0.55\textwidth}}
-\toprule
-\textbf{Module} & \textbf{Uses}\\
-\midrule
-M2 & M3, M4, M6\\
-M3 & M4, M5, M6, M7, M8\\
-M4 & M1, M7\\
-M5 & M1, M7\\
-M6 & M1, M7\\
-M7 & M1\\
-M8 & M1, M7\\
-\bottomrule
-\end{tabular}
-\caption{Summary of the use relationships among modules}
-\label{TblUseSummary}
-\end{table}
 
 \section{User Interfaces}
 
