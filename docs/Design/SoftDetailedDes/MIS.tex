@@ -129,7 +129,7 @@ The following table is taken directly from the Module Guide document for this pr
 \textbf{Level 1} & \textbf{Level 2}\\
 \midrule
 
-{Hardware-Hiding} & ~ \\
+{Hardware-Hiding} & \textbullet~M1: Hardware Hiding Module \\
 \midrule
 
 \multirow{7}{0.3\textwidth}{Behaviour-Hiding} & Input Parameters\\
@@ -152,6 +152,100 @@ The following table is taken directly from the Module Guide document for this pr
 \end{table}
 
 \newpage
+\section{MIS of Hardware Hiding Module (M1)}\label{sec:hardware-hiding}
+
+\subsection{Module}
+Hardware Hiding Module (M1)
+
+\subsection{Uses}
+None.
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+\begin{itemize}
+  \item \textbf{RuntimeVersion}: string --- Declares the LTS Node.js runtime version made available by the hosting platform (Vercel/AWS) so that the Behaviour-Hiding and Software Decision modules can align their server-side features and package targets.
+  \item \textbf{DefaultRegion}: string --- Identifies the primary cloud deployment region used for the platform's compute, database, and object storage endpoints to satisfy latency expectations from the SRS operational environment.
+  \item \textbf{MaxConcurrentRequests}: $\mathbb{N}$ --- Upper bound on simultaneous backend invocations guaranteed by the provider, chosen to satisfy the SRS capacity requirement of supporting at least 500 concurrent users.
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{3.5cm} p{4.5cm} p{4.5cm} p{3cm}}
+\toprule
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\midrule
+getRuntimeContext & - & RuntimeContext & ConfigNotFound \\
+provisionPersistence & PersistenceTarget, PersistencePolicy & PersistenceHandle & ProvisioningError \\
+openFileChannel & StorageRequest & StorageHandle & StorageError \\
+resolveSecret & SecretKey & SecretValue & SecretNotFound \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+\begin{itemize}
+  \item \textbf{activeHandles}: sequence of PersistenceHandle --- Tracks open database or object storage connections issued through the module.
+  \item \textbf{cachedSecrets}: map SecretKey $\rightarrow$ SecretValue --- Maintains decrypted secrets for the lifetime of a runtime invocation to minimize calls to the provider's secret manager.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+\begin{itemize}
+  \item \textbf{cloudPlatform}: descriptor of the underlying infrastructure (e.g., Vercel Edge Functions or AWS Lambda + S3) that supplies compute, networking, and storage abstractions.
+  \item \textbf{processEnv}: map string $\rightarrow$ string exposing environment variables injected by the hosting provider, including connection strings and API keys referenced in the Development Plan.
+  \item \textbf{filesystem}: ephemeral file system mount allocated per invocation for staging uploads before they are persisted to long-term storage.
+  \item \textbf{networkInterface}: outbound HTTPS client managed by the runtime for communicating with third-party services such as SendGrid or future payment APIs.
+\end{itemize}
+
+\subsubsection{Assumptions}
+\begin{itemize}
+  \item The cloud platform guarantees availability targets and auto-scaling properties outlined in the SRS environment and capacity requirements.
+  \item Required environment variables (database URIs, storage bucket identifiers, API credentials) are injected securely by the deployment pipeline defined in the Development Plan.
+  \item Serverless function instances share no persistent disk state; any durable data must be written through \texttt{provisionPersistence} or \texttt{openFileChannel}.
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+\noindent\textbf{getRuntimeContext}($\,$)
+\begin{itemize}
+  \item transition: None.
+  \item output: Returns a RuntimeContext record containing \textbf{RuntimeVersion}, \textbf{DefaultRegion}, exposed environment variables, and runtime limits (memory, execution time) advertised by \textbf{cloudPlatform}.
+  \item exception: ConfigNotFound is raised if mandatory runtime metadata is missing from \textbf{processEnv}.
+\end{itemize}
+
+\noindent\textbf{provisionPersistence}(target, policy)
+\begin{itemize}
+  \item transition: Adds a PersistenceHandle corresponding to the requested \textit{target} (document store, object storage, or cache) to \textbf{activeHandles}. The handle encapsulates connection pooling or signed URLs as required by the target.
+  \item output: Returns the newly created PersistenceHandle configured according to \textit{policy} (e.g., read/write role, retention period).
+  \item exception: ProvisioningError if the target infrastructure is unreachable or policy constraints cannot be satisfied by the provider.
+\end{itemize}
+
+\noindent\textbf{openFileChannel}(request)
+\begin{itemize}
+  \item transition: Streams the binary payload described by \textit{request} from \textbf{filesystem} to an object storage location derived from \textbf{cloudPlatform}. Updates \textbf{activeHandles} with the resulting StorageHandle for lifecycle management.
+  \item output: Returns a StorageHandle containing the canonical URI and checksum for the persisted object so that the Receipt Processing module can reference it.
+  \item exception: StorageError when the payload exceeds provider-imposed limits or when the storage backend reports an error.
+\end{itemize}
+
+\noindent\textbf{resolveSecret}(key)
+\begin{itemize}
+  \item transition: If \textit{key} is not present in \textbf{cachedSecrets}, retrieves the secret value from the provider-managed vault and caches it for the remaining invocation lifespan.
+  \item output: Returns the SecretValue associated with \textit{key} so downstream modules can authenticate with external services (e.g., MongoDB, SendGrid).
+  \item exception: SecretNotFound when the requested key is absent from the vault or access is denied.
+\end{itemize}
+
+\subsubsection{Local Functions}
+None.
+
+\subsubsection{Considerations}
+\begin{itemize}
+  \item This module virtualizes physical infrastructure so higher-level modules can operate independent of Vercel/AWS specific APIs, satisfying the information-hiding intent of the Module Guide.
+  \item Capacity thresholds published through \textbf{MaxConcurrentRequests} ensure the Request Handler and Notification modules can plan throttling logic that respects SRS capacity and scalability constraints.
+  \item Secrets resolved via \texttt{resolveSecret} enable future integration with the MES monorepo while keeping credential management centralized, as described in the Development Plan.
+\end{itemize}
+
 ~\newpage
 
 \section{MIS of Receipt Processing Module (M4)} \label{ModuleReceiptProcessing}
