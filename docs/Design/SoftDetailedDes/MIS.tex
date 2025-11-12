@@ -154,33 +154,43 @@ The following table is taken directly from the Module Guide document for this pr
 \newpage
 ~\newpage
 
-\section{MIS of \wss{Module Name}} \label{Module} \wss{Use labels for
-  cross-referencing}
-
-\wss{You can reference SRS labels, such as R\ref{R_Inputs}.}
-
-\wss{It is also possible to use \LaTeX for hypperlinks to external documents.}
+\section{MIS of Receipt Processing Module (M4)} \label{ModuleReceiptProcessing}
 
 \subsection{Module}
 
-\wss{Short name for the module}
+ReceiptProcessing
 
 \subsection{Uses}
 
+\begin{itemize}
+  \item Authentication Module (M6) for verifying that a caller has sufficient permissions to interact with a stored receipt.
+  \item Data Model Module (M7) for persisting receipt metadata, OCR extraction results, and associating receipts with reimbursement requests.
+  \item Audit Logging Module (M8) for recording immutable traces of upload, access, extraction, and deletion actions.
+  \item External storage and OCR services (e.g., AWS S3 and Amazon Textract) identified in the Module Guide and SRS for hosted file storage and automated data extraction.
+\end{itemize}
 
 \subsection{Syntax}
 
 \subsubsection{Exported Constants}
 
+\begin{itemize}
+  \item \textbf{ACCEPTED\_FILE\_TYPES}: Set of MIME types $\{\texttt{image/png},\, \texttt{image/jpeg},\, \texttt{application/pdf}\}$ defining the allowable receipt formats described in the SRS.
+  \item \textbf{MAX\_RECEIPT\_FILE\_SIZE}: Maximum upload size of $10$ MB, ensuring conformance with the non-functional upload latency target.
+  \item \textbf{SIGNED\_URL\_TTL}: Duration (in minutes) for which a generated secure access link to a stored receipt remains valid.
+\end{itemize}
+
 \subsubsection{Exported Access Programs}
 
 \begin{center}
-\begin{tabular}{p{2cm} p{4cm} p{4cm} p{2cm}}
-\hline
+\begin{tabular}{p{2.8cm} p{4.2cm} p{4.2cm} p{2.4cm}}
+\toprule
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
-\hline
-\wss{accessProg} & - & - & - \\
-\hline
+\midrule
+uploadReceipt & ReceiptFile, ReceiptMetadata, UserID & ReceiptRecord & InvalidFileFormat, FileTooLarge, UnauthorizedAccess, StorageFailure \\
+extractReceiptData & ReceiptID & ExtractedReceiptData & ReceiptNotFound, OCRFailure, StorageFailure \\
+getReceiptLink & ReceiptID, UserID & URL & ReceiptNotFound, UnauthorizedAccess, StorageFailure \\
+removeReceipt & ReceiptID, UserID & $-$ & ReceiptNotFound, UnauthorizedAccess, ImmutableRequestState, StorageFailure \\
+\bottomrule
 \end{tabular}
 \end{center}
 
@@ -188,42 +198,66 @@ The following table is taken directly from the Module Guide document for this pr
 
 \subsubsection{State Variables}
 
-\wss{Not all modules will have state variables.  State variables give the module
-  a memory.}
+\begin{itemize}
+  \item receiptIndex: Mapping of ReceiptID to ReceiptRecord capturing storage location, uploader, request association, timestamps, and validation flags.
+  \item extractionCache: Mapping of ReceiptID to ExtractedReceiptData persisted for reuse across module calls.
+  \item storageCredentials: Handle with scoped credentials for interacting with the managed receipt storage service.
+\end{itemize}
 
 \subsubsection{Environment Variables}
 
-\wss{This section is not necessary for all modules.  Its purpose is to capture
-  when the module has external interaction with the environment, such as for a
-  device driver, screen interface, keyboard, file, etc.}
+\begin{itemize}
+  \item storageService: External object storage endpoint (e.g., AWS S3 bucket) for binary receipt files.
+  \item ocrService: External OCR provider (e.g., Amazon Textract) capable of parsing receipt images into structured data.
+  \item auditChannel: Interface exposed by the Audit Logging Module (M8) for recording receipt lifecycle events.
+\end{itemize}
 
 \subsubsection{Assumptions}
 
-\wss{Try to minimize assumptions and anticipate programmer errors via
-  exceptions, but for practical purposes assumptions are sometimes appropriate.}
+\begin{itemize}
+  \item The caller has already been authenticated and provides a UserID that maps to an existing account and role via the Authentication Module.
+  \item The reimbursement request referenced within ReceiptMetadata exists and is mutable according to business rules managed by the Request Handler Module (M3).
+  \item Credentials for storageService and ocrService are valid and provisioned prior to module invocation.
+  \item Network connectivity to external services is available when upload, extraction, or deletion operations are attempted.
+\end{itemize}
 
 \subsubsection{Access Routine Semantics}
 
-\noindent \wss{accessProg}():
+\noindent uploadReceipt(receiptFile, metadata, uploaderId):
 \begin{itemize}
-\item transition: \wss{if appropriate} 
-\item output: \wss{if appropriate} 
-\item exception: \wss{if appropriate} 
+  \item transition: Validate that receiptFile MIME type is in ACCEPTED\_FILE\_TYPES and its size does not exceed MAX\_RECEIPT\_FILE\_SIZE. Verify that uploaderId is authorized to add receipts for the target reimbursement request. Persist receiptFile to storageService, create or update the associated ReceiptRecord in receiptIndex with a new ReceiptID, storage pointer, metadata, and timestamp, and emit an audit log entry.
+  \item output: Return the created ReceiptRecord, including the ReceiptID assigned to the stored file.
+  \item exception: Raise InvalidFileFormat if MIME validation fails, FileTooLarge if size constraints are exceeded, UnauthorizedAccess if uploaderId lacks the required role, or StorageFailure if persistence to storageService fails.
 \end{itemize}
 
-\wss{A module without environment variables or state variables is unlikely to
-  have a state transition.  In this case a state transition can only occur if
-  the module is changing the state of another module.}
+\noindent extractReceiptData(receiptId):
+\begin{itemize}
+  \item transition: If extractionCache already contains receiptId, reuse the cached result; otherwise, retrieve the receipt binary from storageService and invoke ocrService to parse the receipt. Persist the structured response in extractionCache and associate it with the corresponding ReceiptRecord for downstream processing and validation.
+  \item output: Return the ExtractedReceiptData containing amounts, vendor, dates, and other parsed fields for the receipt.
+  \item exception: Raise ReceiptNotFound if receiptId is absent from receiptIndex, OCRFailure if ocrService cannot produce a result, or StorageFailure if the receipt binary cannot be retrieved.
+\end{itemize}
 
-\wss{Modules rarely have both a transition and an output.  In most cases you
-  will have one or the other.}
+\noindent getReceiptLink(receiptId, requesterId):
+\begin{itemize}
+  \item transition: Confirm that requesterId is permitted to view the receipt according to reimbursement request visibility rules. Optionally record the access attempt through auditChannel.
+  \item output: Return a time-bound, pre-signed URL (valid for SIGNED\_URL\_TTL) that allows the requester to download the stored receipt from storageService.
+  \item exception: Raise ReceiptNotFound if receiptId is unknown, UnauthorizedAccess if requesterId lacks privileges, or StorageFailure if URL generation fails.
+\end{itemize}
+
+\noindent removeReceipt(receiptId, requesterId):
+\begin{itemize}
+  \item transition: Verify that requesterId has permission to remove the receipt and that the linked reimbursement request is still editable. Delete the receipt binary from storageService, remove the entry from receiptIndex and extractionCache, and log the removal.
+  \item output: None.
+  \item exception: Raise ReceiptNotFound if the ReceiptID is missing, UnauthorizedAccess if requesterId lacks rights, ImmutableRequestState if the reimbursement request is locked (e.g., already approved), or StorageFailure if deletion from storageService fails.
+\end{itemize}
 
 \subsubsection{Local Functions}
 
-\wss{As appropriate} \wss{These functions are for the purpose of specification.
-  They are not necessarily something that is going to be implemented
-  explicitly.  Even if they are implemented, they are not exported; they only
-  have local scope.}
+\begin{itemize}
+  \item isAllowedFormat(fileMime): Boolean helper returning true when fileMime is contained in ACCEPTED\_FILE\_TYPES.
+  \item isAuthorized(actorId, requestId, action): Queries the Authentication Module for the actor's roles and the Request Handler Module for the reimbursement state to ensure an operation is permitted.
+  \item writeAuditEntry(event): Delegates to auditChannel to persist a structured log for compliance traceability.
+\end{itemize}
 
 \newpage
 
