@@ -353,6 +353,179 @@ removeReceipt & ReceiptID, UserID & $-$ & ReceiptNotFound, UnauthorizedAccess, I
   \item writeAuditEntry(event): Delegates to auditChannel to persist a structured log for compliance traceability.
 \end{itemize}
 
+
+~\newpage
+
+\section{MIS of Notification Module (M5)} \label{ModuleNotification}
+
+\subsection{Module}
+
+NotificationModule
+
+\subsection{Uses}
+
+\begin{itemize}
+  \item Receipt Processing Module (M4) sending a notifcation to the user upon successful upload and processing of a receipt.
+  \item Authentication Module (M6) for verifying user contact details and preferences before dispatching notifications.
+  \item Data Model Module (M7) for logging notification history and statuses after the messages are sent.
+\end{itemize}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+\begin{itemize}
+  \item notificationTypes: Set of supported notification categories, including receiptUploaded, requestApproved, requestRejected, defining the scenarios in which users can be notified.
+  \item clubId: Unique identifier for the McMaster Engineering Society club associated with the user receiving the notification.
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{2.8cm} p{3.4cm} p{2.8cm} p{5.6cm}}
+\toprule
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\midrule
+notifyUser & userId, notificationType, email & Email Content & InvalidEmailFormat, UnauthorizedAccess, NotificationFailure \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+  \item reimbursementProcessIndex: Mapping the current request process/step to the corresponding notificationType to determine when notifications should be sent.
+  \item notificationIndex: Mapping of NotificationID to NotificationRecord capturing recipient, notification type, notification message, timestamp, and delivery status.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+  \item None
+\end{itemize}
+
+\subsubsection{Assumptions}
+
+\begin{itemize}
+  \item There will be 2 types of notifcations. One will notify the user within the application UI that their receipt has been successfully uploaded and processed. The second will notify both the user and the club executive team when a reimbursement request has been approved or rejected via email.
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent notifyUser(userId, notificationType, notificationContent):
+\begin{itemize}
+  \item transition: Validate that userId is authorized to receive notifications and that notificationType is supported. Construct the notification message using notificationContent and dispatch it to the current user and the club executive team. Log the notification attempt in notificationIndex with status.
+  \item output: Return the full notification content that was sent to the user.
+  \item exception: NotificationFailure if the email service reports an error.  
+\end{itemize}
+
+\noindent notifyClubExecutive(clubId, notificationType, notificationContent):
+\begin{itemize}
+  \item transition: Retrieve the contact details of the club executive team associated with clubId. Construct the notification message using notificationContent and dispatch it to the club executive team. Log the notification attempt in notificationIndex with status.
+  \item output: Return the full notification content that was sent to the club executive team.
+  \item exception: NotificationFailure if the email service reports an error.  
+\end{itemize}
+
+
+~\newpage
+
+\section{MIS of Data Model Module (M7)} \label{DataModelModule}
+
+\subsection{Module}
+
+Data Model Module
+
+\subsection{Uses}
+
+\begin{itemize}
+  \item None, this is a foundational module that other modules depend on for data persistence.
+\end{itemize}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+\begin{itemize}
+  \item databaseURL: string that represents the database connection URL
+  \item maxBatchSize: value representing the maximum number of records that can be processed in a single batch operation
+  \item maxConnections: value representing the maximum number of concurrent connections to the database
+  \item defaultTimeout: value representing the default timeout duration for database operations
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{2.8cm} p{3.4cm} p{2.8cm} p{5.6cm}}
+\toprule
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\midrule
+query & queryString, parameters & queryResult & InvalidQuery, DatabaseConnectionError, TimeoutError \\
+insert & tableName, receiptImage/document: Object & insertResult, recordId & InvalidRecordData, DatabaseConnectionError, TimeoutError \\
+update & tableName, recordId, updatedFields & updateResult, recordId & RecordNotFound, InvalidUpdateData, DatabaseConnectionError, TimeoutError \\
+delete & tableName, recordId & deleteResult & RecordNotFound, DatabaseConnectionError, TimeoutError \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+  \item databaseState: Represents the current state of the database and its connection status
+\end{itemize}
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+  \item databaseServer: represents the external database system holding the data
+  \item fileStorageService: represents the external file storage service for storing receipt images/documents
+\end{itemize}
+
+\subsubsection{Assumptions}
+
+\begin{itemize}
+  \item The databaseServer is accessible and running
+  \item The fileStorageService is accessible and running
+  \item The input parameters for each access program are valid and conform to the expected formats
+  \item The module has the necessary permissions to perform CRUD operations on the database and file storage service
+  \item The database schema is predefined and known to the module
+  \item Authentication and authorization are handled by other modules before accessing this module
+  \item Network connectivity to the databaseServer and fileStorageService is stable during operations
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent query(queryString, tableName, params):
+\begin{itemize}
+  \item transition: Verify databaseState is connected. Execute the queryString with the provided parameters against the databaseServer.
+  \item output: Return the queryResult containing the results of the executed query.
+  \item exception: Raise InvalidQuery if the queryString is malformed, DatabaseConnectionError if unable to connect to the database, or TimeoutError if the operation exceeds defaultTimeout.
+\end{itemize}
+
+\noindent insert(tableName, document):
+\begin{itemize}
+  \item transition: Verify databaseState is connected. Insert the provided document into the specified tableName in the databaseServer.
+  \item output: Return the insertResult indicating success and the recordId of the newly created record.
+  \item exception: Raise InvalidRecordData if the document is malformed, DatabaseConnectionError if unable to connect to the database, or TimeoutError if the operation exceeds defaultTimeout.  
+\end{itemize}
+
+\noindent update(tableName, recordId, updatedFields):
+\begin{itemize}
+  \item transition: Verify databaseState is connected. Update the record with recordId in tableName using the provided updatedFields.
+  \item output: Return the updateResult indicating success and the recordId of the updated record.
+  \item exception: Raise RecordNotFound if the recordId does not exist, InvalidUpdateData if updatedFields are malformed, DatabaseConnectionError if unable to connect to the database, or TimeoutError if the operation exceeds defaultTimeout.  
+\end{itemize}
+
+\noindent delete(tableName, recordId):
+\begin{itemize}
+  \item transition: Verify databaseState is connected. Delete the record with recordId from tableName.
+  \item output: Return the deleteResult indicating success.
+  \item exception: Raise RecordNotFound if the recordId does not exist, DatabaseConnectionError if unable to connect to the database, or TimeoutError if the operation exceeds defaultTimeout. 
+\end{itemize}
+
 \newpage
 
 \bibliographystyle {plainnat}
