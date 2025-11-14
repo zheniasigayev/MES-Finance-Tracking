@@ -248,6 +248,129 @@ None.
 
 ~\newpage
 
+\section{MIS of User Interface Module (M2)} \label{ModuleUserInterface}
+
+\subsection{Module}
+
+User Interface Module (M2)
+
+\subsection{Uses}
+
+\begin{itemize}
+  \item Request Handler Module (M3) for fetching and mutating reimbursement request data through stable APIs.
+  \item Receipt Processing Module (M4) for streaming uploaded receipt binaries to the backend and surfacing validation errors to the user.
+  \item Authentication Module (M6) for deriving the current user’s role, session state, and effective permissions to drive role-aware rendering.
+\end{itemize}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+\begin{itemize}
+  \item \textbf{MAX\_VISIBLE\_REQUESTS\_PER\_PAGE}: N --- Default number of reimbursement requests shown in paginated dashboards (e.g., 20), chosen to balance readability and page load times.
+  \item \textbf{AUTOSAVE\_INTERVAL\_MS}: N --- Interval in milliseconds between automatic draft saves on long forms, supporting incremental data saving and fault tolerance.
+  \item \textbf{TOAST\_DURATION\_MS}: N --- Duration in milliseconds that transient notification banners remain visible after operations (submit, approve, error).
+  \item \textbf{SUPPORTED\_LOCALES}: sequence of String --- List of locale identifiers (e.g., \texttt{\{"en-CA"\}}) used for formatting dates, currency, and numbers.
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{2.8cm} p{4.2cm} p{4.2cm} p{2.4cm}}
+\toprule
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\midrule
+renderLandingPage & sessionToken & ViewState & SessionInvalid \\
+renderDashboard & userId, sessionToken & ViewState & SessionInvalid, AccessDenied \\
+renderRequestForm & requestId (optional), sessionToken & ViewState & SessionInvalid, RequestNotFound, AccessDenied \\
+handleFormSubmit & formData, sessionToken & NavigationOutcome & SessionInvalid, ValidationError, BackendFailure \\
+toggleTheme & preferredTheme, sessionToken & UISettings & SessionInvalid \\
+showTutorial & sessionToken & TutorialState & SessionInvalid \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+  \item \textbf{currentView}: ViewState --- Encodes the currently active screen, filters, and any transient UI state (e.g., open modals, active tab).
+  \item \textbf{draftBuffers}: map RequestId $\rightarrow$ FormDraft --- Holds unsaved and autosaved form contents for reimbursement requests while the user is editing.
+  \item \textbf{uiSettings}: UISettings --- Captures per-user display preferences such as theme (light/dark), density, and accessibility options (reduced motion).
+\end{itemize}
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+  \item \textbf{browserWindow}: Represents the client-side execution environment (viewport size, input devices, network connectivity).
+  \item \textbf{routingLayer}: Client-side router used to navigate between pages and synchronize URL state with \textbf{currentView}.
+  \item \textbf{requestAPI}: Interface to Request Handler Module (M3) used to fetch and mutate reimbursement request data.
+  \item \textbf{receiptAPI}: Interface to Receipt Processing Module (M4) used to upload files and retrieve receipt-related errors.
+  \item \textbf{authClient}: Interface to Authentication Module (M6) providing current user identity, roles, and session validity.
+\end{itemize}
+
+\subsubsection{Assumptions}
+
+\begin{itemize}
+  \item The user’s identity and role have been established by Authentication Module (M6) before privileged UI actions are attempted.
+  \item Request Handler Module (M3) and Receipt Processing Module (M4) expose stable HTTP or RPC endpoints with documented error codes.
+  \item The browser environment supports standard web APIs used by the framework (Next.js/React), or suitable polyfills are applied.
+  \item Network connectivity may be intermittent; autosave and optimistic updates must handle transient failures gracefully.
+  \item Accessibility requirements (keyboard navigation, contrast ratios, ARIA attributes) are enforced at design time and verified via tooling.
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent\textbf{renderLandingPage}(sessionToken)
+\begin{itemize}
+  \item transition: Validates \textit{sessionToken} via \textbf{authClient}. Initializes \textbf{currentView} to the appropriate landing surface (login screen for anonymous users, dashboard redirect for authenticated users).
+  \item output: Returns a ViewState representing the landing page, including any contextual alerts (e.g., maintenance banners).
+  \item exception: Raises SessionInvalid if \textit{sessionToken} is expired, malformed, or rejected by \textbf{authClient}.
+\end{itemize}
+
+\noindent\textbf{renderDashboard}(userId, sessionToken)
+\begin{itemize}
+  \item transition: Confirms session validity and that \textit{userId} matches the authenticated identity or has delegated access. Fetches summarized request data via \textbf{requestAPI} and populates \textbf{currentView} with paginated tables, filters, and quick actions.
+  \item output: Returns a ViewState containing the dashboard layout, including current filters, selected club, and summarized metrics (e.g., pending, approved, rejected counts).
+  \item exception: Raises SessionInvalid on authentication failure, or AccessDenied if the user lacks permission to view the specified dashboard scope.
+\end{itemize}
+
+\noindent\textbf{renderRequestForm}(requestId, sessionToken)
+\begin{itemize}
+  \item transition: If \textit{requestId} is provided, retrieves the existing reimbursement request via \textbf{requestAPI} and seeds \textbf{draftBuffers}[requestId] with persisted values. Otherwise, initializes a new draft entry. Applies client-side validation rules and populates dynamic form fields (e.g., club list, budget lines).
+  \item output: Returns a ViewState representing the active reimbursement form, including any validation messages and previously autosaved draft content.
+  \item exception: Raises SessionInvalid if authentication fails, RequestNotFound if \textit{requestId} does not exist or is inaccessible, or AccessDenied if the user cannot edit the targeted request.
+\end{itemize}
+
+\noindent\textbf{handleFormSubmit}(formData, sessionToken)
+\begin{itemize}
+  \item transition: Performs client-side validations (required fields, numeric ranges, file constraints) and displays inline errors if any rule fails. On success, calls \textbf{requestAPI} and optionally \textbf{receiptAPI} to persist the request and any attached receipts. Clears the corresponding entry in \textbf{draftBuffers} upon confirmed backend success and updates \textbf{currentView} to reflect the new status.
+  \item output: Returns a NavigationOutcome indicating whether to remain on the form (with errors), navigate back to the dashboard, or redirect to a confirmation view.
+  \item exception: Raises SessionInvalid if the session check fails, ValidationError if client-side validation detects issues, or BackendFailure if the call to downstream modules fails after validation passes.
+\end{itemize}
+
+\noindent\textbf{toggleTheme}(preferredTheme, sessionToken)
+\begin{itemize}
+  \item transition: Validates \textit{preferredTheme} against supported values (e.g., light, dark, system). Updates \textbf{uiSettings} and persists the preference via a lightweight call to \textbf{requestAPI} or a dedicated settings endpoint.
+  \item output: Returns updated UISettings describing the active theme and related appearance options.
+  \item exception: Raises SessionInvalid if the user’s session cannot be confirmed.
+\end{itemize}
+
+\noindent\textbf{showTutorial}(sessionToken)
+\begin{itemize}
+  \item transition: Determines if the first-time user tutorial should be displayed based on profile flags and prior completions. Updates \textbf{currentView} to include tutorial overlays and progressive hints on the dashboard or form pages.
+  \item output: Returns a TutorialState describing which steps are active and whether completion has been recorded.
+  \item exception: Raises SessionInvalid if the session is not valid.
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+None.
+
+
+~\newpage
+
 \section{MIS of Receipt Processing Module (M4)} \label{ModuleReceiptProcessing}
 
 \subsection{Module}
@@ -525,6 +648,118 @@ delete & tableName, recordId & deleteResult & RecordNotFound, DatabaseConnection
   \item output: Return the deleteResult indicating success.
   \item exception: Raise RecordNotFound if the recordId does not exist, DatabaseConnectionError if unable to connect to the database, or TimeoutError if the operation exceeds defaultTimeout. 
 \end{itemize}
+
+~\newpage
+
+\section{MIS of Audit Logging Module (M8)} \label{ModuleAuditLogging}
+
+\subsection{Module}
+
+Audit Logging Module (M8)
+
+\subsection{Uses}
+
+\begin{itemize}
+  \item Hardware Hiding Module (M1) for access to durable, append-only storage and time sources.
+  \item Data Model Module (M7) for persisting audit event metadata alongside core domain entities (users, requests, clubs).
+\end{itemize}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+\begin{itemize}
+  \item \textbf{AUDIT\_RETENTION\_YEARS}: N --- Minimum duration that audit records must be retained to satisfy policy and compliance requirements.
+  \item \textbf{MAX\_EVENT\_BATCH\_SIZE}: N --- Maximum number of audit events processed in a single batch when streaming to long-term storage.
+  \item \textbf{PII\_REDACTION\_FIELDS}: sequence of String --- List of field names whose values must be masked or omitted in stored audit payloads.
+  \item \textbf{DEFAULT\_TIME\_WINDOW\_DAYS}: N --- Default time window for audit queries when no explicit range is supplied.
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{2.8cm} p{4.2cm} p{4.2cm} p{2.4cm}}
+\toprule
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\midrule
+logAction & actionType, actorId, resourceId, metadata & AuditEventId & StorageFailure, RedactionError \\
+getEventsByRequest & requestId, timeWindow & seq of AuditEvent & RequestNotFound, StorageFailure \\
+getEventsByUser & userId, timeWindow & seq of AuditEvent & UserNotFound, StorageFailure \\
+searchEvents & filterCriteria & seq of AuditEvent & StorageFailure \\
+purgeExpiredEvents & $-$ & N & StorageFailure \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+  \item \textbf{eventStream}: append-only sequence of AuditEvent --- Canonical log of all recorded audit actions in arrival order.
+  \item \textbf{requestIndex}: map RequestId $\rightarrow$ sequence of AuditEventId --- Secondary index for efficiently resolving events associated with a given reimbursement request.
+  \item \textbf{userIndex}: map UserId $\rightarrow$ sequence of AuditEventId --- Secondary index for resolving events initiated by or affecting a particular user.
+  \item \textbf{retentionPolicy}: record of retentionYears: N, archiveTarget: StorageHandle --- Encodes how and where aged events are archived or purged.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+  \item \textbf{clock}: Time source used to stamp events with an immutable timestamp at creation.
+  \item \textbf{auditStore}: Durable storage backend (e.g., append-only bucket or managed log service) provisioned through Hardware Hiding Module (M1).
+  \item \textbf{dataModel}: Interface to Data Model Module (M7) for resolving user, club, and request identifiers and enforcing referential integrity.
+\end{itemize}
+
+\subsubsection{Assumptions}
+
+\begin{itemize}
+  \item All callers provide stable identifiers for \textit{actorId} and \textit{resourceId} that are resolvable through Data Model Module (M7).
+  \item Clock skew is within acceptable bounds for compliance reporting and does not require cross-node reconciliation inside this module.
+  \item The underlying auditStore honors append-only semantics for committed events and enforces configured retention guarantees.
+  \item Personally identifiable information (PII) is either not logged or is redacted according to \textbf{PII\_REDACTION\_FIELDS} before persistence.
+  \item High-volume producers batch log requests where appropriate to respect latency and throughput constraints.
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent\textbf{logAction}(actionType, actorId, resourceId, metadata)
+\begin{itemize}
+  \item transition: Constructs an AuditEvent from the inputs and current time from \textbf{clock}. Applies redaction rules to \textit{metadata} based on \textbf{PII\_REDACTION\_FIELDS}. Appends the event to \textbf{eventStream} and persists it to \textbf{auditStore}. Updates \textbf{requestIndex} and \textbf{userIndex} if \textit{resourceId} or \textit{actorId} refers to known entities.
+  \item output: Returns the AuditEventId assigned to the newly persisted event.
+  \item exception: Raises RedactionError if required masking cannot be applied safely, or StorageFailure if append or index updates fail.
+\end{itemize}
+
+\noindent\textbf{getEventsByRequest}(requestId, timeWindow)
+\begin{itemize}
+  \item transition: Resolves \textit{requestId} via \textbf{dataModel} to confirm the request exists. Determines the effective time window, defaulting to \textbf{DEFAULT\_TIME\_WINDOW\_DAYS} if not specified. Uses \textbf{requestIndex} (when populated) to locate relevant event identifiers, then fetches the corresponding events from \textbf{auditStore}, filtering them to the specified timeWindow.
+  \item output: Returns a sequence of AuditEvent records ordered by timestamp, each describing a state transition or action associated with the given request.
+  \item exception: Raises RequestNotFound if \textit{requestId} is unknown, or StorageFailure if retrieval from \textbf{auditStore} fails.
+\end{itemize}
+
+\noindent\textbf{getEventsByUser}(userId, timeWindow)
+\begin{itemize}
+  \item transition: Resolves \textit{userId} via \textbf{dataModel}. Uses \textbf{userIndex} to obtain relevant AuditEventIds and retrieves the full events from \textbf{auditStore}, applying the given timeWindow.
+  \item output: Returns a sequence of AuditEvent records for which the specified user acted as the principal (actorId) or is the subject of the action.
+  \item exception: Raises UserNotFound if \textit{userId} does not exist, or StorageFailure if the underlying store returns an error.
+\end{itemize}
+
+\noindent\textbf{searchEvents}(filterCriteria)
+\begin{itemize}
+  \item transition: Interprets filterCriteria (e.g., actionType, status change, clubId, date range) and performs a query against \textbf{auditStore} and indexes to identify matching events. May combine results from \textbf{requestIndex} and \textbf{userIndex} when filters reference both user and request.
+  \item output: Returns a sequence of AuditEvent records matching the filterCriteria, suitable for compliance review or incident investigation.
+  \item exception: Raises StorageFailure if the query cannot be executed against the backing store.
+\end{itemize}
+
+\noindent\textbf{purgeExpiredEvents}()
+\begin{itemize}
+  \item transition: Scans \textbf{eventStream} (or an archival manifest in \textbf{auditStore}) for events older than \textbf{AUDIT\_RETENTION\_YEARS}. Removes or archives them according to \textbf{retentionPolicy}, updating any auxiliary indexes (\textbf{requestIndex}, \textbf{userIndex}) to remove references to deleted events.
+  \item output: Returns the number N of events that were purged or archived in this invocation.
+  \item exception: Raises StorageFailure if the deletion or archival operations against \textbf{auditStore} fail.
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+None.
 
 \newpage
 
