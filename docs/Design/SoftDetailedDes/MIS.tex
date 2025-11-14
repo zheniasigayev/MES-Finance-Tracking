@@ -53,8 +53,7 @@ urlcolor=cyan          % color of external links
 \begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
 \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
 \midrule
-Date 1 & 1.0 & Notes\\
-Date 2 & 1.1 & Notes\\
+Monday, November 10, 2025 & 1.0 & Initial Document\\
 \bottomrule
 \end{tabularx}
 
@@ -76,12 +75,11 @@ See SRS Documentation at \wss{give url}
 
 \section{Introduction}
 
-The following document details the Module Interface Specifications for
-\wss{Fill in your project name and description}
+The following document details the Module Interface Specifications (MIS) for the MES Finance Tracking Platform, a web-based system that streamlines the submission, approval, and monitoring of reimbursement requests for McMaster Engineering Society clubs. By centralizing digital expense forms, supporting documentation, and reviewer workflows, the platform shortens processing times and improves transparency for students and finance administrators alike.
 
-Complementary documents include the System Requirement Specifications
-and Module Guide.  The full documentation and implementation can be
-found at \url{...}.  \wss{provide the url for your repo}
+This document specifies the MIS for each software module in the MES Finance Tracking Platform, outlining how components interact to deliver the functionality described in the accompanying design artifacts.
+
+Complementary documents include the System Requirement Specifications, Module Guide, and complete documentation and implementation can be found at \url{https://github.com/zheniasigayev/MES-Finance-Tracking}.
 
 \section{Notation}
 
@@ -131,7 +129,7 @@ The following table is taken directly from the Module Guide document for this pr
 \textbf{Level 1} & \textbf{Level 2}\\
 \midrule
 
-{Hardware-Hiding} & ~ \\
+{Hardware-Hiding} & \textbullet~M1: Hardware Hiding Module \\
 \midrule
 
 \multirow{7}{0.3\textwidth}{Behaviour-Hiding} & Input Parameters\\
@@ -154,35 +152,141 @@ The following table is taken directly from the Module Guide document for this pr
 \end{table}
 
 \newpage
+\section{MIS of Hardware Hiding Module (M1)}\label{sec:hardware-hiding}
+
+\subsection{Module}
+Hardware Hiding Module (M1)
+
+\subsection{Uses}
+None.
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+\begin{itemize}
+  \item \textbf{RuntimeVersion}: string --- Declares the LTS Node.js runtime version made available by the hosting platform (Vercel/AWS) so that the Behaviour-Hiding and Software Decision modules can align their server-side features and package targets.
+  \item \textbf{DefaultRegion}: string --- Identifies the primary cloud deployment region used for the platform's compute, database, and object storage endpoints to satisfy latency expectations from the SRS operational environment.
+  \item \textbf{MaxConcurrentRequests}: $\mathbb{N}$ --- Upper bound on simultaneous backend invocations guaranteed by the provider, chosen to satisfy the SRS capacity requirement of supporting at least 500 concurrent users.
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{3.5cm} p{4.5cm} p{4.5cm} p{3cm}}
+\toprule
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\midrule
+getRuntimeContext & - & RuntimeContext & ConfigNotFound \\
+provisionPersistence & PersistenceTarget, PersistencePolicy & PersistenceHandle & ProvisioningError \\
+openFileChannel & StorageRequest & StorageHandle & StorageError \\
+resolveSecret & SecretKey & SecretValue & SecretNotFound \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+\begin{itemize}
+  \item \textbf{activeHandles}: sequence of PersistenceHandle --- Tracks open database or object storage connections issued through the module.
+  \item \textbf{cachedSecrets}: map SecretKey $\rightarrow$ SecretValue --- Maintains decrypted secrets for the lifetime of a runtime invocation to minimize calls to the provider's secret manager.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+\begin{itemize}
+  \item \textbf{cloudPlatform}: descriptor of the underlying infrastructure (e.g., Vercel Edge Functions or AWS Lambda + S3) that supplies compute, networking, and storage abstractions.
+  \item \textbf{processEnv}: map string $\rightarrow$ string exposing environment variables injected by the hosting provider, including connection strings and API keys referenced in the Development Plan.
+  \item \textbf{filesystem}: ephemeral file system mount allocated per invocation for staging uploads before they are persisted to long-term storage.
+  \item \textbf{networkInterface}: outbound HTTPS client managed by the runtime for communicating with third-party services such as SendGrid or future payment APIs.
+\end{itemize}
+
+\subsubsection{Assumptions}
+\begin{itemize}
+  \item The cloud platform guarantees availability targets and auto-scaling properties outlined in the SRS environment and capacity requirements.
+  \item Required environment variables (database URIs, storage bucket identifiers, API credentials) are injected securely by the deployment pipeline defined in the Development Plan.
+  \item Serverless function instances share no persistent disk state; any durable data must be written through \texttt{provisionPersistence} or \texttt{openFileChannel}.
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+\noindent\textbf{getRuntimeContext}($\,$)
+\begin{itemize}
+  \item transition: None.
+  \item output: Returns a RuntimeContext record containing \textbf{RuntimeVersion}, \textbf{DefaultRegion}, exposed environment variables, and runtime limits (memory, execution time) advertised by \textbf{cloudPlatform}.
+  \item exception: ConfigNotFound is raised if mandatory runtime metadata is missing from \textbf{processEnv}.
+\end{itemize}
+
+\noindent\textbf{provisionPersistence}(target, policy)
+\begin{itemize}
+  \item transition: Adds a PersistenceHandle corresponding to the requested \textit{target} (document store, object storage, or cache) to \textbf{activeHandles}. The handle encapsulates connection pooling or signed URLs as required by the target.
+  \item output: Returns the newly created PersistenceHandle configured according to \textit{policy} (e.g., read/write role, retention period).
+  \item exception: ProvisioningError if the target infrastructure is unreachable or policy constraints cannot be satisfied by the provider.
+\end{itemize}
+
+\noindent\textbf{openFileChannel}(request)
+\begin{itemize}
+  \item transition: Streams the binary payload described by \textit{request} from \textbf{filesystem} to an object storage location derived from \textbf{cloudPlatform}. Updates \textbf{activeHandles} with the resulting StorageHandle for lifecycle management.
+  \item output: Returns a StorageHandle containing the canonical URI and checksum for the persisted object so that the Receipt Processing module can reference it.
+  \item exception: StorageError when the payload exceeds provider-imposed limits or when the storage backend reports an error.
+\end{itemize}
+
+\noindent\textbf{resolveSecret}(key)
+\begin{itemize}
+  \item transition: If \textit{key} is not present in \textbf{cachedSecrets}, retrieves the secret value from the provider-managed vault and caches it for the remaining invocation lifespan.
+  \item output: Returns the SecretValue associated with \textit{key} so downstream modules can authenticate with external services (e.g., MongoDB, SendGrid).
+  \item exception: SecretNotFound when the requested key is absent from the vault or access is denied.
+\end{itemize}
+
+\subsubsection{Local Functions}
+None.
+
+\subsubsection{Considerations}
+\begin{itemize}
+  \item This module virtualizes physical infrastructure so higher-level modules can operate independent of Vercel/AWS specific APIs, satisfying the information-hiding intent of the Module Guide.
+  \item Capacity thresholds published through \textbf{MaxConcurrentRequests} ensure the Request Handler and Notification modules can plan throttling logic that respects SRS capacity and scalability constraints.
+  \item Secrets resolved via \texttt{resolveSecret} enable future integration with the MES monorepo while keeping credential management centralized, as described in the Development Plan.
+\end{itemize}
+
 ~\newpage
 
-\section{MIS of \wss{Module Name}} \label{Module} \wss{Use labels for
-  cross-referencing}
-
-\wss{You can reference SRS labels, such as R\ref{R_Inputs}.}
-
-\wss{It is also possible to use \LaTeX for hypperlinks to external documents.}
+\section{MIS of User Interface Module (M2)} \label{ModuleUserInterface}
 
 \subsection{Module}
 
-\wss{Short name for the module}
+User Interface Module (M2)
 
 \subsection{Uses}
 
+\begin{itemize}
+  \item Request Handler Module (M3) for fetching and mutating reimbursement request data through stable APIs.
+  \item Receipt Processing Module (M4) for streaming uploaded receipt binaries to the backend and surfacing validation errors to the user.
+  \item Authentication Module (M6) for deriving the current user’s role, session state, and effective permissions to drive role-aware rendering.
+\end{itemize}
 
 \subsection{Syntax}
 
 \subsubsection{Exported Constants}
 
+\begin{itemize}
+  \item \textbf{MAX\_VISIBLE\_REQUESTS\_PER\_PAGE}: N --- Default number of reimbursement requests shown in paginated dashboards (e.g., 20), chosen to balance readability and page load times.
+  \item \textbf{AUTOSAVE\_INTERVAL\_MS}: N --- Interval in milliseconds between automatic draft saves on long forms, supporting incremental data saving and fault tolerance.
+  \item \textbf{TOAST\_DURATION\_MS}: N --- Duration in milliseconds that transient notification banners remain visible after operations (submit, approve, error).
+  \item \textbf{SUPPORTED\_LOCALES}: sequence of String --- List of locale identifiers (e.g., \texttt{\{"en-CA"\}}) used for formatting dates, currency, and numbers.
+\end{itemize}
+
 \subsubsection{Exported Access Programs}
 
 \begin{center}
-\begin{tabular}{p{2cm} p{4cm} p{4cm} p{2cm}}
-\hline
+\begin{tabular}{p{2.8cm} p{4.2cm} p{4.2cm} p{2.4cm}}
+\toprule
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
-\hline
-\wss{accessProg} & - & - & - \\
-\hline
+\midrule
+renderLandingPage & sessionToken & ViewState & SessionInvalid \\
+renderDashboard & userId, sessionToken & ViewState & SessionInvalid, AccessDenied \\
+renderRequestForm & requestId (optional), sessionToken & ViewState & SessionInvalid, RequestNotFound, AccessDenied \\
+handleFormSubmit & formData, sessionToken & NavigationOutcome & SessionInvalid, ValidationError, BackendFailure \\
+toggleTheme & preferredTheme, sessionToken & UISettings & SessionInvalid \\
+showTutorial & sessionToken & TutorialState & SessionInvalid \\
+\bottomrule
 \end{tabular}
 \end{center}
 
@@ -190,42 +294,588 @@ The following table is taken directly from the Module Guide document for this pr
 
 \subsubsection{State Variables}
 
-\wss{Not all modules will have state variables.  State variables give the module
-  a memory.}
+\begin{itemize}
+  \item \textbf{currentView}: ViewState --- Encodes the currently active screen, filters, and any transient UI state (e.g., open modals, active tab).
+  \item \textbf{draftBuffers}: map RequestId $\rightarrow$ FormDraft --- Holds unsaved and autosaved form contents for reimbursement requests while the user is editing.
+  \item \textbf{uiSettings}: UISettings --- Captures per-user display preferences such as theme (light/dark), density, and accessibility options (reduced motion).
+\end{itemize}
 
 \subsubsection{Environment Variables}
 
-\wss{This section is not necessary for all modules.  Its purpose is to capture
-  when the module has external interaction with the environment, such as for a
-  device driver, screen interface, keyboard, file, etc.}
+\begin{itemize}
+  \item \textbf{browserWindow}: Represents the client-side execution environment (viewport size, input devices, network connectivity).
+  \item \textbf{routingLayer}: Client-side router used to navigate between pages and synchronize URL state with \textbf{currentView}.
+  \item \textbf{requestAPI}: Interface to Request Handler Module (M3) used to fetch and mutate reimbursement request data.
+  \item \textbf{receiptAPI}: Interface to Receipt Processing Module (M4) used to upload files and retrieve receipt-related errors.
+  \item \textbf{authClient}: Interface to Authentication Module (M6) providing current user identity, roles, and session validity.
+\end{itemize}
 
 \subsubsection{Assumptions}
 
-\wss{Try to minimize assumptions and anticipate programmer errors via
-  exceptions, but for practical purposes assumptions are sometimes appropriate.}
+\begin{itemize}
+  \item The user’s identity and role have been established by Authentication Module (M6) before privileged UI actions are attempted.
+  \item Request Handler Module (M3) and Receipt Processing Module (M4) expose stable HTTP or RPC endpoints with documented error codes.
+  \item The browser environment supports standard web APIs used by the framework (Next.js/React), or suitable polyfills are applied.
+  \item Network connectivity may be intermittent; autosave and optimistic updates must handle transient failures gracefully.
+  \item Accessibility requirements (keyboard navigation, contrast ratios, ARIA attributes) are enforced at design time and verified via tooling.
+\end{itemize}
 
 \subsubsection{Access Routine Semantics}
 
-\noindent \wss{accessProg}():
+\noindent\textbf{renderLandingPage}(sessionToken)
 \begin{itemize}
-\item transition: \wss{if appropriate} 
-\item output: \wss{if appropriate} 
-\item exception: \wss{if appropriate} 
+  \item transition: Validates \textit{sessionToken} via \textbf{authClient}. Initializes \textbf{currentView} to the appropriate landing surface (login screen for anonymous users, dashboard redirect for authenticated users).
+  \item output: Returns a ViewState representing the landing page, including any contextual alerts (e.g., maintenance banners).
+  \item exception: Raises SessionInvalid if \textit{sessionToken} is expired, malformed, or rejected by \textbf{authClient}.
 \end{itemize}
 
-\wss{A module without environment variables or state variables is unlikely to
-  have a state transition.  In this case a state transition can only occur if
-  the module is changing the state of another module.}
+\noindent\textbf{renderDashboard}(userId, sessionToken)
+\begin{itemize}
+  \item transition: Confirms session validity and that \textit{userId} matches the authenticated identity or has delegated access. Fetches summarized request data via \textbf{requestAPI} and populates \textbf{currentView} with paginated tables, filters, and quick actions.
+  \item output: Returns a ViewState containing the dashboard layout, including current filters, selected club, and summarized metrics (e.g., pending, approved, rejected counts).
+  \item exception: Raises SessionInvalid on authentication failure, or AccessDenied if the user lacks permission to view the specified dashboard scope.
+\end{itemize}
 
-\wss{Modules rarely have both a transition and an output.  In most cases you
-  will have one or the other.}
+\noindent\textbf{renderRequestForm}(requestId, sessionToken)
+\begin{itemize}
+  \item transition: If \textit{requestId} is provided, retrieves the existing reimbursement request via \textbf{requestAPI} and seeds \textbf{draftBuffers}[requestId] with persisted values. Otherwise, initializes a new draft entry. Applies client-side validation rules and populates dynamic form fields (e.g., club list, budget lines).
+  \item output: Returns a ViewState representing the active reimbursement form, including any validation messages and previously autosaved draft content.
+  \item exception: Raises SessionInvalid if authentication fails, RequestNotFound if \textit{requestId} does not exist or is inaccessible, or AccessDenied if the user cannot edit the targeted request.
+\end{itemize}
+
+\noindent\textbf{handleFormSubmit}(formData, sessionToken)
+\begin{itemize}
+  \item transition: Performs client-side validations (required fields, numeric ranges, file constraints) and displays inline errors if any rule fails. On success, calls \textbf{requestAPI} and optionally \textbf{receiptAPI} to persist the request and any attached receipts. Clears the corresponding entry in \textbf{draftBuffers} upon confirmed backend success and updates \textbf{currentView} to reflect the new status.
+  \item output: Returns a NavigationOutcome indicating whether to remain on the form (with errors), navigate back to the dashboard, or redirect to a confirmation view.
+  \item exception: Raises SessionInvalid if the session check fails, ValidationError if client-side validation detects issues, or BackendFailure if the call to downstream modules fails after validation passes.
+\end{itemize}
+
+\noindent\textbf{toggleTheme}(preferredTheme, sessionToken)
+\begin{itemize}
+  \item transition: Validates \textit{preferredTheme} against supported values (e.g., light, dark, system). Updates \textbf{uiSettings} and persists the preference via a lightweight call to \textbf{requestAPI} or a dedicated settings endpoint.
+  \item output: Returns updated UISettings describing the active theme and related appearance options.
+  \item exception: Raises SessionInvalid if the user’s session cannot be confirmed.
+\end{itemize}
+
+\noindent\textbf{showTutorial}(sessionToken)
+\begin{itemize}
+  \item transition: Determines if the first-time user tutorial should be displayed based on profile flags and prior completions. Updates \textbf{currentView} to include tutorial overlays and progressive hints on the dashboard or form pages.
+  \item output: Returns a TutorialState describing which steps are active and whether completion has been recorded.
+  \item exception: Raises SessionInvalid if the session is not valid.
+\end{itemize}
 
 \subsubsection{Local Functions}
 
-\wss{As appropriate} \wss{These functions are for the purpose of specification.
-  They are not necessarily something that is going to be implemented
-  explicitly.  Even if they are implemented, they are not exported; they only
-  have local scope.}
+None.
+
+
+~\newpage
+
+\section{MIS of Receipt Processing Module (M4)} \label{ModuleReceiptProcessing}
+
+\subsection{Module}
+
+ReceiptProcessing
+
+\subsection{Uses}
+
+\begin{itemize}
+  \item Authentication Module (M6) for verifying that a caller has sufficient permissions to interact with a stored receipt.
+  \item Data Model Module (M7) for persisting receipt metadata, OCR extraction results, and associating receipts with reimbursement requests.
+  \item Audit Logging Module (M8) for recording immutable traces of upload, access, extraction, and deletion actions.
+  \item External storage and OCR services (e.g., AWS S3 and Amazon Textract) identified in the Module Guide and SRS for hosted file storage and automated data extraction.
+\end{itemize}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+\begin{itemize}
+  \item \textbf{ACCEPTED\_FILE\_TYPES}: Set of MIME types $\{\texttt{image/png},\, \texttt{image/jpeg},\, \texttt{application/pdf}\}$ defining the allowable receipt formats described in the SRS.
+  \item \textbf{MAX\_RECEIPT\_FILE\_SIZE}: Maximum upload size of $10$ MB, ensuring conformance with the non-functional upload latency target.
+  \item \textbf{SIGNED\_URL\_TTL}: Duration (in minutes) for which a generated secure access link to a stored receipt remains valid.
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{2.8cm} p{4.2cm} p{4.2cm} p{2.4cm}}
+\toprule
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\midrule
+uploadReceipt & ReceiptFile, ReceiptMetadata, UserID & ReceiptRecord & InvalidFileFormat, FileTooLarge, UnauthorizedAccess, StorageFailure \\
+extractReceiptData & ReceiptID & ExtractedReceiptData & ReceiptNotFound, OCRFailure, StorageFailure \\
+getReceiptLink & ReceiptID, UserID & URL & ReceiptNotFound, UnauthorizedAccess, StorageFailure \\
+removeReceipt & ReceiptID, UserID & $-$ & ReceiptNotFound, UnauthorizedAccess, ImmutableRequestState, StorageFailure \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+  \item receiptIndex: Mapping of ReceiptID to ReceiptRecord capturing storage location, uploader, request association, timestamps, and validation flags.
+  \item extractionCache: Mapping of ReceiptID to ExtractedReceiptData persisted for reuse across module calls.
+  \item storageCredentials: Handle with scoped credentials for interacting with the managed receipt storage service.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+  \item storageService: External object storage endpoint (e.g., AWS S3 bucket) for binary receipt files.
+  \item ocrService: External OCR provider (e.g., Amazon Textract) capable of parsing receipt images into structured data.
+  \item auditChannel: Interface exposed by the Audit Logging Module (M8) for recording receipt lifecycle events.
+\end{itemize}
+
+\subsubsection{Assumptions}
+
+\begin{itemize}
+  \item The caller has already been authenticated and provides a UserID that maps to an existing account and role via the Authentication Module.
+  \item The reimbursement request referenced within ReceiptMetadata exists and is mutable according to business rules managed by the Request Handler Module (M3).
+  \item Credentials for storageService and ocrService are valid and provisioned prior to module invocation.
+  \item Network connectivity to external services is available when upload, extraction, or deletion operations are attempted.
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent uploadReceipt(receiptFile, metadata, uploaderId):
+\begin{itemize}
+  \item transition: Validate that receiptFile MIME type is in ACCEPTED\_FILE\_TYPES and its size does not exceed MAX\_RECEIPT\_FILE\_SIZE. Verify that uploaderId is authorized to add receipts for the target reimbursement request. Persist receiptFile to storageService, create or update the associated ReceiptRecord in receiptIndex with a new ReceiptID, storage pointer, metadata, and timestamp, and emit an audit log entry.
+  \item output: Return the created ReceiptRecord, including the ReceiptID assigned to the stored file.
+  \item exception: Raise InvalidFileFormat if MIME validation fails, FileTooLarge if size constraints are exceeded, UnauthorizedAccess if uploaderId lacks the required role, or StorageFailure if persistence to storageService fails.
+\end{itemize}
+
+\noindent extractReceiptData(receiptId):
+\begin{itemize}
+  \item transition: If extractionCache already contains receiptId, reuse the cached result; otherwise, retrieve the receipt binary from storageService and invoke ocrService to parse the receipt. Persist the structured response in extractionCache and associate it with the corresponding ReceiptRecord for downstream processing and validation.
+  \item output: Return the ExtractedReceiptData containing amounts, vendor, dates, and other parsed fields for the receipt.
+  \item exception: Raise ReceiptNotFound if receiptId is absent from receiptIndex, OCRFailure if ocrService cannot produce a result, or StorageFailure if the receipt binary cannot be retrieved.
+\end{itemize}
+
+\noindent getReceiptLink(receiptId, requesterId):
+\begin{itemize}
+  \item transition: Confirm that requesterId is permitted to view the receipt according to reimbursement request visibility rules. Optionally record the access attempt through auditChannel.
+  \item output: Return a time-bound, pre-signed URL (valid for SIGNED\_URL\_TTL) that allows the requester to download the stored receipt from storageService.
+  \item exception: Raise ReceiptNotFound if receiptId is unknown, UnauthorizedAccess if requesterId lacks privileges, or StorageFailure if URL generation fails.
+\end{itemize}
+
+\noindent removeReceipt(receiptId, requesterId):
+\begin{itemize}
+  \item transition: Verify that requesterId has permission to remove the receipt and that the linked reimbursement request is still editable. Delete the receipt binary from storageService, remove the entry from receiptIndex and extractionCache, and log the removal.
+  \item output: None.
+  \item exception: Raise ReceiptNotFound if the ReceiptID is missing, UnauthorizedAccess if requesterId lacks rights, ImmutableRequestState if the reimbursement request is locked (e.g., already approved), or StorageFailure if deletion from storageService fails.
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+\begin{itemize}
+  \item isAllowedFormat(fileMime): Boolean helper returning true when fileMime is contained in ACCEPTED\_FILE\_TYPES.
+  \item isAuthorized(actorId, requestId, action): Queries the Authentication Module for the actor's roles and the Request Handler Module for the reimbursement state to ensure an operation is permitted.
+  \item writeAuditEntry(event): Delegates to auditChannel to persist a structured log for compliance traceability.
+\end{itemize}
+
+
+~\newpage
+
+\section{MIS of Notification Module (M5)} \label{ModuleNotification}
+
+\subsection{Module}
+
+NotificationModule
+
+\subsection{Uses}
+
+\begin{itemize}
+  \item Receipt Processing Module (M4) sending a notifcation to the user upon successful upload and processing of a receipt.
+  \item Authentication Module (M6) for verifying user contact details and preferences before dispatching notifications.
+  \item Data Model Module (M7) for logging notification history and statuses after the messages are sent.
+\end{itemize}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+\begin{itemize}
+  \item notificationTypes: Set of supported notification categories, including receiptUploaded, requestApproved, requestRejected, defining the scenarios in which users can be notified.
+  \item clubId: Unique identifier for the McMaster Engineering Society club associated with the user receiving the notification.
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{2.8cm} p{3.4cm} p{2.8cm} p{5.6cm}}
+\toprule
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\midrule
+notifyUser & userId, notificationType, email & Email Content & InvalidEmailFormat, UnauthorizedAccess, NotificationFailure \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+  \item reimbursementProcessIndex: Mapping the current request process/step to the corresponding notificationType to determine when notifications should be sent.
+  \item notificationIndex: Mapping of NotificationID to NotificationRecord capturing recipient, notification type, notification message, timestamp, and delivery status.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+  \item None
+\end{itemize}
+
+\subsubsection{Assumptions}
+
+\begin{itemize}
+  \item There will be 2 types of notifcations. One will notify the user within the application UI that their receipt has been successfully uploaded and processed. The second will notify both the user and the club executive team when a reimbursement request has been approved or rejected via email.
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent notifyUser(userId, notificationType, notificationContent):
+\begin{itemize}
+  \item transition: Validate that userId is authorized to receive notifications and that notificationType is supported. Construct the notification message using notificationContent and dispatch it to the current user and the club executive team. Log the notification attempt in notificationIndex with status.
+  \item output: Return the full notification content that was sent to the user.
+  \item exception: NotificationFailure if the email service reports an error.  
+\end{itemize}
+
+\noindent notifyClubExecutive(clubId, notificationType, notificationContent):
+\begin{itemize}
+  \item transition: Retrieve the contact details of the club executive team associated with clubId. Construct the notification message using notificationContent and dispatch it to the club executive team. Log the notification attempt in notificationIndex with status.
+  \item output: Return the full notification content that was sent to the club executive team.
+  \item exception: NotificationFailure if the email service reports an error.  
+\end{itemize}
+
+
+~\newpage
+
+\section{MIS of Authentication Module (M6)} \label{ModuleAuthentication}
+
+\subsection{Module}
+
+Authentication Module
+
+\subsection{Uses}
+
+\begin{itemize}
+  \item Hardware Hiding Module (M1) for retrieving environment secrets, hashing parameters, and SSO adapters required to validate identities securely.
+  \item Data Model Module (M7) for persisting user profiles, membership links, refresh tokens, and role assignments that underpin authorization checks.
+\end{itemize}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+\begin{itemize}
+  \item \textbf{ACCESS\_TOKEN\_TTL\_MINUTES}: $\mathbb{N}$ --- Length of time a signed access token remains valid before re-authentication is required.
+  \item \textbf{REFRESH\_TOKEN\_TTL\_DAYS}: $\mathbb{N}$ --- Maximum lifetime of a refresh token stored in the Data Model module.
+  \item \textbf{MAX\_FAILED\_ATTEMPTS}: $\mathbb{N}$ --- Number of consecutive failed login attempts permitted before the account enters a lockout period as required by ACS-1.
+  \item \textbf{SUPPORTED\_ROLES}: Set of strings $\{\texttt{member}, \texttt{executive}, \texttt{financeAdmin}\}$ describing valid RBAC roles referenced across the MIS.
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{3cm} p{4.2cm} p{4.2cm} p{3cm}}
+\toprule
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\midrule
+authenticateUser & Credentials, ClientContext & AuthResult & InvalidCredentials, IdentityProviderError, AccountLocked \\
+issueSession & UserID, DeviceFingerprint & SessionEnvelope & UnauthorizedAccess, SecretRotationInProgress \\
+verifyAuthorization & SessionToken, Action, ResourceID & AccessDecision & InvalidToken, UnauthorizedAccess \\
+revokeSession & SessionToken & - & InvalidToken \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+  \item \textbf{sessionStore}: map SessionToken $\rightarrow$ SessionRecord capturing issuedAt, expiresAt, userId, device metadata, and whether the session has been revoked.
+  \item \textbf{refreshTokenIndex}: map RefreshToken $\rightarrow$ RefreshRecord linking long-lived tokens to userId and rotation counters.
+  \item \textbf{failedAttemptCounter}: map UserID $\rightarrow$ $\mathbb{N}$ tracking consecutive unsuccessful authentication attempts to enforce \textbf{MAX\_FAILED\_ATTEMPTS}.
+  \item \textbf{rbacPolicy}: map Role $\rightarrow$ set(ActionPattern) representing the RBAC rules derived from \textbf{SUPPORTED\_ROLES}.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+  \item \textbf{identityProvider}: External identity platform (e.g., Microsoft Entra ID via NextAuth.js) that validates credentials and SSO assertions.
+  \item \textbf{secretManager}: Handle to encrypted signing keys and hashing parameters supplied through the Hardware Hiding Module.
+  \item \textbf{clock}: Trusted time source shared across the deployment for expiry evaluation.
+  \item \textbf{auditChannel}: External logging sink (via M8) where authentication outcomes are dispatched for compliance review.
+\end{itemize}
+
+\subsubsection{Assumptions}
+
+\begin{itemize}
+  \item The identityProvider exposes OAuth/OpenID Connect endpoints compatible with the SSO configuration outlined in the Module Guide.
+  \item All communications with external providers occur over TLS and secrets retrieved through \textbf{secretManager} remain valid for the duration of the invocation unless signaled by rotation events.
+  \item User records stored through the Data Model module contain normalized identifiers and active role assignments so RBAC checks operate deterministically.
+  \item Audit logging is asynchronous, allowing authentication flows to proceed even if auditChannel experiences transient latency.
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent authenticateUser(credentials, context):
+\begin{itemize}
+  \item transition: Submit credentials to identityProvider. On success, reset the caller's entry in \textbf{failedAttemptCounter}; on failure, increment the counter and lock the account when \textbf{MAX\_FAILED\_ATTEMPTS} is reached. Emit a summary event to \textbf{auditChannel}.
+  \item output: Return an AuthResult containing userId, issued claims (roles, permissions), and whether multi-factor verification is required.
+  \item exception: InvalidCredentials when the identityProvider rejects the credentials, IdentityProviderError on remote service failures, AccountLocked when the caller exceeded \textbf{MAX\_FAILED\_ATTEMPTS}.
+\end{itemize}
+
+\noindent issueSession(userId, fingerprint):
+\begin{itemize}
+  \item transition: Retrieve signing secrets from \textbf{secretManager}, derive the user's roles from \textbf{rbacPolicy} and the Data Model module, and mint access/refresh tokens scoped to \textbf{ACCESS\_TOKEN\_TTL\_MINUTES} and \textbf{REFRESH\_TOKEN\_TTL\_DAYS}. Persist the resulting SessionRecord in \textbf{sessionStore} and update \textbf{refreshTokenIndex}.
+  \item output: Return a SessionEnvelope with encoded SessionToken, RefreshToken, expiration timestamps, and derived claims.
+  \item exception: UnauthorizedAccess when the user does not have an active account, SecretRotationInProgress when signing keys are being rolled and issuing a new session would violate key consistency.
+\end{itemize}
+
+\noindent verifyAuthorization(sessionToken, action, resourceId):
+\begin{itemize}
+  \item transition: Validate sessionToken signature using \textbf{secretManager}, confirm it exists in \textbf{sessionStore}, and evaluate whether the embedded role grants permission for the requested action/resource pair using \textbf{rbacPolicy}. Refresh rolling expiration if a sliding window policy is configured.
+  \item output: Return an AccessDecision (\texttt{allow} or \texttt{deny}) plus contextual information (derived role, reason).
+  \item exception: InvalidToken when the token signature/expiry fails validation, UnauthorizedAccess when RBAC rules do not permit the action.
+\end{itemize}
+
+\noindent revokeSession(sessionToken):
+\begin{itemize}
+  \item transition: Mark the corresponding SessionRecord inside \textbf{sessionStore} as revoked, delete associated refresh tokens from \textbf{refreshTokenIndex}, and notify \textbf{auditChannel}.
+  \item output: None.
+  \item exception: InvalidToken if the supplied token cannot be found or has already expired.
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+\begin{itemize}
+  \item \textbf{loadUserProfile(userId)}: Queries the Data Model module for the latest user metadata and roles.
+  \item \textbf{deriveClaims(profile, context)}: Normalizes the user's club memberships, privileges, and session context (device, location) into the claims stored within tokens.
+  \item \textbf{recordAudit(event)}: Normalizes authentication outcomes and writes them to \textbf{auditChannel}.
+\end{itemize}
+
+\subsubsection{Considerations}
+
+\begin{itemize}
+  \item RBAC definitions in \textbf{rbacPolicy} must remain synchronized with Request Handler use cases to ensure FRQ-6 and ACS-2 are met.
+  \item Session issuance intentionally depends on Hardware Hiding for signing secrets so cryptographic agility (algorithm or key changes) is captured within a single module boundary.
+  \item This module exposes only opaque tokens; upstream callers never manipulate passwords or session internals directly, preserving the information-hiding intent of the Module Guide.
+\end{itemize}
+
+~\newpage
+
+\section{MIS of Data Model Module (M7)} \label{DataModelModule}
+
+\subsection{Module}
+
+Data Model Module
+
+\subsection{Uses}
+
+\begin{itemize}
+  \item None, this is a foundational module that other modules depend on for data persistence.
+\end{itemize}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+\begin{itemize}
+  \item databaseURL: string that represents the database connection URL
+  \item maxBatchSize: value representing the maximum number of records that can be processed in a single batch operation
+  \item maxConnections: value representing the maximum number of concurrent connections to the database
+  \item defaultTimeout: value representing the default timeout duration for database operations
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{2.8cm} p{3.4cm} p{2.8cm} p{5.6cm}}
+\toprule
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\midrule
+query & queryString, parameters & queryResult & InvalidQuery, DatabaseConnectionError, TimeoutError \\
+insert & tableName, receiptImage/document: Object & insertResult, recordId & InvalidRecordData, DatabaseConnectionError, TimeoutError \\
+update & tableName, recordId, updatedFields & updateResult, recordId & RecordNotFound, InvalidUpdateData, DatabaseConnectionError, TimeoutError \\
+delete & tableName, recordId & deleteResult & RecordNotFound, DatabaseConnectionError, TimeoutError \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+  \item databaseState: Represents the current state of the database and its connection status
+\end{itemize}
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+  \item databaseServer: represents the external database system holding the data
+  \item fileStorageService: represents the external file storage service for storing receipt images/documents
+\end{itemize}
+
+\subsubsection{Assumptions}
+
+\begin{itemize}
+  \item The databaseServer is accessible and running
+  \item The fileStorageService is accessible and running
+  \item The input parameters for each access program are valid and conform to the expected formats
+  \item The module has the necessary permissions to perform CRUD operations on the database and file storage service
+  \item The database schema is predefined and known to the module
+  \item Authentication and authorization are handled by other modules before accessing this module
+  \item Network connectivity to the databaseServer and fileStorageService is stable during operations
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent query(queryString, tableName, params):
+\begin{itemize}
+  \item transition: Verify databaseState is connected. Execute the queryString with the provided parameters against the databaseServer.
+  \item output: Return the queryResult containing the results of the executed query.
+  \item exception: Raise InvalidQuery if the queryString is malformed, DatabaseConnectionError if unable to connect to the database, or TimeoutError if the operation exceeds defaultTimeout.
+\end{itemize}
+
+\noindent insert(tableName, document):
+\begin{itemize}
+  \item transition: Verify databaseState is connected. Insert the provided document into the specified tableName in the databaseServer.
+  \item output: Return the insertResult indicating success and the recordId of the newly created record.
+  \item exception: Raise InvalidRecordData if the document is malformed, DatabaseConnectionError if unable to connect to the database, or TimeoutError if the operation exceeds defaultTimeout.  
+\end{itemize}
+
+\noindent update(tableName, recordId, updatedFields):
+\begin{itemize}
+  \item transition: Verify databaseState is connected. Update the record with recordId in tableName using the provided updatedFields.
+  \item output: Return the updateResult indicating success and the recordId of the updated record.
+  \item exception: Raise RecordNotFound if the recordId does not exist, InvalidUpdateData if updatedFields are malformed, DatabaseConnectionError if unable to connect to the database, or TimeoutError if the operation exceeds defaultTimeout.  
+\end{itemize}
+
+\noindent delete(tableName, recordId):
+\begin{itemize}
+  \item transition: Verify databaseState is connected. Delete the record with recordId from tableName.
+  \item output: Return the deleteResult indicating success.
+  \item exception: Raise RecordNotFound if the recordId does not exist, DatabaseConnectionError if unable to connect to the database, or TimeoutError if the operation exceeds defaultTimeout. 
+\end{itemize}
+
+~\newpage
+
+\section{MIS of Audit Logging Module (M8)} \label{ModuleAuditLogging}
+
+\subsection{Module}
+
+Audit Logging Module (M8)
+
+\subsection{Uses}
+
+\begin{itemize}
+  \item Hardware Hiding Module (M1) for access to durable, append-only storage and time sources.
+  \item Data Model Module (M7) for persisting audit event metadata alongside core domain entities (users, requests, clubs).
+\end{itemize}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+\begin{itemize}
+  \item \textbf{AUDIT\_RETENTION\_YEARS}: N --- Minimum duration that audit records must be retained to satisfy policy and compliance requirements.
+  \item \textbf{MAX\_EVENT\_BATCH\_SIZE}: N --- Maximum number of audit events processed in a single batch when streaming to long-term storage.
+  \item \textbf{PII\_REDACTION\_FIELDS}: sequence of String --- List of field names whose values must be masked or omitted in stored audit payloads.
+  \item \textbf{DEFAULT\_TIME\_WINDOW\_DAYS}: N --- Default time window for audit queries when no explicit range is supplied.
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{2.8cm} p{4.2cm} p{4.2cm} p{2.4cm}}
+\toprule
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\midrule
+logAction & actionType, actorId, resourceId, metadata & AuditEventId & StorageFailure, RedactionError \\
+getEventsByRequest & requestId, timeWindow & seq of AuditEvent & RequestNotFound, StorageFailure \\
+getEventsByUser & userId, timeWindow & seq of AuditEvent & UserNotFound, StorageFailure \\
+searchEvents & filterCriteria & seq of AuditEvent & StorageFailure \\
+purgeExpiredEvents & $-$ & N & StorageFailure \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+  \item \textbf{eventStream}: append-only sequence of AuditEvent --- Canonical log of all recorded audit actions in arrival order.
+  \item \textbf{requestIndex}: map RequestId $\rightarrow$ sequence of AuditEventId --- Secondary index for efficiently resolving events associated with a given reimbursement request.
+  \item \textbf{userIndex}: map UserId $\rightarrow$ sequence of AuditEventId --- Secondary index for resolving events initiated by or affecting a particular user.
+  \item \textbf{retentionPolicy}: record of retentionYears: N, archiveTarget: StorageHandle --- Encodes how and where aged events are archived or purged.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+  \item \textbf{clock}: Time source used to stamp events with an immutable timestamp at creation.
+  \item \textbf{auditStore}: Durable storage backend (e.g., append-only bucket or managed log service) provisioned through Hardware Hiding Module (M1).
+  \item \textbf{dataModel}: Interface to Data Model Module (M7) for resolving user, club, and request identifiers and enforcing referential integrity.
+\end{itemize}
+
+\subsubsection{Assumptions}
+
+\begin{itemize}
+  \item All callers provide stable identifiers for \textit{actorId} and \textit{resourceId} that are resolvable through Data Model Module (M7).
+  \item Clock skew is within acceptable bounds for compliance reporting and does not require cross-node reconciliation inside this module.
+  \item The underlying auditStore honors append-only semantics for committed events and enforces configured retention guarantees.
+  \item Personally identifiable information (PII) is either not logged or is redacted according to \textbf{PII\_REDACTION\_FIELDS} before persistence.
+  \item High-volume producers batch log requests where appropriate to respect latency and throughput constraints.
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent\textbf{logAction}(actionType, actorId, resourceId, metadata)
+\begin{itemize}
+  \item transition: Constructs an AuditEvent from the inputs and current time from \textbf{clock}. Applies redaction rules to \textit{metadata} based on \textbf{PII\_REDACTION\_FIELDS}. Appends the event to \textbf{eventStream} and persists it to \textbf{auditStore}. Updates \textbf{requestIndex} and \textbf{userIndex} if \textit{resourceId} or \textit{actorId} refers to known entities.
+  \item output: Returns the AuditEventId assigned to the newly persisted event.
+  \item exception: Raises RedactionError if required masking cannot be applied safely, or StorageFailure if append or index updates fail.
+\end{itemize}
+
+\noindent\textbf{getEventsByRequest}(requestId, timeWindow)
+\begin{itemize}
+  \item transition: Resolves \textit{requestId} via \textbf{dataModel} to confirm the request exists. Determines the effective time window, defaulting to \textbf{DEFAULT\_TIME\_WINDOW\_DAYS} if not specified. Uses \textbf{requestIndex} (when populated) to locate relevant event identifiers, then fetches the corresponding events from \textbf{auditStore}, filtering them to the specified timeWindow.
+  \item output: Returns a sequence of AuditEvent records ordered by timestamp, each describing a state transition or action associated with the given request.
+  \item exception: Raises RequestNotFound if \textit{requestId} is unknown, or StorageFailure if retrieval from \textbf{auditStore} fails.
+\end{itemize}
+
+\noindent\textbf{getEventsByUser}(userId, timeWindow)
+\begin{itemize}
+  \item transition: Resolves \textit{userId} via \textbf{dataModel}. Uses \textbf{userIndex} to obtain relevant AuditEventIds and retrieves the full events from \textbf{auditStore}, applying the given timeWindow.
+  \item output: Returns a sequence of AuditEvent records for which the specified user acted as the principal (actorId) or is the subject of the action.
+  \item exception: Raises UserNotFound if \textit{userId} does not exist, or StorageFailure if the underlying store returns an error.
+\end{itemize}
+
+\noindent\textbf{searchEvents}(filterCriteria)
+\begin{itemize}
+  \item transition: Interprets filterCriteria (e.g., actionType, status change, clubId, date range) and performs a query against \textbf{auditStore} and indexes to identify matching events. May combine results from \textbf{requestIndex} and \textbf{userIndex} when filters reference both user and request.
+  \item output: Returns a sequence of AuditEvent records matching the filterCriteria, suitable for compliance review or incident investigation.
+  \item exception: Raises StorageFailure if the query cannot be executed against the backing store.
+\end{itemize}
+
+\noindent\textbf{purgeExpiredEvents}()
+\begin{itemize}
+  \item transition: Scans \textbf{eventStream} (or an archival manifest in \textbf{auditStore}) for events older than \textbf{AUDIT\_RETENTION\_YEARS}. Removes or archives them according to \textbf{retentionPolicy}, updating any auxiliary indexes (\textbf{requestIndex}, \textbf{userIndex}) to remove references to deleted events.
+  \item output: Returns the number N of events that were purged or archived in this invocation.
+  \item exception: Raises StorageFailure if the deletion or archival operations against \textbf{auditStore} fail.
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+None.
 
 \newpage
 

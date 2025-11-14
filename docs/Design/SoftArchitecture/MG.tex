@@ -405,14 +405,15 @@ ADP-2: UI extensibility & M2\\
 
 \section{Use Hierarchy Between Modules} \label{SecUse}
 
-In this section, the uses hierarchy between modules is provided. \citet{Parnas1978} said of two programs A and B that A {\em uses} B if correct execution of B may be necessary for A to complete the task described in its specification. That is, A {\em uses} B if there exist situations in which the correct functioning of A depends upon the availability of a correct implementation of B. Figure \ref{FigUH} illustrates the use relation between the modules. It can be seen that the graph is a directed acyclic graph (DAG). Each level of the hierarchy offers a testable and usable subset of the system, and modules in the higher level of the hierarchy are essentially simpler because they use modules from the lower levels.
-
-\begin{figure}[H]
-\centering
-%\includegraphics[width=0.7\textwidth]{UsesHierarchy.png}
-\caption{Use hierarchy among modules}
-\label{FigUH}
-\end{figure}
+\begin{description}
+\item[\textbf{M2} uses $\{M3, M4, M6\}$:] Screens and flows render request data provided by M3 and push user actions back through its APIs, which keeps \texttt{FRQ-1}--\texttt{FRQ-3} behaviour identical across clients. Upload widgets stream binaries to M4 so that the receipt constraints in \texttt{FRQ-4} and \texttt{SaL-3} are enforced once instead of being re-implemented in the browser. Role-aware rendering and secure navigation rely on session hooks from M6, satisfying \texttt{FRQ-6}, \texttt{APP-3}, and the accessibility targets in \texttt{ABL}.
+\item[\textbf{M3} uses $\{M4, M5, M6, M7, M8\}$:] Request lifecycle logic calls M6 first to confirm the actor's role (\texttt{FRQ-6}, \texttt{SAF-1}), persists changes through M7 to preserve transactional integrity and the latency/capacity bounds in \texttt{SaL-1} and \texttt{CAP-1}, and records each transition via M8 (\texttt{FRQ-5}, \texttt{AUD-1}, \texttt{AUD-2}). When payloads contain receipts, M3 streams to M4 to reuse validation and OCR logic mandated by \texttt{FRQ-4}. Workflow outcomes emit events to M5 so stakeholders receive acknowledgements and escalations without embedding channel logic in the handler.
+\item[\textbf{M4} uses $\{M1, M7\}$:] The receipt pipeline calls storage, OCR, and queueing facilities supplied by M1 (e.g., AWS S3/Textract) to meet \texttt{SaL-3} while remaining replaceable. Metadata for every file, checksum, and extraction result is persisted through M7 so that receipts remain linked to their originating requests (\texttt{FRQ-4}, \texttt{PRI-1}).
+\item[\textbf{M5} uses $\{M1, M7\}$:] Notification templates are rendered with request, user, and club data fetched via M7, ensuring messages reflect the authoritative state described in \texttt{FRQ-2} and \texttt{FRQ-3}. Delivery relies on the email/SMS gateways abstracted by M1, allowing the provider in \acref{acNotification} to change independently while still meeting \texttt{IMM-2} and \texttt{FLT-3} retry expectations.
+\item[\textbf{M6} uses $\{M1, M7\}$:] Authentication depends on cryptographic primitives, secrets storage, and SSO adapters from M1 while persisting user profiles, role grants, and refresh tokens through M7. This encapsulation satisfies \texttt{FRQ-6}, \texttt{PRI-2}, and \texttt{INT-2}; higher layers only interact with opaque tokens or guard functions.
+\item[\textbf{M7} uses $M1$:] The data model sits directly atop the managed database and backup facilities exposed by M1. By isolating queries, schema migrations, and replication hooks here, the system respects \acref{acDatabase} while insulating \texttt{FRQ-1}--\texttt{FRQ-5}, \texttt{SaL-1}, \texttt{CAP-2}, and \texttt{LNG-2} from upstream change.
+\item[\textbf{M8} uses $\{M1, M7\}$:] Audit events are appended to the durable stores defined by M7 and flushed to immutable storage supplied by M1 (e.g., append-only buckets or managed log services). This architecture keeps \texttt{FRQ-5}, \texttt{AUD-1}, \texttt{AUD-2}, and \texttt{SUP-2} compliant without burdening request handlers with vendor-specific retention logic.
+\end{description}
 
 \section{User Interfaces}
 
