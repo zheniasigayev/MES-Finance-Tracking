@@ -431,6 +431,122 @@ notifyUser & userId, notificationType, email & Email Content & InvalidEmailForma
 
 ~\newpage
 
+\section{MIS of Authentication Module (M6)} \label{ModuleAuthentication}
+
+\subsection{Module}
+
+Authentication Module
+
+\subsection{Uses}
+
+\begin{itemize}
+  \item Hardware Hiding Module (M1) for retrieving environment secrets, hashing parameters, and SSO adapters required to validate identities securely.
+  \item Data Model Module (M7) for persisting user profiles, membership links, refresh tokens, and role assignments that underpin authorization checks.
+\end{itemize}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+\begin{itemize}
+  \item \textbf{ACCESS\_TOKEN\_TTL\_MINUTES}: $\mathbb{N}$ --- Length of time a signed access token remains valid before re-authentication is required.
+  \item \textbf{REFRESH\_TOKEN\_TTL\_DAYS}: $\mathbb{N}$ --- Maximum lifetime of a refresh token stored in the Data Model module.
+  \item \textbf{MAX\_FAILED\_ATTEMPTS}: $\mathbb{N}$ --- Number of consecutive failed login attempts permitted before the account enters a lockout period as required by ACS-1.
+  \item \textbf{SUPPORTED\_ROLES}: Set of strings $\{\texttt{member}, \texttt{executive}, \texttt{financeAdmin}\}$ describing valid RBAC roles referenced across the MIS.
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{3cm} p{4.2cm} p{4.2cm} p{3cm}}
+\toprule
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\midrule
+authenticateUser & Credentials, ClientContext & AuthResult & InvalidCredentials, IdentityProviderError, AccountLocked \\
+issueSession & UserID, DeviceFingerprint & SessionEnvelope & UnauthorizedAccess, SecretRotationInProgress \\
+verifyAuthorization & SessionToken, Action, ResourceID & AccessDecision & InvalidToken, UnauthorizedAccess \\
+revokeSession & SessionToken & - & InvalidToken \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+  \item \textbf{sessionStore}: map SessionToken $\rightarrow$ SessionRecord capturing issuedAt, expiresAt, userId, device metadata, and whether the session has been revoked.
+  \item \textbf{refreshTokenIndex}: map RefreshToken $\rightarrow$ RefreshRecord linking long-lived tokens to userId and rotation counters.
+  \item \textbf{failedAttemptCounter}: map UserID $\rightarrow$ $\mathbb{N}$ tracking consecutive unsuccessful authentication attempts to enforce \textbf{MAX\_FAILED\_ATTEMPTS}.
+  \item \textbf{rbacPolicy}: map Role $\rightarrow$ set(ActionPattern) representing the RBAC rules derived from \textbf{SUPPORTED\_ROLES}.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+  \item \textbf{identityProvider}: External identity platform (e.g., Microsoft Entra ID via NextAuth.js) that validates credentials and SSO assertions.
+  \item \textbf{secretManager}: Handle to encrypted signing keys and hashing parameters supplied through the Hardware Hiding Module.
+  \item \textbf{clock}: Trusted time source shared across the deployment for expiry evaluation.
+  \item \textbf{auditChannel}: External logging sink (via M8) where authentication outcomes are dispatched for compliance review.
+\end{itemize}
+
+\subsubsection{Assumptions}
+
+\begin{itemize}
+  \item The identityProvider exposes OAuth/OpenID Connect endpoints compatible with the SSO configuration outlined in the Module Guide.
+  \item All communications with external providers occur over TLS and secrets retrieved through \textbf{secretManager} remain valid for the duration of the invocation unless signaled by rotation events.
+  \item User records stored through the Data Model module contain normalized identifiers and active role assignments so RBAC checks operate deterministically.
+  \item Audit logging is asynchronous, allowing authentication flows to proceed even if auditChannel experiences transient latency.
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent authenticateUser(credentials, context):
+\begin{itemize}
+  \item transition: Submit credentials to identityProvider. On success, reset the caller's entry in \textbf{failedAttemptCounter}; on failure, increment the counter and lock the account when \textbf{MAX\_FAILED\_ATTEMPTS} is reached. Emit a summary event to \textbf{auditChannel}.
+  \item output: Return an AuthResult containing userId, issued claims (roles, permissions), and whether multi-factor verification is required.
+  \item exception: InvalidCredentials when the identityProvider rejects the credentials, IdentityProviderError on remote service failures, AccountLocked when the caller exceeded \textbf{MAX\_FAILED\_ATTEMPTS}.
+\end{itemize}
+
+\noindent issueSession(userId, fingerprint):
+\begin{itemize}
+  \item transition: Retrieve signing secrets from \textbf{secretManager}, derive the user's roles from \textbf{rbacPolicy} and the Data Model module, and mint access/refresh tokens scoped to \textbf{ACCESS\_TOKEN\_TTL\_MINUTES} and \textbf{REFRESH\_TOKEN\_TTL\_DAYS}. Persist the resulting SessionRecord in \textbf{sessionStore} and update \textbf{refreshTokenIndex}.
+  \item output: Return a SessionEnvelope with encoded SessionToken, RefreshToken, expiration timestamps, and derived claims.
+  \item exception: UnauthorizedAccess when the user does not have an active account, SecretRotationInProgress when signing keys are being rolled and issuing a new session would violate key consistency.
+\end{itemize}
+
+\noindent verifyAuthorization(sessionToken, action, resourceId):
+\begin{itemize}
+  \item transition: Validate sessionToken signature using \textbf{secretManager}, confirm it exists in \textbf{sessionStore}, and evaluate whether the embedded role grants permission for the requested action/resource pair using \textbf{rbacPolicy}. Refresh rolling expiration if a sliding window policy is configured.
+  \item output: Return an AccessDecision (\texttt{allow} or \texttt{deny}) plus contextual information (derived role, reason).
+  \item exception: InvalidToken when the token signature/expiry fails validation, UnauthorizedAccess when RBAC rules do not permit the action.
+\end{itemize}
+
+\noindent revokeSession(sessionToken):
+\begin{itemize}
+  \item transition: Mark the corresponding SessionRecord inside \textbf{sessionStore} as revoked, delete associated refresh tokens from \textbf{refreshTokenIndex}, and notify \textbf{auditChannel}.
+  \item output: None.
+  \item exception: InvalidToken if the supplied token cannot be found or has already expired.
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+\begin{itemize}
+  \item \textbf{loadUserProfile(userId)}: Queries the Data Model module for the latest user metadata and roles.
+  \item \textbf{deriveClaims(profile, context)}: Normalizes the user's club memberships, privileges, and session context (device, location) into the claims stored within tokens.
+  \item \textbf{recordAudit(event)}: Normalizes authentication outcomes and writes them to \textbf{auditChannel}.
+\end{itemize}
+
+\subsubsection{Considerations}
+
+\begin{itemize}
+  \item RBAC definitions in \textbf{rbacPolicy} must remain synchronized with Request Handler use cases to ensure FRQ-6 and ACS-2 are met.
+  \item Session issuance intentionally depends on Hardware Hiding for signing secrets so cryptographic agility (algorithm or key changes) is captured within a single module boundary.
+  \item This module exposes only opaque tokens; upstream callers never manipulate passwords or session internals directly, preserving the information-hiding intent of the Module Guide.
+\end{itemize}
+
+~\newpage
+
 \section{MIS of Data Model Module (M7)} \label{DataModelModule}
 
 \subsection{Module}
