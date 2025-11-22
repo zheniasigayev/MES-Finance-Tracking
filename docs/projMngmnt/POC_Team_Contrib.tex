@@ -24,14 +24,22 @@ and the POC demo.
 
 \section{Demo Plans}
 
-We will be demonstrating the following functionality at the POC demo:
+We will demonstrate an end-to-end PoC of the MES Finance Platform that highlights risk-reducing functionality:
 \begin{itemize}
-    \item Image upload via web interface
-    \item OCR processing of uploaded images
-    \item Display of extracted text to user
-    \item Storage of images and extracted text in database
+  \item Intuitive web form for receipt submission
+  \item Google Cloud Vision OCR on uploaded receipts
+  \item LLM-based structured data extraction via Ollama (merchant, date, total)
+  \item Full-stack flow: persist receipt image and parsed data, then render results in the Frontend UI
+  \item Admin dashboard preview to show reimbursement request visibility
 \end{itemize}
-\wss{What will you be demonstrating}
+
+\noindent Demo flow:
+\begin{enumerate}
+  \item Upload a sample receipt image via the web UI
+  \item OCR runs automatically and parsed fields are extracted by the LLM
+  \item The user reviews extracted data and submits the request
+  \item The admin view shows the new request with key fields populated
+\end{enumerate}
 
 \section{Team Meeting Attendance}
 
@@ -48,7 +56,7 @@ number of team meetings held by the team.}
 \midrule
 Total & 2\\
 Justin & 2\\
-Name 2 & Num\\
+Zhenia & 2\\
 Name 3 & Num\\
 Name 4 & Num\\
 Name 5 & Num\\
@@ -75,9 +83,9 @@ stakeholders (potential users) that can serve a similar purpose.}
 \toprule
 \textbf{Student} & \textbf{Meetings}\\
 \midrule
-Total & 2\\
+Total & 3\\
 Justin & 2\\
-Name 2 & Num\\
+Zhenia & 3\\
 Name 3 & Num\\
 Name 4 & Num\\
 Name 5 & Num\\
@@ -86,6 +94,9 @@ Name 5 & Num\\
 \end{table}
 
 \wss{If needed, an explanation for the counts can be provided here.}
+
+There were 2 official team meetings, and 1 unofficial meeting, in which Luke (our supervisor) joined on the fly as we were having a separate meeting with the MES developers.
+
 
 \section{Lecture Attendance}
 
@@ -107,7 +118,7 @@ and the POC demos}
 \midrule
 Total & 13\\
 Justin & 5\\
-Name 2 & Num\\
+Zhenia & 4\\
 Name 3 & Num\\
 Name 4 & Num\\
 Name 5 & Num\\
@@ -122,13 +133,13 @@ Name 5 & Num\\
 \wss{For each team member how many of the informal document discussion meetings
 with the TA were attended over the time period of interest.}
 
-\noindent \textbf{TA's Name: } [fill in this information]
+\noindent \textbf{TA's Name: } Luke Schuurman (capstone@macengsociety.ca)
 
 \begin{table}[H]
 \centering
 \begin{tabular}{ll}
 \toprule
-\textbf{Student} & \textbf{Lectures}\\
+\textbf{Student} & \textbf{Meetings}\\
 \midrule
 Total & 4\\
 Justin & 4\\
@@ -156,7 +167,7 @@ percentage of the total commits made by each team member.}
 \textbf{Student} & \textbf{Commits} & \textbf{Percent}\\
 \midrule
 Total & 90 & 100\% \\
-Justin 1 & 18 & 20\% \\
+Justin & 18 & 20\% \\
 Name 2 & Num & \% \\
 Name 3 & Num & \% \\
 Name 4 & Num & \% \\
@@ -197,53 +208,54 @@ Name 5 & Num & Num \\
 
 CICD has been used in the following ways in our project:
 \begin{itemize}
-    \item automatic updates to out pdfs
+    \item Automatic updates to our PDFs (build LaTeX documents on push/PR)
+    \item Frontend linting and unit tests on push/PR
+    \item Preview deployments for feature branches to support rapid review
 \end{itemize}
 
 \wss{Say how CICD will be used in your project}
 
 \section{Team Charter Trigger Items}
 
-Our triggers were mainly based around communication, responsibilties, and scheduling.
+Our triggers are based around communication, responsibilities, and scheduling.
 \begin{itemize}
-    \item communication
+  \item Communication
     \begin{itemize}
-        \item use pull request for code changes
-        \item discord of quick coordination
-        \item email for formal stakeholder communication
-        \item use github issues for task management
+      \item Use pull requests for code changes
+      \item Discord for quick coordination
+      \item Email for formal stakeholder communication
+      \item Use GitHub issues for task management
     \end{itemize}
-    \item responsibilities
+  \item Responsibilities
     \begin{itemize}
-        \item each member is responsible for their assigned issues
-        \item members are responsible for attending meetings
-        \item team member roles (PM, Dev lead, etc.) are responsible are constantly being rotated and shared
+      \item Each member is responsible for their assigned issues
+      \item Members are responsible for attending meetings
+      \item Team roles (PM, Dev lead, etc.) rotate and are shared
     \end{itemize}
-    \item scheduling
+  \item Scheduling
     \begin{itemize}
-        \item issues are assigned with realistic deadlines
-        \item deadlines are met
+      \item Issues are assigned with realistic deadlines
+      \item Deadlines are met
     \end{itemize}
 \end{itemize}
 
 Violated triggers
 \begin{itemize}
-    \item communication
+  \item Communication
     \begin{itemize}
-        \item Github issues were not always used
+      \item GitHub issues were not consistently used
     \end{itemize}
-    \item responsibilities
+  \item Responsibilities
     \begin{itemize}
-        \item N/A
+      \item N/A
     \end{itemize}
-    \item scheduling
+  \item Scheduling
     \begin{itemize}
-        \item N/A
+      \item N/A
     \end{itemize}
 \end{itemize}
 
-To address the violation of not always using github issues, we will make a
-reminder to use github issues for task management in our next team meeting.
+To address the issue tracking gap, we will reinforce using GitHub issues for all tasks and review adherence in the next team meeting.
 
 
 \wss{Provide a summary of the quantified triggers identified in the team's
