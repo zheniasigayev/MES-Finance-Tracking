@@ -5,8 +5,13 @@
 \usepackage{multirow}
 \usepackage{booktabs}
 \usepackage{tabularx}
+\usepackage{array}
+\usepackage{longtable}
 \usepackage{graphicx}
 \usepackage{float}
+\usepackage{caption}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning}
 \usepackage{hyperref}
 \hypersetup{
     colorlinks,
@@ -30,6 +35,9 @@
 \newcounter{mnum}
 \newcommand{\mthemnum}{M\themnum}
 \newcommand{\mref}[1]{M\ref{#1}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\LTcapwidth}{\textwidth}
+\captionsetup[longtable]{justification=raggedright,singlelinecheck=false}
 
 \begin{document}
 
@@ -318,17 +326,30 @@ Only the leaf modules in the hierarchy have to be implemented.
 \item[Type of Module:] Abstract Object
 \end{description}
 
+\clearpage
+
 \section{Traceability Matrix} \label{SecTM}
 
 This section shows two traceability matrices: between the modules and the requirements and between the modules and the anticipated changes.
 
 % Traceability between Requirements and Modules
-\begin{table}[H]
-\centering
-\begin{tabular}{p{0.2\textwidth} p{0.6\textwidth}}
+\begin{longtable}{L{0.45\textwidth} L{0.45\textwidth}}
+\caption{Trace Between Requirements and Modules}
+\label{TblRT}\\
 \toprule
 \textbf{Req.} & \textbf{Modules}\\
 \midrule
+\endfirsthead
+\toprule
+\textbf{Req.} & \textbf{Modules}\\
+\midrule
+\endhead
+\midrule
+\multicolumn{2}{r}{Continued on next page}\\
+\midrule
+\endfoot
+\bottomrule
+\endlastfoot
 FRQ-1: Submit expense claims & M2, M3, M6, M7\\
 FRQ-2: Review/approve/reject requests & M2, M3, M6, M7\\
 FRQ-3: Track claim status & M2, M3, M7\\
@@ -376,19 +397,30 @@ SUP-1: Developer documentation & All Modules\\
 SUP-2: Monitoring access & M1, M8\\
 ADP-1: Policy adaptability & M3\\
 ADP-2: UI extensibility & M2\\
-\bottomrule
-\end{tabular}
-\caption{Trace Between Requirements and Modules}
-\label{TblRT}
-\end{table}
+\end{longtable}
 
 % Traceability between Anticipated Changes and Modules
-\begin{table}[H]
-\centering
-\begin{tabular}{p{0.2\textwidth} p{0.6\textwidth}}
+{
+\vspace{-0.75\baselineskip}
+\setlength{\LTpre}{6pt}
+\setlength{\LTpost}{6pt}
+\begin{longtable}{L{0.3\textwidth} L{0.6\textwidth}}
+\caption{Trace Between Anticipated Changes and Modules}
+\label{TblACT}\\
 \toprule
 \textbf{AC} & \textbf{Modules}\\
 \midrule
+\endfirsthead
+\toprule
+\textbf{AC} & \textbf{Modules}\\
+\midrule
+\endhead
+\midrule
+\multicolumn{2}{r}{Continued on next page}\\
+\midrule
+\endfoot
+\bottomrule
+\endlastfoot
 \acref{acOCR} & M4\\
 \acref{acStorage} & M4\\
 \acref{acNotification} & M5\\
@@ -397,13 +429,49 @@ ADP-2: UI extensibility & M2\\
 \acref{acDatabase} & M7\\
 \acref{acWorkflow} & M3\\
 \acref{acAPIs} & M3, M5\\
-\bottomrule
-\end{tabular}
-\caption{Trace Between Anticipated Changes and Modules}
-\label{TblACT}
-\end{table}
+\end{longtable}
+}
 
 \section{Use Hierarchy Between Modules} \label{SecUse}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=1.6cm and 2.0cm, every node/.style={draw, rectangle, rounded corners, align=center, minimum width=2.6cm, minimum height=1cm, font=\small}, >=Stealth]
+\node (m1) {M1\\Hardware};
+\node[above=1.4cm of m1] (m7) {M7\\Data Model};
+\node[right=3.0cm of m7] (m8) {M8\\Audit Logging};
+\node[left=3.0cm of m7] (m6) {M6\\Authentication};
+\node[above=1.4cm of m7] (m3) {M3\\Request Handler};
+\node[left=2.6cm of m3] (m4) {M4\\Receipt Processing};
+\node[right=2.6cm of m3] (m5) {M5\\Notification};
+\node[above=1.4cm of m3] (m2) {M2\\User Interface};
+
+\draw[->] (m2) -- (m3);
+\draw[->] (m2) -- (m4);
+\draw[->] (m2) -- (m6);
+
+\draw[->] (m3) -- (m4);
+\draw[->] (m3) -- (m5);
+\draw[->] (m3) -- (m6);
+\draw[->] (m3) -- (m7);
+\draw[->] (m3) -- (m8);
+
+\draw[->] (m4) -- (m1);
+\draw[->] (m4) -- (m7);
+
+\draw[->] (m5) -- (m1);
+\draw[->] (m5) -- (m7);
+
+\draw[->] (m6) -- (m1);
+\draw[->] (m6) -- (m7);
+
+\draw[->] (m7) -- (m1);
+
+\draw[->] (m8) -- (m1);
+\draw[->] (m8) -- (m7);
+\end{tikzpicture}
+\caption{Uses relationships between modules.}
+\end{figure}
 
 \begin{description}
 \item[\textbf{M2} uses $\{M3, M4, M6\}$:] Screens and flows render request data provided by M3 and push user actions back through its APIs, which keeps \texttt{FRQ-1}--\texttt{FRQ-3} behaviour identical across clients. Upload widgets stream binaries to M4 so that the receipt constraints in \texttt{FRQ-4} and \texttt{SaL-3} are enforced once instead of being re-implemented in the browser. Role-aware rendering and secure navigation rely on session hooks from M6, satisfying \texttt{FRQ-6}, \texttt{APP-3}, and the accessibility targets in \texttt{ABL}.
