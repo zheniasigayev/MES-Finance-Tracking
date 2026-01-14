@@ -19,6 +19,7 @@
 \usepackage[section]{placeins}
 \usepackage{caption}
 \usepackage{fullpage}
+\usepackage{makecell}
 
 \hypersetup{
 bookmarks=true,     % show bookmarks bar?
@@ -35,6 +36,8 @@ urlcolor=cyan          % color of external links
 
 \input{../../Comments}
 \input{../../Common}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
 
 \begin{document}
 
@@ -61,9 +64,7 @@ Monday, November 10, 2025 & 1.0 & Initial Document\\
 
 \section{Symbols, Abbreviations and Acronyms}
 
-See SRS Documentation at \wss{give url}
-
-\wss{Also add any additional symbols, abbreviations or acronyms}
+See SRS Documentation at \url{https://github.com/zheniasigayev/MES-Finance-Tracking/blob/main/docs/SRS/SRS.pdf}.
 
 \newpage
 
@@ -82,9 +83,6 @@ This document specifies the MIS for each software module in the MES Finance Trac
 Complementary documents include the System Requirement Specifications, Module Guide, and complete documentation and implementation can be found at \url{https://github.com/zheniasigayev/MES-Finance-Tracking}.
 
 \section{Notation}
-
-\wss{You should describe your notation.  You can use what is below as
-  a starting point.}
 
 The structure of the MIS for modules comes from \citet{HoffmanAndStrooper1995},
 with the addition that template modules have been adapted from
@@ -111,12 +109,15 @@ real & $\mathbb{R}$ & any number in (-$\infty$, $\infty$)\\
 \end{center}
 
 \noindent
-The specification of \progname \ uses some derived data types: sequences, strings, and
-tuples. Sequences are lists filled with elements of the same data type. Strings
-are sequences of characters. Tuples contain a list of values, potentially of
-different types. In addition, \progname \ uses functions, which
-are defined by the data types of their inputs and outputs. Local functions are
-described by giving their type signature followed by their specification.
+\noindent
+\textbf{Derived data types} used in this document:
+\begin{itemize}
+  \item \textbf{Sequence}: ordered list of elements of the same type (notation: sequence $T$).
+  \item \textbf{String}: sequence of characters.
+  \item \textbf{Tuple}: ordered list of values that may be of different types (notation: $(t_1, t_2, \dots)$).
+  \item \textbf{Map}: written as $\text{map } A \rightarrow B$; a total association from keys of type $A$ to values of type $B$ (absent keys are errors unless stated otherwise).
+\end{itemize}
+In addition, \progname \ uses functions, which are defined by the data types of their inputs and outputs. Local functions are described by giving their type signature followed by their specification.
 
 \section{Module Decomposition}
 
@@ -276,18 +277,24 @@ User Interface Module (M2)
 \subsubsection{Exported Access Programs}
 
 \begin{center}
-\begin{tabular}{p{2.8cm} p{4.2cm} p{4.2cm} p{2.4cm}}
-\toprule
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textwidth}{|Y|Y|Y|Y|}
+\hline
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
-\midrule
-renderLandingPage & sessionToken & ViewState & SessionInvalid \\
-renderDashboard & userId, sessionToken & ViewState & SessionInvalid, AccessDenied \\
-renderRequestForm & requestId (optional), sessionToken & ViewState & SessionInvalid, RequestNotFound, AccessDenied \\
-handleFormSubmit & formData, sessionToken & NavigationOutcome & SessionInvalid, ValidationError, BackendFailure \\
-toggleTheme & preferredTheme, sessionToken & UISettings & SessionInvalid \\
-showTutorial & sessionToken & TutorialState & SessionInvalid \\
-\bottomrule
-\end{tabular}
+\hline
+\makecell[l]{renderLanding\\Page} & \makecell[l]{sessionToken} & \makecell[l]{ViewState} & \makecell[l]{SessionInvalid} \\
+\hline
+\makecell[l]{renderDashboard} & \makecell[l]{userId,\\ sessionToken} & \makecell[l]{ViewState} & \makecell[l]{SessionInvalid,\\ AccessDenied} \\
+\hline
+\makecell[l]{renderRequest\\Form} & \makecell[l]{requestId (optional),\\ sessionToken} & \makecell[l]{ViewState} & \makecell[l]{SessionInvalid,\\ RequestNotFound,\\ AccessDenied} \\
+\hline
+\makecell[l]{handleForm\\Submit} & \makecell[l]{formData,\\ sessionToken} & \makecell[l]{NavigationOutcome} & \makecell[l]{SessionInvalid,\\ ValidationError,\\ BackendFailure} \\
+\hline
+\makecell[l]{toggleTheme} & \makecell[l]{preferredTheme,\\ sessionToken} & \makecell[l]{UISettings} & \makecell[l]{SessionInvalid} \\
+\hline
+\makecell[l]{showTutorial} & \makecell[l]{sessionToken} & \makecell[l]{TutorialState} & \makecell[l]{SessionInvalid} \\
+\hline
+\end{tabularx}
 \end{center}
 
 \subsection{Semantics}
@@ -416,8 +423,8 @@ removeReceipt & ReceiptID, UserID & $-$ & ReceiptNotFound, UnauthorizedAccess, I
 \subsubsection{State Variables}
 
 \begin{itemize}
-  \item receiptIndex: Mapping of ReceiptID to ReceiptRecord capturing storage location, uploader, request association, timestamps, and validation flags.
-  \item extractionCache: Mapping of ReceiptID to ExtractedReceiptData persisted for reuse across module calls.
+  \item receiptIndex: map ReceiptID $\rightarrow$ ReceiptRecord capturing storage location, uploader, request association, timestamps, and validation flags.
+  \item extractionCache: map ReceiptID $\rightarrow$ ExtractedReceiptData persisted for reuse across module calls.
   \item storageCredentials: Handle with scoped credentials for interacting with the managed receipt storage service.
 \end{itemize}
 
@@ -519,8 +526,8 @@ notifyUser & userId, notificationType, email & Email Content & InvalidEmailForma
 \subsubsection{State Variables}
 
 \begin{itemize}
-  \item reimbursementProcessIndex: Mapping the current request process/step to the corresponding notificationType to determine when notifications should be sent.
-  \item notificationIndex: Mapping of NotificationID to NotificationRecord capturing recipient, notification type, notification message, timestamp, and delivery status.
+  \item reimbursementProcessIndex: map RequestProcessStep $\rightarrow$ NotificationType indicating when each notification should be sent.
+  \item notificationIndex: map NotificationID $\rightarrow$ NotificationRecord capturing recipient, notification type, notification message, timestamp, and delivery status.
 \end{itemize}
 
 \subsubsection{Environment Variables}
@@ -886,18 +893,7 @@ None.
 
 \section{Appendix} \label{Appendix}
 
-\wss{Extra information if required}
-
-\newpage{}
-
-\section*{Appendix --- Reflection}
-
-\wss{Not required for CAS 741 projects}
-
-The information in this section will be used to evaluate the team members on the
-graduate attribute of Problem Analysis and Design.
-
-\input{../../Reflection.tex}
+This appendix is intentionally left blank for this deliverable. Future updates may add supplementary figures or calculations.
 
 \begin{enumerate}
   \item What went well while writing this deliverable? 
