@@ -215,10 +215,10 @@ Hardware-Hiding Module & \textbullet~M1: Hardware Hiding Module \\
 \hline
 Behaviour-Hiding Module & \textbullet~M2: User Interface Module \\
                          & \textbullet~M3: Request Handler Module \\
-                         & \textbullet~M4: Receipt Processing Module \\
                          & \textbullet~M5: Notification Module \\
 \hline
-Software Decision Module & \textbullet~M6: Authentication Module \\
+Software Decision Module & \textbullet~M4: Receipt Processing Module \\
+                         & \textbullet~M6: Authentication Module \\
                          & \textbullet~M7: Data Model Module \\
                          & \textbullet~M8: Audit Logging Module \\
 \bottomrule
@@ -273,15 +273,6 @@ Only the leaf modules in the hierarchy have to be implemented.
 \item[Type of Module:] Abstract Object
 \end{description}
 
-\subsubsection{Receipt Processing Module (M4)}
-
-\begin{description}
-\item[Secrets:] The algorithms and external services used for processing receipt images (e.g., OCR service integration, file storage management).
-\item[Services:] Handles the upload, storage (e.g., to AWS S3), and processing of receipt images. Extracts relevant data (amount, date, vendor) using OCR technology. Validates file formats and sizes. Provides secure access to stored receipts.
-\item[Implemented By:] MES Finance Platform (Node.js, AWS Textract/S3)
-\item[Type of Module:] Abstract Object
-\end{description}
-
 \subsubsection{Notification Module (M5)}
 
 \begin{description}
@@ -297,6 +288,15 @@ Only the leaf modules in the hierarchy have to be implemented.
 \item[Secrets:] The design decision based on mathematical theorems, physical facts, or programming considerations. The secrets of this module are \textit{not} described in the SRS.
 \item[Services:] Includes data structure and algorithms used in the system that do not provide direct interaction with the user.
 \item[Implemented By:] -
+\end{description}
+
+\subsubsection{Receipt Processing Module (M4)}
+
+\begin{description}
+\item[Secrets:] The algorithms, OCR provider selection, image processing pipelines, and validation logic used for receipt processing. Hides the specific external services (e.g., Amazon Textract vs. Google Vision API) and file storage implementations (e.g., AWS S3 vs. Azure Blob Storage).
+\item[Services:] Handles the upload, storage, and processing of receipt images. Extracts relevant data (amount, date, vendor) using OCR technology. Validates file formats and sizes. Provides secure access to stored receipts through URL generation.
+\item[Implemented By:] MES Finance Platform (Node.js, AWS Textract/S3)
+\item[Type of Module:] Abstract Device
 \end{description}
 
 \subsubsection{Authentication Module (M6)}
