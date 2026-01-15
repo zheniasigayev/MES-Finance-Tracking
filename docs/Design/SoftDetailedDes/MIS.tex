@@ -131,22 +131,16 @@ The following table is taken directly from the Module Guide document for this pr
 \toprule
 \textbf{Level 1} & \textbf{Level 2}\\
 \midrule
-
-{Hardware-Hiding} & \textbullet~M1: Hardware Hiding Module \\
-\midrule
-
-\multirow{7}{0.3\textwidth}{Behaviour-Hiding} & Input Parameters\\
-& Output Format\\
-& Output Verification\\
-& Temperature ODEs\\
-& Energy Equations\\ 
-& Control Module\\
-& Specification Parameters Module\\
-\midrule
-
-\multirow{3}{0.3\textwidth}{Software Decision} & {Sequence Data Structure}\\
-& ODE Solver\\
-& Plotting\\
+Hardware-Hiding Module & \textbullet~M1: Hardware Hiding Module \\
+\hline
+Behaviour-Hiding Module & \textbullet~M2: User Interface Module \\
+                         & \textbullet~M3: Request Handler Module \\
+                         & \textbullet~M4: Receipt Processing Module \\
+                         & \textbullet~M5: Notification Module \\
+\hline
+Software Decision Module & \textbullet~M6: Authentication Module \\
+                         & \textbullet~M7: Data Model Module \\
+                         & \textbullet~M8: Audit Logging Module \\
 \bottomrule
 
 \end{tabular}
@@ -494,10 +488,8 @@ ReceiptProcessing
 \subsection{Uses}
 
 \begin{itemize}
-  \item Authentication Module (M6) for verifying that a caller has sufficient permissions to interact with a stored receipt.
+  \item Hardware Hiding Module (M1) for OCR services, queueing, and storage while processing.
   \item Data Model Module (M7) for persisting receipt metadata, OCR extraction results, and associating receipts with reimbursement requests.
-  \item Audit Logging Module (M8) for recording immutable traces of upload, access, extraction, and deletion actions.
-  \item External storage and OCR services (e.g., AWS S3 and Amazon Textract) identified in the Module Guide and SRS for hosted file storage and automated data extraction.
 \end{itemize}
 
 \subsection{Syntax}
