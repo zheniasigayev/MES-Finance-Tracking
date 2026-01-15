@@ -380,6 +380,111 @@ None.
 
 ~\newpage
 
+\section{MIS of Request Handler (M3)} \label{Request HandlerModule}
+
+\subsection{Module}
+
+RequestHandler
+
+\subsection{Uses}
+
+\begin{itemize}
+  \item Receipt Processing Module (M4) for validating attached receipt binaries and linking them to requests.
+  \item Notification Module (M5) for dispatching status updates to students and administrators.
+  \item Authentication Module (M6) for verifying user roles and permissions before executing operations.
+  \item Data Model Module (M7) for persisting and retrieving reimbursement request records.
+  \item Audit Logging Module (M8) for recording state transitions and user abstractions
+\end{itemize}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+\begin{itemize}
+  \item \textbf{ALLOWED\_STATUS\_TRANSITIONS}: map Status $\rightarrow$ set of Status - Defines valid workflow paths (e.g., $\{\text{'submitted'} \rightarrow \{\text{'approved', 'rejected'}\}\}$)  
+  \item \textbf{MAX\_BUDGET\_LINE\_AMOUNT}: $R$ - Upper limit for a single budget line entry to prevent overflow errors
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{2.8cm} p{4.2cm} p{4.2cm} p{2.4cm}}
+\toprule
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\midrule
+createRequest & RequestData, UserID & RequestID & UnauthorizedAccess, ValidationError, DatabaseError \\
+getRequestDetails & RequestID, UserID & RequestRecord & RequestNotFound, UnauthorizedAccess \\
+updateStatus & RequestID, Status, UserID & $-$ & InvalidTransition, UnauthorizedAccess, RequestNotFound \\
+listUserRequests & UserID & sequence of RequestRecord & DatabaseError \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+  \item \textbf{requestIndex}: map RequestID $\rightarrow$ RequestRecord capturing the current state, uploader, budget lines, timestamps, and associated receipts.
+  \item \textbf{workflowPolicy}: map Status $\rightarrow$ set of Role defining which RBAC roles are authorized to trigger specific state changes.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+  \item \textbf{dbChannel}: Interface to the Data Model Module (M7) for persistent storage of reimbursement records.
+  \item \textbf{auditChannel}: Interface to the Audit Logging Module (M8) for recording the lifecycle of each request.
+  \item \textbf{notificationChannel}: Interface to the Notification Module (M5) for alerting users of status changes.
+\end{itemize}
+
+\subsubsection{Assumptions}
+
+\begin{itemize}
+  \item The caller has been authenticated and provides a UserID verified by the Authentication Module (M6).
+  \item Business rules regarding budget allocation and club-specific policies are authoritative within this module.
+  \item Communication with the Data Model (M7) is successful during standard operations.
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent createRequest(data, uploaderId):
+\begin{itemize}
+  \item transition: Verify that uploaderId has the 'executive' role via M6. Validate the request fields (amounts, club ID, and presence of receipts). Generate a new RequestID, set the initial status to 'submitted', and persist the record to M7. Record the creation event in M8 and send an acknowledgement via M5
+  \item output: Return the newly generated RequestID.
+  \item exception: Raise UnauthorizedAccess if the user is not an executive, ValidationError if data is malformed, or DatabaseError if storage fails.
+\end{itemize}
+
+\noindent getRequestDetails(reqId, userId):
+\begin{itemize}
+  \item transition: Confirm via M6 that userId is either the original uploader, a club executive for that club, or a finance administrator. Fetch the full record from M7.
+  \item output: Return the RequestRecord containing all persisted data for the specified ID.
+  \item exception: Raise RequestNotFound if reqId does not exist, or UnauthorizedAccess if the user lacks viewing permissions.
+\end{itemize}
+
+\noindent updateRequestStatus(reqId, newStatus, actorId):
+\begin{itemize}
+  \item transition: Verify that actorId has 'financeAdmin' permissions via M6. Check that the current status in requestIndex allows a transition to newStatus according to ALLOWED\_STATUS\_TRANSITIONS. Update the record in M7, trigger a notification to the uploader via M5, and log the approval or rejection in M8
+  \item output: None.
+  \item exception: Raise InvalidTransition if the workflow path is illegal, UnauthorizedAccess if the user is not an admin, or RequestNotFound if the ID is unknown.
+\end{itemize}
+
+\noindent deleteRequest(reqId, requesterId):
+\begin{itemize}
+  \item transition: Confirm that requesterId is the original uploader and that the request status is still 'draft' or 'submitted' (not yet processed). Remove the record from M7 and associated receipt links in M4. Log the deletion in M8.
+  \item output: None.
+  \item exception: Raise RequestNotFound if the ID is missing, UnauthorizedAccess if the user lacks ownership, or ImmutableRequestState if the request has already been approved or rejected.
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+\begin{itemize}
+  \item \textbf{isValidWorkflow(current, next)}: Boolean helper verifying if a state change follows the defined business rules.
+  \item \textbf{checkPermissions(actor, action)}: Interface to M6 to confirm RBAC roles against the requested workflow action
+\end{itemize}
+
+
+~\newpage
+
 \section{MIS of Receipt Processing Module (M4)} \label{ModuleReceiptProcessing}
 
 \subsection{Module}
@@ -610,6 +715,10 @@ revokeSession & SessionToken & - & InvalidToken \\
   \item \textbf{sessionStore}: map SessionToken $\rightarrow$ SessionRecord capturing issuedAt, expiresAt, userId, device metadata, and whether the session has been revoked.
   \item \textbf{refreshTokenIndex}: map RefreshToken $\rightarrow$ RefreshRecord linking long-lived tokens to userId and rotation counters.
   \item \textbf{failedAttemptCounter}: map UserID $\rightarrow$ $\mathbb{N}$ tracking consecutive unsuccessful authentication attempts to enforce \textbf{MAX\_FAILED\_ATTEMPTS}.
+    \begin{itemize}
+      \item failedAttemptCounter(userId) $:=$ (validCredentials $\to$ 0 $\mid$ !validCredentials $\to$ failedAttemptCounter(userId) + 1)
+      \item out $:=$ (failedAttemptCounter(userId) $\geq$ MAX\_FAILED\_ATTEMPTS $\to$ AccountLocked $\mid$ else $\to$ proceed)
+    \end{itemize}
   \item \textbf{rbacPolicy}: map Role $\rightarrow$ set(ActionPattern) representing the RBAC rules derived from \textbf{SUPPORTED\_ROLES}.
 \end{itemize}
 
