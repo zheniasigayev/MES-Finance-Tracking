@@ -507,8 +507,20 @@ NotificationModule
 \subsubsection{Exported Constants}
 
 \begin{itemize}
-  \item notificationTypes: Set of supported notification categories, including receiptUploaded, requestApproved, requestRejected, defining the scenarios in which users can be notified.
-  \item clubId: Unique identifier for the McMaster Engineering Society club associated with the user receiving the notification.
+  \item \textbf{NOTIFICATION\_TYPES}: Set of strings $\{\texttt{receiptUploaded}, \texttt{requestApproved}, \texttt{requestRejected}\}$ defining the supported notification categories that specify the scenarios in which users can be notified.
+\end{itemize}
+
+\subsubsection{Exported Types}
+
+\begin{itemize}
+  \item \textbf{UserID}: string --- Unique identifier for a user in the system, consistent with Authentication Module (M6).
+  \item \textbf{ClubID}: string --- Unique identifier for a McMaster Engineering Society club.
+  \item \textbf{NotificationType}: enumeration $\in$ \textbf{NOTIFICATION\_TYPES} --- One of the supported notification categories.
+  \item \textbf{EmailAddress}: string --- Valid email address conforming to RFC 5322 format.
+  \item \textbf{EmailContent}: tuple (subject: string, body: string, recipients: sequence of EmailAddress) --- Structured representation of an email notification including subject line, message body, and recipient list.
+  \item \textbf{NotificationID}: string --- Unique identifier for a notification record.
+  \item \textbf{NotificationRecord}: tuple (notificationId: NotificationID, recipient: EmailAddress, notificationType: NotificationType, message: string, timestamp: $\mathbb{R}$, deliveryStatus: string) --- Complete record of a notification attempt.
+  \item \textbf{RequestProcessStep}: enumeration $\{\texttt{receiptProcessed}, \texttt{requestApproved}, \texttt{requestRejected}\}$ --- Key stages in the reimbursement request workflow.
 \end{itemize}
 
 \subsubsection{Exported Access Programs}
@@ -518,7 +530,7 @@ NotificationModule
 \toprule
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
 \midrule
-notifyUser & userId, notificationType, email & Email Content & InvalidEmailFormat, UnauthorizedAccess, NotificationFailure \\
+notifyUser & UserID, NotificationType, EmailAddress & EmailContent & InvalidEmailFormat, UnauthorizedAccess, NotificationFailure \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -546,18 +558,18 @@ notifyUser & userId, notificationType, email & Email Content & InvalidEmailForma
 
 \subsubsection{Access Routine Semantics}
 
-\noindent notifyUser(userId, notificationType, notificationContent):
+\noindent notifyUser(userId: UserID, notificationType: NotificationType, email: EmailAddress):
 \begin{itemize}
-  \item transition: Validate that userId is authorized to receive notifications and that notificationType is supported. Construct the notification message using notificationContent and dispatch it to the current user and the club executive team. Log the notification attempt in notificationIndex with status.
-  \item output: Return the full notification content that was sent to the user.
-  \item exception: NotificationFailure if the email service reports an error.  
+  \item transition: Validate that userId is authorized to receive notifications and that notificationType $\in$ \textbf{NOTIFICATION\_TYPES}. Validate that email conforms to RFC 5322 format. Construct the notification message based on notificationType and dispatch it to the specified email address. Log the notification attempt in notificationIndex with a new NotificationRecord containing the recipient, type, message, timestamp, and delivery status.
+  \item output: Return EmailContent containing the subject, body, and recipient list of the notification that was sent.
+  \item exception: InvalidEmailFormat if email does not conform to RFC 5322 format, UnauthorizedAccess if userId is not authorized to receive notifications, NotificationFailure if the email service reports an error.
 \end{itemize}
 
-\noindent notifyClubExecutive(clubId, notificationType, notificationContent):
+\noindent notifyClubExecutive(clubId: ClubID, notificationType: NotificationType, notificationContent: string):
 \begin{itemize}
-  \item transition: Retrieve the contact details of the club executive team associated with clubId. Construct the notification message using notificationContent and dispatch it to the club executive team. Log the notification attempt in notificationIndex with status.
-  \item output: Return the full notification content that was sent to the club executive team.
-  \item exception: NotificationFailure if the email service reports an error.  
+  \item transition: Retrieve the contact details (sequence of EmailAddress) of the club executive team associated with clubId from the Authentication Module. Validate that notificationType $\in$ \textbf{NOTIFICATION\_TYPES}. Construct the notification message using notificationContent and dispatch it to all club executive team members. Log each notification attempt in notificationIndex with corresponding NotificationRecords.
+  \item output: Return EmailContent containing the subject, body, and recipient list of the notification that was sent to the club executive team.
+  \item exception: UnauthorizedAccess if clubId is invalid or has no associated executive team, NotificationFailure if the email service reports an error.
 \end{itemize}
 
 
