@@ -125,30 +125,23 @@ In addition, \progname \ uses functions, which are defined by the data types of 
 
 The following table is taken directly from the Module Guide document for this project.
 
-\begin{table}[h!]
+\begin{table}[h]
 \centering
 \begin{tabular}{p{0.3\textwidth} p{0.6\textwidth}}
 \toprule
-\textbf{Level 1} & \textbf{Level 2}\\
+\textbf{Level 1} & \textbf{Level 2} \\
 \midrule
-
-{Hardware-Hiding} & \textbullet~M1: Hardware Hiding Module \\
-\midrule
-
-\multirow{7}{0.3\textwidth}{Behaviour-Hiding} & Input Parameters\\
-& Output Format\\
-& Output Verification\\
-& Temperature ODEs\\
-& Energy Equations\\ 
-& Control Module\\
-& Specification Parameters Module\\
-\midrule
-
-\multirow{3}{0.3\textwidth}{Software Decision} & {Sequence Data Structure}\\
-& ODE Solver\\
-& Plotting\\
+Hardware-Hiding Module & \textbullet~M1: Hardware Hiding Module \\
+\hline
+Behaviour-Hiding Module & \textbullet~M2: User Interface Module \\
+                         & \textbullet~M3: Request Handler Module \\
+                         & \textbullet~M4: Receipt Processing Module \\
+                         & \textbullet~M5: Notification Module \\
+\hline
+Software Decision Module & \textbullet~M6: Authentication Module \\
+                         & \textbullet~M7: Data Model Module \\
+                         & \textbullet~M8: Audit Logging Module \\
 \bottomrule
-
 \end{tabular}
 \caption{Module Hierarchy}
 \label{TblMH}
