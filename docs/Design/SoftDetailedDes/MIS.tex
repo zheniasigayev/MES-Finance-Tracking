@@ -1036,9 +1036,7 @@ None.
 
 \newpage
 
-\section{Appendix} \label{Appendix}
-
-This appendix is intentionally left blank for this deliverable. Future updates may add supplementary figures or calculations.
+\section*{Appendix --- Reflection}
 
 \begin{enumerate}
   \item What went well while writing this deliverable? 
@@ -1072,6 +1070,41 @@ This appendix is intentionally left blank for this deliverable. Future updates m
   (LO\_Explores)
   \begin{enumerate}
     \item Justin: Most of our other design decisions revolved around which external services to use. My main focus was about which database (PostgreSQL vs MongoDB). We chose MongoDB because it was the prexisting database the client was using and we believed it would be better to work off their infrastructure integrate our own, even though PostgreSQL may have been a better fit for our data model.
+  \end{enumerate}
+  \item Reflect on the experience of implementing a module designed by another team. What went well, what didn't go well, and what could be improved in the design documentation to make it easier to implement the module?
+  \begin{enumerate}
+    \item Zhenia: I implemented the \textbf{Account Creation Module} from the PhysioCompanion project (\href{https://github.com/M9Huynh/technically-functional}{technically-functional team}).
+
+    \textbf{What went well:}
+    \begin{itemize}
+      \item The MIS clearly defined the data structures (\texttt{user\_acc\_p} and \texttt{user\_acc\_pt}) with fields for account ID, name, role, birthday, email, and password.
+      \item The functions \texttt{acc\_exists}, \texttt{account\_create}, and \texttt{set\_user\_info} were well-documented with inputs, outputs, and exceptions.
+      \item State invariants like ``Account exists implies all fields are non-empty'' gave clear validation rules.
+      \item The assumption ``users with the same name have different birthdays'' helped guide duplicate detection.
+    \end{itemize}
+
+    \textbf{What didn't go well:}
+    \begin{itemize}
+      \item The codebase did not match the MIS. For example, the mobile app did not collect the birthday field, even though the MIS required it.
+      \item The database layer (\texttt{database.py}) was empty, so I had to build an in-memory database.
+      \item Some data models (\texttt{ExerciseData.py}, \texttt{UserActivity.py}) had bugs where fields did not match between the class and its methods.
+      \item The birthday format (e.g., YYYYMMDD) was not specified in the MIS.
+    \end{itemize}
+
+    \textbf{What could be improved in design documentation:}
+    \begin{itemize}
+      \item Specify exact data formats (e.g., ``birthday: string in YYYYMMDD format'').
+      \item Add a section showing which parts are implemented, partially done, or just placeholders.
+      \item Include example test cases to show expected behavior.
+      \item List module dependencies clearly (e.g., Account Creation needs a working database layer).
+    \end{itemize}
+
+    \textbf{What I learned:}
+    \begin{itemize}
+      \item MIS documents should stay updated as the code changes.
+      \item Clear exception definitions make implementation easier.
+      \item Documenting test data (like valid license numbers and invite codes) helps with writing unit tests.
+    \end{itemize}
   \end{enumerate}
 \end{enumerate}
 
