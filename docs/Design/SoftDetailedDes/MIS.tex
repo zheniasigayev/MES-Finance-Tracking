@@ -66,7 +66,36 @@ Monday, November 10, 2025 & 1.0 & Initial Document\\
 
 \section{Symbols, Abbreviations and Acronyms}
 
-See SRS Documentation at \url{https://github.com/zheniasigayev/MES-Finance-Tracking/blob/main/docs/SRS/SRS.pdf}.
+The following table lists abbreviations and acronyms used in this document:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{l l}
+\toprule
+\textbf{Symbol/Acronym} & \textbf{Description} \\
+\midrule
+API & Application Programming Interface \\
+IaC & Infrastructure as Code \\
+JDWP & Java Debug Wire Protocol \\
+JSON & JavaScript Object Notation \\
+LTS & Long-Term Support \\
+MES & McMaster Engineering Society \\
+MIME & Multipurpose Internet Mail Extensions \\
+MIS & Module Interface Specification \\
+OCR & Optical Character Recognition \\
+RBAC & Role-Based Access Control \\
+RFC & Request for Comments \\
+SRS & Software Requirements Specification \\
+SSO & Single Sign-On \\
+TLS & Transport Layer Security \\
+TTL & Time To Live \\
+UI & User Interface \\
+URL & Uniform Resource Locator \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+For additional symbols, abbreviations, and acronyms related to system requirements, see the SRS Documentation at \url{https://github.com/zheniasigayev/MES-Finance-Tracking/blob/main/docs/SRS/SRS.pdf}.
 
 \newpage
 
@@ -125,11 +154,11 @@ In addition, \progname \ uses functions, which are defined by the data types of 
 
 The following table is taken directly from the Module Guide document for this project.
 
-\begin{table}[h!]
+\begin{table}[h]
 \centering
 \begin{tabular}{p{0.3\textwidth} p{0.6\textwidth}}
 \toprule
-\textbf{Level 1} & \textbf{Level 2}\\
+\textbf{Level 1} & \textbf{Level 2} \\
 \midrule
 Hardware-Hiding Module & \textbullet~M1: Hardware Hiding Module \\
 \hline
@@ -142,7 +171,6 @@ Software Decision Module & \textbullet~M6: Authentication Module \\
                          & \textbullet~M7: Data Model Module \\
                          & \textbullet~M8: Audit Logging Module \\
 \bottomrule
-
 \end{tabular}
 \caption{Module Hierarchy}
 \label{TblMH}
@@ -604,8 +632,20 @@ NotificationModule
 \subsubsection{Exported Constants}
 
 \begin{itemize}
-  \item notificationTypes: Set of supported notification categories, including receiptUploaded, requestApproved, requestRejected, defining the scenarios in which users can be notified.
-  \item clubId: Unique identifier for the McMaster Engineering Society club associated with the user receiving the notification.
+  \item \textbf{NOTIFICATION\_TYPES}: Set of strings $\{\texttt{receiptUploaded}, \texttt{requestApproved}, \texttt{requestRejected}\}$ defining the supported notification categories that specify the scenarios in which users can be notified.
+\end{itemize}
+
+\subsubsection{Exported Types}
+
+\begin{itemize}
+  \item \textbf{UserID}: string --- Unique identifier for a user in the system, consistent with Authentication Module (M6).
+  \item \textbf{ClubID}: string --- Unique identifier for a McMaster Engineering Society club.
+  \item \textbf{NotificationType}: enumeration $\in$ \textbf{NOTIFICATION\_TYPES} --- One of the supported notification categories.
+  \item \textbf{EmailAddress}: string --- Valid email address conforming to RFC 5322 format.
+  \item \textbf{EmailContent}: tuple (subject: string, body: string, recipients: sequence of EmailAddress) --- Structured representation of an email notification including subject line, message body, and recipient list.
+  \item \textbf{NotificationID}: string --- Unique identifier for a notification record.
+  \item \textbf{NotificationRecord}: tuple (notificationId: NotificationID, recipient: EmailAddress, notificationType: NotificationType, message: string, timestamp: $\mathbb{R}$, deliveryStatus: string) --- Complete record of a notification attempt.
+  \item \textbf{RequestProcessStep}: enumeration $\{\texttt{receiptProcessed}, \texttt{requestApproved}, \texttt{requestRejected}\}$ --- Key stages in the reimbursement request workflow.
 \end{itemize}
 
 \subsubsection{Exported Access Programs}
@@ -615,7 +655,7 @@ NotificationModule
 \toprule
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
 \midrule
-notifyUser & userId, notificationType, email & Email Content & InvalidEmailFormat, UnauthorizedAccess, NotificationFailure \\
+notifyUser & UserID, NotificationType, EmailAddress & EmailContent & InvalidEmailFormat, UnauthorizedAccess, NotificationFailure \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -643,18 +683,18 @@ notifyUser & userId, notificationType, email & Email Content & InvalidEmailForma
 
 \subsubsection{Access Routine Semantics}
 
-\noindent notifyUser(userId, notificationType, notificationContent):
+\noindent notifyUser(userId: UserID, notificationType: NotificationType, email: EmailAddress):
 \begin{itemize}
-  \item transition: Validate that userId is authorized to receive notifications and that notificationType is supported. Construct the notification message using notificationContent and dispatch it to the current user and the club executive team. Log the notification attempt in notificationIndex with status.
-  \item output: Return the full notification content that was sent to the user.
-  \item exception: NotificationFailure if the email service reports an error.  
+  \item transition: Validate that userId is authorized to receive notifications and that notificationType $\in$ \textbf{NOTIFICATION\_TYPES}. Validate that email conforms to RFC 5322 format. Construct the notification message based on notificationType and dispatch it to the specified email address. Log the notification attempt in notificationIndex with a new NotificationRecord containing the recipient, type, message, timestamp, and delivery status.
+  \item output: Return EmailContent containing the subject, body, and recipient list of the notification that was sent.
+  \item exception: InvalidEmailFormat if email does not conform to RFC 5322 format, UnauthorizedAccess if userId is not authorized to receive notifications, NotificationFailure if the email service reports an error.
 \end{itemize}
 
-\noindent notifyClubExecutive(clubId, notificationType, notificationContent):
+\noindent notifyClubExecutive(clubId: ClubID, notificationType: NotificationType, notificationContent: string):
 \begin{itemize}
-  \item transition: Retrieve the contact details of the club executive team associated with clubId. Construct the notification message using notificationContent and dispatch it to the club executive team. Log the notification attempt in notificationIndex with status.
-  \item output: Return the full notification content that was sent to the club executive team.
-  \item exception: NotificationFailure if the email service reports an error.  
+  \item transition: Retrieve the contact details (sequence of EmailAddress) of the club executive team associated with clubId from the Authentication Module. Validate that notificationType $\in$ \textbf{NOTIFICATION\_TYPES}. Construct the notification message using notificationContent and dispatch it to all club executive team members. Log each notification attempt in notificationIndex with corresponding NotificationRecords.
+  \item output: Return EmailContent containing the subject, body, and recipient list of the notification that was sent to the club executive team.
+  \item exception: UnauthorizedAccess if clubId is invalid or has no associated executive team, NotificationFailure if the email service reports an error.
 \end{itemize}
 
 
@@ -994,9 +1034,7 @@ None.
 
 \newpage
 
-\section{Appendix} \label{Appendix}
-
-This appendix is intentionally left blank for this deliverable. Future updates may add supplementary figures or calculations.
+\section*{Appendix --- Reflection}
 
 \begin{enumerate}
   \item What went well while writing this deliverable? 
@@ -1030,6 +1068,41 @@ This appendix is intentionally left blank for this deliverable. Future updates m
   (LO\_Explores)
   \begin{enumerate}
     \item Justin: Most of our other design decisions revolved around which external services to use. My main focus was about which database (PostgreSQL vs MongoDB). We chose MongoDB because it was the prexisting database the client was using and we believed it would be better to work off their infrastructure integrate our own, even though PostgreSQL may have been a better fit for our data model.
+  \end{enumerate}
+  \item Reflect on the experience of implementing a module designed by another team. What went well, what didn't go well, and what could be improved in the design documentation to make it easier to implement the module?
+  \begin{enumerate}
+    \item Zhenia: I implemented the \textbf{Account Creation Module} from the PhysioCompanion project (\href{https://github.com/M9Huynh/technically-functional}{technically-functional team}).
+
+    \textbf{What went well:}
+    \begin{itemize}
+      \item The MIS clearly defined the data structures (\texttt{user\_acc\_p} and \texttt{user\_acc\_pt}) with fields for account ID, name, role, birthday, email, and password.
+      \item The functions \texttt{acc\_exists}, \texttt{account\_create}, and \texttt{set\_user\_info} were well-documented with inputs, outputs, and exceptions.
+      \item State invariants like ``Account exists implies all fields are non-empty'' gave clear validation rules.
+      \item The assumption ``users with the same name have different birthdays'' helped guide duplicate detection.
+    \end{itemize}
+
+    \textbf{What didn't go well:}
+    \begin{itemize}
+      \item The codebase did not match the MIS. For example, the mobile app did not collect the birthday field, even though the MIS required it.
+      \item The database layer (\texttt{database.py}) was empty, so I had to build an in-memory database.
+      \item Some data models (\texttt{ExerciseData.py}, \texttt{UserActivity.py}) had bugs where fields did not match between the class and its methods.
+      \item The birthday format (e.g., YYYYMMDD) was not specified in the MIS.
+    \end{itemize}
+
+    \textbf{What could be improved in design documentation:}
+    \begin{itemize}
+      \item Specify exact data formats (e.g., ``birthday: string in YYYYMMDD format'').
+      \item Add a section showing which parts are implemented, partially done, or just placeholders.
+      \item Include example test cases to show expected behavior.
+      \item List module dependencies clearly (e.g., Account Creation needs a working database layer).
+    \end{itemize}
+
+    \textbf{What I learned:}
+    \begin{itemize}
+      \item MIS documents should stay updated as the code changes.
+      \item Clear exception definitions make implementation easier.
+      \item Documenting test data (like valid license numbers and invite codes) helps with writing unit tests.
+    \end{itemize}
   \end{enumerate}
 \end{enumerate}
 
