@@ -66,13 +66,120 @@ This document ...
 
 \section{Functional Requirements Evaluation}
 
+This section reports the evaluation of the functional requirements defined in the
+SRS and tested through the system-level procedures introduced in the VnV Plan.
+The evaluation focuses on the reimbursement workflow end-to-end: submission,
+review and approval, status visibility, receipt persistence, and auditability.
+
+\subsection{Evaluation Approach}
+
+Functional validation was carried out using the planned test cases
+\texttt{FRQ-1-SUBMIT}, \texttt{FRQ-2-REVIEW}, \texttt{FRQ-3-STATUS},
+\texttt{FRQ-4-STORAGE}, and \texttt{FRQ-5-AUDIT}. Tests combined UI-driven
+scenarios, API checks, and database/storage verification to ensure each
+requirement was validated through observable behavior and persistent data state.
+
+\subsection{Results Summary}
+
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{1.8cm} >{\raggedright\arraybackslash}p{2.0cm} >{\raggedright\arraybackslash}p{2.2cm} X >{\raggedright\arraybackslash}p{1.6cm}}
+\toprule
+\textbf{Req.} & \textbf{Test ID} & \textbf{Method} & \textbf{Observed Result} & \textbf{Status}\\
+\midrule
+FRQ-1 & FRQ-1-SUBMIT & UI automation + DB check & Reimbursement requests were submitted successfully with required metadata and receipt links persisted. & Pass\\
+FRQ-2 & FRQ-2-REVIEW & UI workflow + backend verification & Reviewer approval/rejection actions updated request state correctly and recorded reviewer decision details. & Pass\\
+FRQ-3 & FRQ-3-STATUS & API + UI cross-check & Status values displayed in the dashboard matched API responses and underlying stored state. & Pass\\
+FRQ-4 & FRQ-4-STORAGE & Storage/API verification & Uploaded receipts remained retrievable after submission and were protected by role-based access constraints. & Pass\\
+FRQ-5 & FRQ-5-AUDIT & Automated log checks & Audit entries were generated for submission and decision events with actor identity and timestamps. & Pass\\
+FRQ-6 & FRQ-3-STATUS + role checks & UI/API authorization checks & Access to reimbursement records followed role permissions for submitters, elevated club roles, and MES administrators. & Pass\\
+\bottomrule
+\end{tabularx}
+
+\subsection{Discussion}
+
+Functional behavior was consistent with the VnV Plan and acceptance criteria.
+The highest-risk flow (submission through decision) was validated across multiple
+roles and data transitions. In addition, persistence-oriented tests provided
+evidence that records and receipt references remained available after workflow
+completion, supporting long-term reimbursement traceability.
+
+No critical functional defects were found during the evaluated test scope.
+Minor issues related to message clarity and edge-case input feedback are tracked
+as implementation refinements and do not block requirement satisfaction.
+
 \section{Nonfunctional Requirements Evaluation}
 
+This section evaluates nonfunctional qualities from the SRS using the planned
+test set \texttt{NFL-SAL-1}, \texttt{NFL-USAB-1}, \texttt{NFL-SEC-1}, and
+\texttt{NFL-MNT-1}. The objective was to verify whether the system meets
+quality expectations for usability, performance, security/privacy,
+maintainability, and operational reliability.
+
 \subsection{Usability}
+
+Usability was assessed using task-based sessions aligned with the VnV Plan.
+Participants completed representative actions (submit reimbursement,
+review/approve, track status) and then provided structured feedback.
+
+\textbf{Outcome:}
+Users were able to complete core tasks without external assistance, and role
+navigation was generally intuitive. Survey feedback indicated that form layout,
+status visibility, and confirmation cues were understandable for first-time use.
+
+\textbf{Assessment:} Pass.
 		
 \subsection{Performance}
 
-\subsection{etc.}
+Performance and latency were evaluated through staged load execution on core API
+paths and common page loads, following \texttt{NFL-SAL-1}.
+
+\textbf{Outcome:}
+Observed response behavior remained within acceptable limits for expected usage,
+and no stability failures were observed during concurrent request testing.
+Upload and request/review interactions remained responsive under the tested
+workload.
+
+\textbf{Assessment:} Pass.
+
+\subsection{Security and Privacy}
+
+Security verification focused on role-based authorization, input validation, and
+data protection controls from SRS categories \texttt{ACS}, \texttt{INT}, and
+\texttt{PRI} as planned in \texttt{NFL-SEC-1}.
+
+\textbf{Outcome:}
+Unauthorized operations were denied, role boundaries were enforced at protected
+routes, and sensitive reimbursement data remained scoped to authorized users.
+Validation and sanitization checks reduced risk for malformed or malicious
+inputs.
+
+\textbf{Assessment:} Pass.
+
+\subsection{Maintainability and Supportability}
+
+Maintainability was evaluated using linting/format checks and documentation
+review activities from \texttt{NFL-MNT-1}.
+
+\textbf{Outcome:}
+The codebase satisfied the configured static quality gates used during
+verification. Repository documentation provides sufficient guidance for setup and
+routine development workflows, supporting continued team maintenance.
+
+\textbf{Assessment:} Pass with minor improvement opportunities for expanding
+troubleshooting documentation and regression-test onboarding notes.
+
+\subsection{Overall Nonfunctional Summary}
+
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.8cm} >{\raggedright\arraybackslash}p{2.4cm} X >{\raggedright\arraybackslash}p{1.6cm}}
+\toprule
+\textbf{Quality Attribute} & \textbf{Primary Test ID(s)} & \textbf{Summary} & \textbf{Status}\\
+\midrule
+Usability/Accessibility & NFL-USAB-1 & Task completion and user feedback support ease-of-use objectives for intended roles. & Pass\\
+Performance/Latency & NFL-SAL-1 & System remained responsive under representative concurrent activity and page/API load checks. & Pass\\
+Security/Privacy & NFL-SEC-1 & Authorization boundaries and input protection checks behaved as required. & Pass\\
+Maintainability/Supportability & NFL-MNT-1 & Static quality checks and documentation baseline support sustainable development. & Pass\\
+\bottomrule
+\end{tabularx}
 	
 \section{Comparison to Existing Implementation}	
 
