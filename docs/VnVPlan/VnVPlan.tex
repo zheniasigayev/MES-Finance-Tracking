@@ -390,49 +390,40 @@ Ensure the correctness, quality, and maintainability of the codebase and its com
 
 \subsection{Automated Testing and Verification Tools}
 
-\wss{What tools are you using for automated testing.  Likely a unit testing
-  framework and maybe a profiling tool, like ValGrind.  Other possible tools
-  include a static analyzer, make, continuous integration tools, test coverage
-  tools, etc.  Explain your plans for summarizing code coverage metrics.
-  Linters are another important class of tools.  For the programming language
-  you select, you should look at the available linters.  There may also be tools
-  that verify that coding standards have been respected, like flake9 for
-  Python.}
+The active automation stack in the MES Website App Router repository is based on
+TypeScript/Next.js tooling and is currently focused on static checks plus a
+small Jest suite. Since the finance prototype is still evolving rapidly and
+depends on newer integrations (OCR and LLM-assisted extraction), the project is
+using a manual-first verification strategy for finance workflows while gradually
+expanding automation.
 
-\wss{If you have already done this in the development plan, you can point to
-that document.}
-
-\wss{The details of this section will likely evolve as you get closer to the
-  implementation.}
-
-
-To ensure efficiency and consistency in testing, automated testing and verification
-tools will be utilized where possible. As the project spans a wide spread of technologies,
-languages, and frameworks, multiple domain-specific tools will be required. The following
-section outlines the portions of testing where automated testing tools will be employed; 
-specific tools may not yet be specified at the current stage of the project, but potentially
-applicable tools will be included as examples. 
-
+\noindent\textbf{Currently implemented automated checks:}
 \begin{itemize}
-  \item \textbf{Linting and Style:} Linting and style tools will be used to improve and preserve
-  code readability and maintainability.
-  \begin{itemize}
-    \item \textbf{Tools:} Pylint (Python), ESLint (Javascript)
-  \end{itemize}
-  \item \textbf{Unit Testing:} Unit testing will be performed for each part of the project. Due 
-  to the project's large technical scope, multiple unit testing suits may be required across 
-  different languages/frameworks.
-  \begin{itemize}
-    \item \textbf{Tools:} pytest (Python), Jest/Cypress/Playwright (Javascript), Postman (API)
-  \end{itemize}
-  \item \textbf{Load Testing:} As the system is expected to be used for many MES-affiliated clubs, 
-  load testing on the APIs and database to ensure availability and scalability.
-  \begin{itemize}
-    \item \textbf{Tools:} JMeter (Java-based), Locust (Python-based)
-  \end{itemize} 
-  \item \textbf{Test Scripts:} Any testing functionality not covered by existing tools but requires
-  automatic processing may be faciliated through custom testing scripts. As an example, this may 
-  include scripts that routinely verify database integrity through queries.
+  \item \textbf{Linting:} ESLint (strict mode via \texttt{pnpm run lint:strict}).
+  \item \textbf{Formatting:} Prettier format checks (\texttt{pnpm run format:check}).
+  \item \textbf{Type safety:} TypeScript no-emit checks (\texttt{pnpm run typecheck}).
+  \item \textbf{Unit tests:} Jest with Next.js integration (\texttt{pnpm run test}).
+  \item \textbf{CI pipeline:} GitHub Actions runs lint, typecheck, format-check, and Jest on push/PR.
+\end{itemize}
+
+\noindent\textbf{Current automated test scope:}
+\begin{itemize}
+  \item Existing Jest tests are present but limited in number and are currently concentrated in non-finance areas.
+  \item No Playwright/Cypress/Vitest configuration is currently present in the repository.
+  \item Jest coverage thresholds are not yet enforced in the current configuration.
+\end{itemize}
+
+\noindent\textbf{Finance-focused support for efficient testing:}
+\begin{itemize}
+  \item The receipt extraction API includes a \texttt{debug=true} mode for controlled testing without live OCR/LLM dependencies.
+  \item Manual end-to-end checks under \texttt{pnpm dev} remain the primary finance verification path for this phase.
+\end{itemize}
+
+\noindent\textbf{Near-term automation expansion plan:}
+\begin{itemize}
+  \item Add Jest tests for finance-critical logic (authorization checks, status transitions, receipt validation boundaries).
+  \item Add targeted API-route tests for approve/reject flows and finance authorization outcomes.
+  \item Introduce test coverage reporting and thresholds after workflow behavior stabilizes.
 \end{itemize}
 
 \subsection{Software Validation}
@@ -740,128 +731,307 @@ APP-3, ABL-1, ABL-5, SaL-1, SaL-2, CAP-1, EXT-2, ACS-1, ACS-2, INT-1, PRI-1, PRI
 
 \section{Unit Test Description}
 
-\wss{This section should not be filled in until after the MIS (detailed design
-  document) has been completed.}
+This section defines module-level testing based on the MIS in
+\textit{docs/Design/SoftDetailedDes/MIS.tex}. To reach a clear working production
+prototype quickly, the team is using a manual-first testing strategy in the MES
+monorepo staging branch environment by running \texttt{pnpm dev} and validating
+module behavior continuously during development.
 
-\wss{Reference your MIS (detailed design document) and explain your overall
-philosophy for test case selection.}  
-
-\wss{To save space and time, it may be an option to provide less detail in this section.  
-For the unit tests you can potentially layout your testing strategy here.  That is, you 
-can explain how tests will be selected for each module.  For instance, your test building 
-approach could be test cases for each access program, including one test for normal behaviour 
-and as many tests as needed for edge cases.  Rather than create the details of the input 
-and output here, you could point to the unit testing code.  For this to work, you code 
-needs to be well-documented, with meaningful names for all of the tests.}
+This approach is intentional for this phase: it maximizes iteration speed and
+feedback turnaround while features are still changing quickly. Full automated
+test infrastructure is deferred because the required setup is non-trivial for
+newer integrations (including LLM/AI-assisted paths, external service
+dependencies, secure secret handling, and deterministic test environments).
 
 \subsection{Unit Testing Scope}
 
-\wss{What modules are outside of the scope.  If there are modules that are
-  developed by someone else, then you would say here if you aren't planning on
-  verifying them.  There may also be modules that are part of your software, but
-  have a lower priority for verification than others.  If this is the case,
-  explain your rationale for the ranking of module importance.}
+\noindent\textbf{In-scope modules for direct unit-level manual testing:}
+\begin{itemize}
+  \item \textbf{M2 - User Interface Module}: highest churn and highest user-facing defect risk.
+  \item \textbf{M3 - Request Handler Module}: core workflow and state transitions.
+  \item \textbf{M4 - Receipt Processing Module}: file acceptance, validation, and access controls.
+  \item \textbf{M6 - Authentication Module}: session and authorization correctness.
+  \item \textbf{M8 - Audit Logging Module}: compliance-critical auditability and retention behavior.
+\end{itemize}
+
+\noindent\textbf{Lower-priority modules for direct unit-level testing in this phase:}
+\begin{itemize}
+  \item \textbf{M1 - Hardware Hiding Module}
+  \item \textbf{M5 - Notification Module}
+  \item \textbf{M7 - Data Model Module}
+\end{itemize}
+
+These modules are still verified indirectly through integration/system tests and
+through behavior observed from in-scope modules that depend on them.
+
+\subsection{Unit Testing Philosophy and Evidence Process}
+
+Each manual unit test run follows a checklist and is logged in a shared defect
+log for rerun tracking. This provides repeatability while preserving the speed
+of manual iteration.
+
+\noindent\textbf{Required fields per execution record:}
+\begin{tabularx}{\textwidth}{p{3.0cm}X}
+\toprule
+\textbf{Field} & \textbf{Description} \\
+\midrule
+\texttt{testId} & Stable identifier for the test case (for example \texttt{UT-M3-04}). \\
+\texttt{result} & Pass, Fail, or Blocked. \\
+\texttt{environment} & Runtime context used for testing (staging branch, \texttt{pnpm dev}, database seed state). \\
+\texttt{tester} & Team member who executed the test. \\
+\texttt{issueLink} & Linked issue/bug ticket when failed; N/A when passed. \\
+\texttt{rerunStatus} & Not rerun, rerun-pass, or rerun-fail. \\
+\bottomrule
+\end{tabularx}
+
+\subsection{Automation Posture}
+
+\begin{itemize}
+  \item \textbf{Manual now, automate later:} manual execution is the primary strategy until prototype behavior stabilizes.
+  \item \textbf{Automation start point:} after prototype stabilization and environment/tooling maturity in the MES monorepo.
+  \item \textbf{Initial automation targets:} highest-regression workflows first: authentication, status transitions, and receipt validation.
+\end{itemize}
 
 \subsection{Tests for Functional Requirements}
 
-\wss{Most of the verification will be through automated unit testing.  If
-  appropriate specific modules can be verified by a non-testing based
-  technique.  That can also be documented in this section.}
-
-\subsubsection{Module 1}
-
-\wss{Include a blurb here to explain why the subsections below cover the module.
-  References to the MIS would be good.  You will want tests from a black box
-  perspective and from a white box perspective.  Explain to the reader how the
-  tests were selected.}
+\subsubsection{M2: User Interface Module}
 
 \begin{enumerate}
 
-\item{test-id1\\}
+\item \textbf{Test-id:} \texttt{UT-M2-01} (Role-aware dashboard rendering)\\
+\textbf{Type:} Functional, Dynamic, Manual\\
+\textbf{Initial State:} Seeded users exist for member, executive, and finance admin.\\
+\textbf{Input:} Log in with each role and open dashboard pages.\\
+\textbf{Output:} Each role only sees allowed actions and data panes.\\
+\textbf{Test Case Derivation:} Derived from FRQ-6 and MIS M2 \texttt{renderDashboard}.\\
+\textbf{How test will be performed:} Run \texttt{pnpm dev}, log in with role accounts, and compare visible actions against RBAC expectations.
 
-Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will
-  be automatic}
-					
-Initial State: 
-					
-Input: 
-					
-Output: \wss{The expected result for the given inputs}
+\item \textbf{Test-id:} \texttt{UT-M2-02} (Form validation failure path)\\
+\textbf{Type:} Functional, Dynamic, Manual\\
+\textbf{Initial State:} Member user on reimbursement form page.\\
+\textbf{Input:} Submit with missing required fields and invalid amount format.\\
+\textbf{Output:} Submission blocked; field-level errors shown; no persistence triggered.\\
+\textbf{Test Case Derivation:} Derived from MIS M2 \texttt{handleFormSubmit} validation behavior.\\
+\textbf{How test will be performed:} Enter invalid data via UI and verify inline errors and absence of created request.
 
-Test Case Derivation: \wss{Justify the expected value given in the Output field}
+\item \textbf{Test-id:} \texttt{UT-M2-03} (Successful submit flow)\\
+\textbf{Type:} Functional, Dynamic, Manual\\
+\textbf{Initial State:} Member user with valid session and clean draft form.\\
+\textbf{Input:} Submit fully valid request payload and attached receipt metadata.\\
+\textbf{Output:} Confirmation shown, navigation outcome succeeds, request visible in dashboard.\\
+\textbf{Test Case Derivation:} Derived from FRQ-1 and MIS M2 \texttt{handleFormSubmit}.\\
+\textbf{How test will be performed:} Submit valid form under \texttt{pnpm dev} and verify dashboard state.
 
-How test will be performed: 
-					
-\item{test-id2\\}
-
-Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will
-  be automatic}
-					
-Initial State: 
-					
-Input: 
-					
-Output: \wss{The expected result for the given inputs}
-
-Test Case Derivation: \wss{Justify the expected value given in the Output field}
-
-How test will be performed: 
-
-\item{...\\}
-    
 \end{enumerate}
 
-\subsubsection{Module 2}
+\subsubsection{M3: Request Handler Module}
 
-...
+\begin{enumerate}
+
+\item \textbf{Test-id:} \texttt{UT-M3-01} (Authorized request creation)\\
+\textbf{Type:} Functional, Dynamic, Manual\\
+\textbf{Initial State:} Executive user is authenticated; request data is valid.\\
+\textbf{Input:} Trigger create request flow.\\
+\textbf{Output:} RequestID generated; status initialized to submitted.\\
+\textbf{Test Case Derivation:} Derived from FRQ-1 and MIS M3 \texttt{createRequest}.\\
+\textbf{How test will be performed:} Execute create flow and verify stored record attributes.
+
+\item \textbf{Test-id:} \texttt{UT-M3-02} (Unauthorized request creation denied)\\
+\textbf{Type:} Functional, Dynamic, Manual\\
+\textbf{Initial State:} Non-executive user is authenticated.\\
+\textbf{Input:} Attempt create request action.\\
+\textbf{Output:} Unauthorized path returned; no request created.\\
+\textbf{Test Case Derivation:} Negative path for MIS M3 \texttt{createRequest}.\\
+\textbf{How test will be performed:} Execute same creation path under non-authorized role.
+
+\item \textbf{Test-id:} \texttt{UT-M3-03} (Valid status transition)\\
+\textbf{Type:} Functional, Dynamic, Manual\\
+\textbf{Initial State:} Existing request in submitted state and finance admin session.\\
+\textbf{Input:} Update status submitted $\rightarrow$ approved.\\
+\textbf{Output:} Transition accepted; status persisted; audit side effects present.\\
+\textbf{Test Case Derivation:} Derived from FRQ-2, FRQ-3, FRQ-5 and MIS M3 \texttt{updateStatus}.\\
+\textbf{How test will be performed:} Perform status update from reviewer UI and verify resulting state and logs.
+
+\item \textbf{Test-id:} \texttt{UT-M3-04} (Invalid status transition rejected)\\
+\textbf{Type:} Functional, Dynamic, Manual\\
+\textbf{Initial State:} Existing request already approved.\\
+\textbf{Input:} Attempt approved $\rightarrow$ submitted rollback transition.\\
+\textbf{Output:} Invalid transition rejected; state unchanged.\\
+\textbf{Test Case Derivation:} Negative path for MIS M3 transition policy.\\
+\textbf{How test will be performed:} Attempt prohibited transition and verify immutable resulting state.
+
+\end{enumerate}
+
+\subsubsection{M4: Receipt Processing Module}
+
+\begin{enumerate}
+
+\item \textbf{Test-id:} \texttt{UT-M4-01} (Valid receipt upload accepted)\\
+\textbf{Type:} Functional, Dynamic, Manual\\
+\textbf{Initial State:} Authenticated user and editable reimbursement request.\\
+\textbf{Input:} Upload valid PDF/image receipt under 10 MB.\\
+\textbf{Output:} Receipt stored and linked to request with retrievable metadata.\\
+\textbf{Test Case Derivation:} Derived from FRQ-4 and MIS M4 \texttt{uploadReceipt}.\\
+\textbf{How test will be performed:} Upload file from form and verify attachment appears on request details.
+
+\item \textbf{Test-id:} \texttt{UT-M4-02} (Invalid type/size rejected)\\
+\textbf{Type:} Functional, Dynamic, Manual\\
+\textbf{Initial State:} Authenticated user on upload flow.\\
+\textbf{Input:} Upload unsupported MIME type and oversize file.\\
+\textbf{Output:} File rejected with clear error; no persistence side effect.\\
+\textbf{Test Case Derivation:} Negative path for MIS M4 \texttt{uploadReceipt}.\\
+\textbf{How test will be performed:} Execute both invalid inputs and verify rejection behavior.
+
+\item \textbf{Test-id:} \texttt{UT-M4-03} (Unauthorized receipt access denied)\\
+\textbf{Type:} Functional, Dynamic, Manual\\
+\textbf{Initial State:} Receipt exists for another club/request scope.\\
+\textbf{Input:} Non-authorized user requests receipt link.\\
+\textbf{Output:} Access denied; no signed URL returned.\\
+\textbf{Test Case Derivation:} Negative path for MIS M4 \texttt{getReceiptLink}.\\
+\textbf{How test will be performed:} Attempt cross-scope access under restricted role and verify denial.
+
+\end{enumerate}
+
+\subsubsection{M6: Authentication Module}
+
+\begin{enumerate}
+
+\item \textbf{Test-id:} \texttt{UT-M6-01} (Failed-auth lockout threshold)\\
+\textbf{Type:} Functional, Dynamic, Manual\\
+\textbf{Initial State:} Valid user account not locked.\\
+\textbf{Input:} Repeated invalid credentials beyond max failed attempts.\\
+\textbf{Output:} Account lockout triggered at configured threshold.\\
+\textbf{Test Case Derivation:} Derived from ACS-1 and MIS M6 \texttt{authenticateUser}.\\
+\textbf{How test will be performed:} Submit invalid login attempts and verify lockout behavior.
+
+\item \textbf{Test-id:} \texttt{UT-M6-02} (Authorization allow/deny by role)\\
+\textbf{Type:} Functional, Dynamic, Manual\\
+\textbf{Initial State:} Session tokens for member and finance admin.\\
+\textbf{Input:} Attempt protected action requiring finance admin privilege.\\
+\textbf{Output:} Member denied, finance admin allowed.\\
+\textbf{Test Case Derivation:} Derived from FRQ-6 and MIS M6 \texttt{verifyAuthorization}.\\
+\textbf{How test will be performed:} Run action under both roles and compare decisions.
+
+\end{enumerate}
+
+\subsubsection{M8: Audit Logging Module}
+
+\begin{enumerate}
+
+\item \textbf{Test-id:} \texttt{UT-M8-01} (Log integrity and redaction)\\
+\textbf{Type:} Functional, Dynamic, Manual\\
+\textbf{Initial State:} Audit store available with redaction fields configured.\\
+\textbf{Input:} Trigger an auditable approval action containing metadata with sensitive fields.\\
+\textbf{Output:} Event stored with required fields and sensitive data redacted.\\
+\textbf{Test Case Derivation:} Derived from FRQ-5, PRI-1, AUD-1, AUD-2 and MIS M8 \texttt{logAction}.\\
+\textbf{How test will be performed:} Execute approval event and inspect resulting audit entry schema.
+
+\item \textbf{Test-id:} \texttt{UT-M8-02} (Events by request query)\\
+\textbf{Type:} Functional, Dynamic, Manual\\
+\textbf{Initial State:} Request has multiple lifecycle events in the audit stream.\\
+\textbf{Input:} Query events for specific request and time window.\\
+\textbf{Output:} Ordered event sequence returned with expected request-scoped entries only.\\
+\textbf{Test Case Derivation:} Derived from MIS M8 \texttt{getEventsByRequest}.\\
+\textbf{How test will be performed:} Retrieve events and verify order, membership, and timestamps.
+
+\item \textbf{Test-id:} \texttt{UT-M8-03} (Retention behavior)\\
+\textbf{Type:} Functional, Dynamic, Manual\\
+\textbf{Initial State:} Audit store contains events older than retention threshold in test dataset.\\
+\textbf{Input:} Trigger retention cleanup operation.\\
+\textbf{Output:} Expired entries archived/purged according to configured policy.\\
+\textbf{Test Case Derivation:} Derived from AUD-2, RDL-1 and MIS M8 \texttt{purgeExpiredEvents}.\\
+\textbf{How test will be performed:} Run cleanup flow and verify retained vs removed entries.
+
+\end{enumerate}
 
 \subsection{Tests for Nonfunctional Requirements}
 
-\wss{If there is a module that needs to be independently assessed for
-  performance, those test cases can go here.  In some projects, planning for
-  nonfunctional tests of units will not be that relevant.}
+\subsubsection{Module-level Nonfunctional Checks}
 
-\wss{These tests may involve collecting performance data from previously
-  mentioned functional tests.}
-
-\subsubsection{Module ?}
-		
 \begin{enumerate}
 
-\item{test-id1\\}
+\item \textbf{Test-id:} \texttt{UNF-M2-01} (Usability and accessibility interaction)\\
+\textbf{Type:} Nonfunctional, Dynamic, Manual\\
+\textbf{Initial State:} Prototype running locally from \texttt{pnpm dev}.\\
+\textbf{Input/Condition:} Keyboard-only navigation through dashboard, form, and status pages.\\
+\textbf{Output/Result:} Core flows are keyboard navigable and understandable without external help.\\
+\textbf{How test will be performed:} Walk through standard user tasks and record barriers in defect log.
 
-Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will
-  be automatic}
-					
-Initial State: 
-					
-Input/Condition: 
-					
-Output/Result: 
-					
-How test will be performed: 
-					
-\item{test-id2\\}
+\item \textbf{Test-id:} \texttt{UNF-M3-01} (Request handler responsiveness)\\
+\textbf{Type:} Nonfunctional, Dynamic, Manual\\
+\textbf{Initial State:} Seeded local/staging dataset with typical request volume.\\
+\textbf{Input/Condition:} Execute create and update actions repeatedly during active dev session.\\
+\textbf{Output/Result:} Actions complete within acceptable interactive latency and do not block workflow.\\
+\textbf{How test will be performed:} Time-box repeated actions and record response lag observations.
 
-Type: Functional, Dynamic, Manual, Static etc.
-					
-Initial State: 
-					
-Input: 
-					
-Output: 
-					
-How test will be performed: 
+\item \textbf{Test-id:} \texttt{UNF-M4-01} (Receipt upload performance)\\
+\textbf{Type:} Nonfunctional, Dynamic, Manual\\
+\textbf{Initial State:} Editable request with upload endpoint available.\\
+\textbf{Input/Condition:} Upload representative files up to 10 MB.\\
+\textbf{Output/Result:} Uploads complete within SRS latency expectations and return stable status feedback.\\
+\textbf{How test will be performed:} Run repeated upload attempts and capture completion timing.
+
+\item \textbf{Test-id:} \texttt{UNF-M6-01} (Session expiry and protected route enforcement)\\
+\textbf{Type:} Nonfunctional, Security, Manual\\
+\textbf{Initial State:} Authenticated session near/at expiry threshold.\\
+\textbf{Input/Condition:} Access protected pages after session expires or token is invalidated.\\
+\textbf{Output/Result:} Session is rejected and sensitive actions are blocked.\\
+\textbf{How test will be performed:} Force expiry/invalidation and validate route protection behavior.
+
+\item \textbf{Test-id:} \texttt{UNF-M8-01} (Audit retention and retrieval consistency)\\
+\textbf{Type:} Nonfunctional, Compliance, Manual\\
+\textbf{Initial State:} Audit dataset contains recent and aged records.\\
+\textbf{Input/Condition:} Query and retention operations executed in sequence.\\
+\textbf{Output/Result:} Retrieval remains consistent and retention policy is respected.\\
+\textbf{How test will be performed:} Compare pre/post operation query results against expected policy outcomes.
 
 \end{enumerate}
 
-\subsubsection{Module ?}
+\subsection{Completion Criteria for Prototype Sign-off}
 
-...
+Prototype sign-off for this phase requires all in-scope module tests to be
+executed at least once with no unresolved critical defects remaining in the
+defect log. Any failed critical test must have a linked issue, a fix, and a
+documented rerun result before sign-off.
 
 \subsection{Traceability Between Test Cases and Modules}
 
-\wss{Provide evidence that all of the modules have been considered.}
+\begin{longtable}{p{1.4cm} p{3.8cm} p{4.5cm} p{4.3cm}}
+\caption{Unit Test Traceability Matrix (Module-Level)}\\
+\toprule
+\textbf{Module} & \textbf{Unit Test IDs} & \textbf{Primary MIS Access Programs} & \textbf{Related FRQ/NFR Coverage} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Module} & \textbf{Unit Test IDs} & \textbf{Primary MIS Access Programs} & \textbf{Related FRQ/NFR Coverage} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+M2 & \texttt{UT-M2-01}, \texttt{UT-M2-02}, \texttt{UT-M2-03}, \texttt{UNF-M2-01}
+& \texttt{renderDashboard}, \texttt{renderRequestForm}, \texttt{handleFormSubmit}
+& FRQ-1, FRQ-3, FRQ-6; EUL-1, ABL-1, ABL-5, STY-3 \\
+\midrule
+M3 & \texttt{UT-M3-01}, \texttt{UT-M3-02}, \texttt{UT-M3-03}, \texttt{UT-M3-04}, \texttt{UNF-M3-01}
+& \texttt{createRequest}, \texttt{getRequestDetails}, \texttt{updateStatus}
+& FRQ-1, FRQ-2, FRQ-3, FRQ-5; SaL-1, FLT-1, ACS-2, AUD-1 \\
+\midrule
+M4 & \texttt{UT-M4-01}, \texttt{UT-M4-02}, \texttt{UT-M4-03}, \texttt{UNF-M4-01}
+& \texttt{uploadReceipt}, \texttt{getReceiptLink}, \texttt{removeReceipt}
+& FRQ-4; SaL-3, INT-1, PRI-1, PRI-2 \\
+\midrule
+M6 & \texttt{UT-M6-01}, \texttt{UT-M6-02}, \texttt{UNF-M6-01}
+& \texttt{authenticateUser}, \texttt{verifyAuthorization}, \texttt{revokeSession}
+& FRQ-6; ACS-1, ACS-2, INT-1, IMM-1 \\
+\midrule
+M8 & \texttt{UT-M8-01}, \texttt{UT-M8-02}, \texttt{UT-M8-03}, \texttt{UNF-M8-01}
+& \texttt{logAction}, \texttt{getEventsByRequest}, \texttt{purgeExpiredEvents}
+& FRQ-5; AUD-1, AUD-2, PRI-2, RDL-1, AUL-2 \\
+\midrule
+M1, M5, M7 & Indirect coverage in this phase (system and integration tests)
+& Infrastructure abstraction, notification dispatch, and persistence internals
+& Covered indirectly by in-scope module tests and end-to-end workflows \\
+\end{longtable}
 				
 \bibliographystyle{plainnat}
 
