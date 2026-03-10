@@ -11,6 +11,7 @@
     urlcolor=blue
 }
 \usepackage[round]{natbib}
+\usepackage{graphicx}
 
 \input{../Comments}
 \input{../Common}
@@ -30,8 +31,7 @@
 \begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
 \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
 \midrule
-Date 1 & 1.0 & Notes\\
-Date 2 & 1.1 & Notes\\
+March 9 & 1.0 & Complete document\\
 \bottomrule
 \end{tabularx}
 
@@ -189,18 +189,57 @@ This section will not be appropriate for every project.
 
 \section{Changes Due to Testing}
 
-\wss{This section should highlight how feedback from the users and from 
-the supervisor (when one exists) shaped the final product.  In particular 
-the feedback from the Rev 0 demo to the supervisor (or to potential users) 
-should be highlighted.}
+Feedback gathered during usability testing and development resulted in several improvements to the reimbursement management system. These changes focused on improving reviewer usability, streamlining workflows, and increasing system robustness.
+
+\textbf{Improved Reimbursement Review Dashboard} – The dashboard view was updated to display more contextual information to help reviewers quickly identify requests. The interface now shows the club name, submitter name, submission date, transaction date, merchant name, and reimbursement amount. Reviewers can also directly view the uploaded receipt from the dashboard.
+
+\textbf{Integrated Financial Management Interface} – The reimbursement review dashboard was previously implemented as a separate page from the club expenses analytics dashboard. These views were merged into a single tabbed interface on the club expenses page, with \textit{Analytics} and \textit{Review Requests} tabs appearing once a club is selected. This reduces navigation overhead and centralizes financial management tasks.
+
+\textbf{Improved Navigation and Context Selection} – A ``View Past Reimbursements'' link was added to the admin club overview modal, allowing administrators to open the expenses page with the appropriate club automatically selected via a query parameter. Additionally, the system now automatically selects the club when a user belongs to only one club.
+
+\textbf{More Robust Receipt Submission Workflow} – The receipt submission process was updated to better handle OCR parsing failures and incorrect extractions. Users are now able to manually correct receipt information when the automated parser fails or extracts incorrect values.
+
+\textbf{Improved Data Model Clarity} – Database fields were renamed to use clearer and more descriptive names (e.g., \texttt{completedAt}, \texttt{decision}, and \texttt{decisionTime}), improving maintainability and readability of the stored reimbursement data.
+
+\textbf{Refactored Backend Review APIs} – The reimbursement review workflow was refactored to use dedicated API endpoints (\texttt{/api/receipts/admin/requests} and \texttt{/api/receipts/admin/decide}). These endpoints replace the previous server actions and use the existing \texttt{authorizeFinanceUser()} middleware, with requests filtered by the selected club and access controlled using the per-club \texttt{canManageFinances} permission.
 
 \section{Automated Testing}
+
+To improve reliability and maintain code quality, several automated testing and verification measures were integrated into the development workflow.
+
+\begin{itemize}
+
+\item \textbf{Type Checking and Linting} – Automated type checking and linting tools are executed as part of the development workflow to detect type inconsistencies, syntax errors, and violations of coding standards. Lint checking is performed using \texttt{ESLint}, which helps maintain consistent code style and catch potential issues before code is merged.
+
+\item \textbf{Commit Message Format Verification} – Automated checks validate that commit messages follow the required formatting conventions. Enforcing consistent commit messages improves traceability of changes and ensures that project history remains clear and well documented.
+
+\item \textbf{Automated Unit Testing} – Unit tests are implemented using the \texttt{Jest} testing framework. These tests verify the correctness of individual components and functions, and are executed automatically to ensure that new changes do not introduce regressions.
+
+\end{itemize}
 		
 \section{Trace to Requirements}
 		
 \section{Trace to Modules}		
 
 \section{Code Coverage Metrics}
+The following shows the output of the automated linting analysis performed using \texttt{ESLint}, demonstrating that the codebase satisfies the configured linting rules. Linting provides automated static analysis of source code to detect potential errors, enforce coding standards, and maintain consistent formatting across the codebase. By identifying issues such as unused variables, incorrect syntax patterns, and style violations early in development, linting helps reduce bugs, improve readability, and maintain long-term maintainability of the software. Automated lint checks also ensure that code quality standards are consistently enforced across all contributions to the project.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.95\textwidth]{lint_output.png}
+  \caption{ESLint ouput.}
+  \label{fig:lint-output}
+\end{figure}
+Linting runs on all code, so this means 100\% of the lines of code are compliant.
+
+The following shows code coverage of Jest tests in the MES repo. It includes code not written by the Capstone team. Code coverage is a measure of how well the codebase is tested, and it helps identify areas
+that may require additional testing. 
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.95\textwidth]{coverage_report.png}
+  \caption{Automated test coverage report.}
+  \label{fig:coverage-report}
+\end{figure}
+In general, coverage is very low and suggests a need for more automated testings with Jest in all aspects.
 
 \bibliographystyle{plainnat}
 \nocite{*}
@@ -228,6 +267,19 @@ graduate attribute of Reflection.
   predict a feasible amount of effort and the right tasks needed to build the
   evidence that demonstrates the required quality?  (It is expected that most
   teams will have had to deviate from their original VnV Plan.)
+\end{enumerate}
+
+\noindent\textbf{Johnny's Reflection:}
+\begin{enumerate}
+
+\item One aspect that went well while writing this deliverable was that we already had a well documented Verification and Validation (VnV) Plan. The structure and testing strategies described in the plan helped guide the organization of the report and made it easier to document the verification activities that were performed.
+
+\item One challenge was that testing was not always at the forefront of our development priorities while building the system. As a result, gathering and organizing the evidence for verification required additional effort near the end of development. We resolved this by reviewing our implemented tests, automated checks, and development history to ensure that all verification activities were properly documented.
+
+\item Most parts of this document stem from a combination of both client and peer feedback. During development, we frequently discussed features and workflows with peers, while during verification and validation we communicated with clients to confirm that the implemented functionality met their expectations. Some sections, such as implementation details and automated testing descriptions, were based primarily on internal development practices rather than external feedback.
+
+\item There were not many differences between the planned and executed VnV activities, particularly for functional verification. The system workflows were relatively straightforward and well defined, which allowed us to follow the original plan closely. Minor adjustments occurred as implementation progressed, but the overall testing strategy remained consistent with the plan. In future projects, similar alignment could be anticipated when requirements and workflows are clearly defined early in development.
+
 \end{enumerate}
 
 \end{document}
