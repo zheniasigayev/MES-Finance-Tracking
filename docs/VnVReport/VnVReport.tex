@@ -175,7 +175,83 @@ This section will not be appropriate for every project.
 
 \section{Unit Testing}
 
-\section{Changes Due to Testing}
+This section reports module-level verification outcomes for the MES finance
+tracking prototype. Unit-level validation in this phase followed the
+manual-first strategy defined in the VnV Plan: the team ran the staging
+environment with \texttt{pnpm dev}, executed focused module checks, and logged
+results for quick defect turnaround while implementation details were still
+changing.
+
+\subsection{Approach and Rationale}
+
+The primary objective for this milestone was to reach a stable production
+prototype quickly. For that reason, manual unit-level execution was prioritized
+over immediate full automation.
+
+This choice was deliberate:
+\begin{itemize}
+\item It provided faster iteration and feedback during high-change development.
+\item It allowed direct validation of integrated UI, API, and role-based behavior.
+\item Full automation setup was deferred because reliable infrastructure for newer
+AI-assisted and external-service-dependent paths is non-trivial and still
+maturing.
+\end{itemize}
+
+Each run was tracked with a stable test ID and execution evidence (result,
+environment, tester, linked issue when applicable, and rerun status).
+
+\subsection{Scope and Executed Test Set}
+
+Direct module-level testing focused on:
+\begin{itemize}
+\item \textbf{M2 - User Interface Module}
+\item \textbf{M3 - Request Handler Module}
+\item \textbf{M4 - Receipt Processing Module}
+\item \textbf{M6 - Authentication Module}
+\item \textbf{M8 - Audit Logging Module}
+\end{itemize}
+
+Representative executed test IDs came from the Unit Test Description in the VnV
+Plan: \texttt{UT-M2-01..03}, \texttt{UT-M3-01..04}, \texttt{UT-M4-01..03},
+\texttt{UT-M6-01..02}, \texttt{UT-M8-01..03}, and nonfunctional checks
+\texttt{UNF-M2-01}, \texttt{UNF-M3-01}, \texttt{UNF-M4-01},
+\texttt{UNF-M6-01}, \texttt{UNF-M8-01}.
+
+M1, M5, and M7 were lower priority for direct unit-level coverage in this
+phase and were assessed indirectly through integrated workflow behavior.
+
+\subsection{Results Summary}
+
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{1.6cm} >{\raggedright\arraybackslash}p{4.0cm} X >{\raggedright\arraybackslash}p{1.5cm}}
+\toprule
+\textbf{Module} & \textbf{Representative Test IDs} & \textbf{Observed Outcome} & \textbf{Status}\\
+\midrule
+M2 & \texttt{UT-M2-01..03}, \texttt{UNF-M2-01} & Role-aware rendering and submission flows behaved as expected. Validation failures were surfaced clearly and corrected through iterative UI refinements. & Pass\\
+M3 & \texttt{UT-M3-01..04}, \texttt{UNF-M3-01} & Authorized create/update paths succeeded; unauthorized requests were denied; invalid status transitions were rejected. Request handling remained responsive during local staging runs. & Pass\\
+M4 & \texttt{UT-M4-01..03}, \texttt{UNF-M4-01} & Valid receipt uploads were accepted; invalid type/size inputs were rejected; unauthorized receipt access attempts were blocked. Upload responsiveness remained acceptable for prototype use. & Pass\\
+M6 & \texttt{UT-M6-01..02}, \texttt{UNF-M6-01} & Authentication and role-based authorization checks enforced protected routes correctly. Session-expiry and access-denial behavior matched expectations. & Pass\\
+M8 & \texttt{UT-M8-01..03}, \texttt{UNF-M8-01} & Audit events were generated for key actions and remained queryable by request/user context. Retrieval consistency checks passed in tested scenarios. & Pass\\
+\bottomrule
+\end{tabularx}
+
+\subsection{Automation Status and Residual Risk}
+
+Automated unit testing exists via \texttt{Jest}, but overall coverage remains
+low at this stage (see Coverage and Quality Metrics below). This is a known
+limitation and a residual regression risk.
+
+Repository verification showed that current automated unit tests are limited in
+scope and are not yet focused on finance workflows. This increases the risk of
+regressions in reimbursement-specific logic unless manual checks remain active.
+
+At report time, the prototype met the phase sign-off condition for this
+manual-first strategy: no open critical defects remained in the in-scope
+module-level test set. Next automation targets are the highest regression
+workflows first: authentication enforcement, request status transitions, and
+receipt validation paths.
+
+\subsection{Changes Due to Unit Testing}
 
 Feedback gathered during usability testing and development resulted in several improvements to the reimbursement management system. These changes focused on improving reviewer usability, streamlining workflows, and increasing system robustness.
 
@@ -191,30 +267,74 @@ Feedback gathered during usability testing and development resulted in several i
 
 \textbf{Refactored Backend Review APIs} – The reimbursement review workflow was refactored to use dedicated API endpoints (\texttt{/api/receipts/admin/requests} and \texttt{/api/receipts/admin/decide}). These endpoints replace the previous server actions and use the existing \texttt{authorizeFinanceUser()} middleware, with requests filtered by the selected club and access controlled using the per-club \texttt{canManageFinances} permission.
 
-\section{Automated Testing}
+\subsection{Automated Testing Support}
 
 To improve reliability and maintain code quality, several automated testing and verification measures were integrated into the development workflow.
 
 \begin{itemize}
 
-\item \textbf{Type Checking and Linting} – Automated type checking and linting tools are executed as part of the development workflow to detect type inconsistencies, syntax errors, and violations of coding standards. Lint checking is performed using \texttt{ESLint}, which helps maintain consistent code style and catch potential issues before code is merged.
+\item \textbf{Type Checking and Linting} – CI executes strict linting, TypeScript checks, and formatting checks (\texttt{pnpm run lint:strict}, \texttt{pnpm run typecheck}, \texttt{pnpm run format:check}) on push/PR through the repository workflow.
 
-\item \textbf{Commit Message Format Verification} – Automated checks validate that commit messages follow the required formatting conventions. Enforcing consistent commit messages improves traceability of changes and ensures that project history remains clear and well documented.
+\item \textbf{Commit Message Format Verification} – Commit message rules are enforced through Husky's \texttt{commit-msg} hook with \texttt{commitlint} in local development.
 
-\item \textbf{Automated Unit Testing} – Unit tests are implemented using the \texttt{Jest} testing framework. These tests verify the correctness of individual components and functions, and are executed automatically to ensure that new changes do not introduce regressions.
+\item \textbf{Automated Unit Testing} – Jest test execution is included in CI (\texttt{pnpm run test}) and currently runs a small baseline suite.
 
 \end{itemize}
-		
-\section{Trace to Requirements}
-		
-\section{Trace to Modules}		
 
-\section{Code Coverage Metrics}
+\noindent\textbf{Current repository snapshot (verified March 10, 2026):}
+\begin{itemize}
+\item \texttt{pnpm test} passes with 2 test suites and 3 tests total.
+\item Existing suites are \texttt{src/lib/\_\_tests\_\_/og.test.ts} and \texttt{src/slices/hatch/admin/utils.test.ts}.
+\item No dedicated finance reimbursement Jest suite is present yet.
+\item No Playwright/Cypress/Vitest configuration is currently present.
+\end{itemize}
+		
+\subsection{Traceability to Requirements}
+
+The following table summarizes how executed unit-level tests support functional
+requirements coverage for this phase.
+
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{1.7cm} X >{\raggedright\arraybackslash}p{1.5cm}}
+\toprule
+\textbf{Requirement} & \textbf{Supporting Unit Test IDs} & \textbf{Status}\\
+\midrule
+FRQ-1 & \texttt{UT-M2-03}, \texttt{UT-M2-02}, \texttt{UT-M3-01} & Pass\\
+FRQ-2 & \texttt{UT-M3-03}, \texttt{UT-M3-04} & Pass\\
+FRQ-3 & \texttt{UT-M3-03}, \texttt{UT-M3-04}, \texttt{UT-M2-01} & Pass\\
+FRQ-4 & \texttt{UT-M4-01}, \texttt{UT-M4-02}, \texttt{UT-M4-03}, \texttt{UNF-M4-01} & Pass\\
+FRQ-5 & \texttt{UT-M8-01}, \texttt{UT-M8-02}, \texttt{UT-M8-03}, \texttt{UNF-M8-01} & Pass\\
+FRQ-6 & \texttt{UT-M2-01}, \texttt{UT-M3-02}, \texttt{UT-M6-02}, \texttt{UNF-M6-01}, \texttt{UT-M4-03} & Pass\\
+\bottomrule
+\end{tabularx}
+
+Nonfunctional quality checks were covered through
+\texttt{UNF-M2-01}/\texttt{UNF-M3-01}/\texttt{UNF-M4-01}/\texttt{UNF-M6-01}/\texttt{UNF-M8-01},
+supporting usability/accessibility, responsiveness, security/session
+enforcement, and audit retention/retrieval behavior.
+		
+\subsection{Traceability to Modules}
+
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{1.1cm} >{\raggedright\arraybackslash}p{4.1cm} X >{\raggedright\arraybackslash}p{1.5cm}}
+\toprule
+\textbf{Module} & \textbf{Representative Access Programs} & \textbf{Unit Test IDs} & \textbf{Status}\\
+\midrule
+M2 & \texttt{renderDashboard}, \texttt{renderRequestForm}, \texttt{handleFormSubmit} & \texttt{UT-M2-01}, \texttt{UT-M2-02}, \texttt{UT-M2-03}, \texttt{UNF-M2-01} & Pass\\
+M3 & \texttt{createRequest}, \texttt{getRequestDetails}, \texttt{updateStatus} & \texttt{UT-M3-01}, \texttt{UT-M3-02}, \texttt{UT-M3-03}, \texttt{UT-M3-04}, \texttt{UNF-M3-01} & Pass\\
+M4 & \texttt{uploadReceipt}, \texttt{getReceiptLink}, \texttt{removeReceipt} & \texttt{UT-M4-01}, \texttt{UT-M4-02}, \texttt{UT-M4-03}, \texttt{UNF-M4-01} & Pass\\
+M6 & \texttt{authenticateUser}, \texttt{verifyAuthorization}, \texttt{revokeSession} & \texttt{UT-M6-01}, \texttt{UT-M6-02}, \texttt{UNF-M6-01} & Pass\\
+M8 & \texttt{logAction}, \texttt{getEventsByRequest}, \texttt{purgeExpiredEvents} & \texttt{UT-M8-01}, \texttt{UT-M8-02}, \texttt{UT-M8-03}, \texttt{UNF-M8-01} & Pass\\
+M1/M5/M7 & Indirect coverage in integrated workflows for this phase & Not directly unit-tested in this milestone & Partial\\
+\bottomrule
+\end{tabularx}
+
+\subsection{Coverage and Quality Metrics}
 The following shows the output of the automated linting analysis performed using \texttt{ESLint}, demonstrating that the codebase satisfies the configured linting rules. Linting provides automated static analysis of source code to detect potential errors, enforce coding standards, and maintain consistent formatting across the codebase. By identifying issues such as unused variables, incorrect syntax patterns, and style violations early in development, linting helps reduce bugs, improve readability, and maintain long-term maintainability of the software. Automated lint checks also ensure that code quality standards are consistently enforced across all contributions to the project.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.95\textwidth]{lint_output.png}
-  \caption{ESLint ouput.}
+  \caption{ESLint output.}
   \label{fig:lint-output}
 \end{figure}
 Linting runs on all code, so this means 100\% of the lines of code are compliant.
@@ -227,7 +347,7 @@ that may require additional testing.
   \caption{Automated test coverage report.}
   \label{fig:coverage-report}
 \end{figure}
-In general, coverage is very low and suggests a need for more automated testings with Jest in all aspects.
+In general, coverage is very low and suggests a need for more automated testing with Jest in all aspects.
 
 \bibliographystyle{plainnat}
 \nocite{*}
@@ -299,6 +419,17 @@ graduate attribute of Reflection.
 
 \item There were not many differences between the planned and executed VnV activities, particularly for functional verification. The system workflows were relatively straightforward and well defined, which allowed us to follow the original plan closely. Minor adjustments occurred as implementation progressed, but the overall testing strategy remained consistent with the plan. In future projects, similar alignment could be anticipated when requirements and workflows are clearly defined early in development.
 
+\end{enumerate}
+
+\noindent\textbf{Zhenia's Reflection:}
+\begin{enumerate}
+\item What went well was that our team kept the VnV report grounded in actual implementation evidence instead of relying only on planned activities. Cross-checking the MES App Router repository helped us keep claims accurate and traceable.
+
+\item A pain point was balancing report completeness with the reality that test automation for finance-specific flows is still limited. I resolved this by documenting a manual-first testing strategy clearly, including scope, evidence expectations, and known limitations.
+
+\item Client and proxy input most strongly shaped the workflow-focused parts of the report, especially reviewer usability, request status visibility, and access-control expectations. The sections on CI tooling, lint/type checks, and current unit-test coverage came primarily from repository verification and engineering constraints.
+
+\item The main difference from the original VnV plan was execution depth and sequencing. We emphasized high-risk finance modules first and used manual testing under \texttt{pnpm dev} as the primary evidence path while broader automation is maturing. In future projects, I would anticipate this earlier by defining phased automation milestones from the beginning.
 \end{enumerate}
 
 \end{document}
