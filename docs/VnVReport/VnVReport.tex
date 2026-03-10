@@ -95,18 +95,6 @@ FRQ-6 & FRQ-3-STATUS + role checks & UI/API authorization checks & Access to rei
 \bottomrule
 \end{tabularx}
 
-\subsection{Discussion}
-
-Functional behavior was consistent with the VnV Plan and acceptance criteria.
-The highest-risk flow (submission through decision) was validated across multiple
-roles and data transitions. In addition, persistence-oriented tests provided
-evidence that records and receipt references remained available after workflow
-completion, supporting long-term reimbursement traceability.
-
-No critical functional defects were found during the evaluated test scope.
-Minor issues related to message clarity and edge-case input feedback are tracked
-as implementation refinements and do not block requirement satisfaction.
-
 \section{Nonfunctional Requirements Evaluation}
 
 This section evaluates nonfunctional qualities from the SRS using the planned
@@ -215,11 +203,33 @@ graduate attribute of Reflection.
 \input{../Reflection.tex}
 
 \begin{enumerate}
-  \item What went well while writing this deliverable? 
+  \item What went well while writing this deliverable?
+
+  \noindent\textbf{Justin response:} What went well while writing this
+  deliverable was how our team took initiative and split work efficiently
+  without heavy micromanagement. We were able to move quickly, keep momentum,
+  and still align our writing style during review.
+
   \item What pain points did you experience during this deliverable, and how
     did you resolve them?
+
+  \noindent\textbf{Justin response:} The main pain point was inconsistent
+  understanding of some VnV expectations early on, especially around the level
+  of detail for test case descriptions. We resolved this by discussing the
+  rubric and template together, then standardizing our format before final
+  edits.
+
   \item Which parts of this document stemmed from speaking to your client(s) or
   a proxy (e.g. your peers)? Which ones were not, and why?
+
+  \noindent\textbf{Justin response:} The sections most influenced by
+  client/proxy feedback were the usability and workflow validation parts, since
+  they reflect how club members and finance reviewers actually use the system.
+  Parts that were less directly influenced were technical verification details
+  (for example, automation tooling and static analysis planning), because those
+  were primarily based on engineering best practices and team implementation
+  constraints.
+
   \item In what ways was the Verification and Validation (VnV) Plan different
   from the activities that were actually conducted for VnV?  If there were
   differences, what changes required the modification in the plan?  Why did
@@ -228,6 +238,15 @@ graduate attribute of Reflection.
   predict a feasible amount of effort and the right tasks needed to build the
   evidence that demonstrates the required quality?  (It is expected that most
   teams will have had to deviate from their original VnV Plan.)
+
+  \noindent\textbf{Justin response:} The VnV Plan and actual VnV activities
+  were mostly aligned, but we adjusted scope and sequencing as implementation
+  realities became clearer. Some planned tests were deferred or simplified so we
+  could prioritize high-risk flows first (submission, review, status, and access
+  control). These changes occurred because of time constraints and evolving
+  technical understanding during development. In future projects, I would still
+  expect some deviations, but we can reduce them by planning explicit priority
+  tiers (must-have, should-have, nice-to-have) from the beginning.
 \end{enumerate}
 
 \end{document}
