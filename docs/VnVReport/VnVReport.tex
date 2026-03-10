@@ -171,7 +171,18 @@ Maintainability/Supportability & NFL-MNT-1 & Static quality checks and documenta
 	
 \section{Comparison to Existing Implementation}	
 
-This section will not be appropriate for every project.
+\subsection{Existing Implementation}
+\textbf{Spreadsheet Dependency} - Due to the inefficient nature of the current reimbursement process, many clubs submit a one time spreadsheet with all reimbursements for the semester. The spreadsheet was subject to strict formatting, naming conventions, and meticulous documentation of receipts. All of this was required to ensure that the finance team could process the reimbursements without needing to follow up with clubs for missing information. This process was time consuming and error prone, and it was difficult for clubs to track the status of their reimbursement requests.\\
+\textbf{Tedious File Handling} - The current process requires clubs to upload itemized receipts as separate PDFs or images. Because the maximum 10 file upload limit per submissions, clubs with more than 10 receipts must submit multiple expense reports, which adds overhead and complexity to the submission process. Additionally, the finance team must manually download and organize all receipt files for processing, which is inefficient and increases the risk of lost or misfiled documents.\\
+\textbf{Manual Verification Process} - Submitters had to manually verify that all dates, taxes, totals, and proof of payment were clearly documented and were cross referenced in the spreadsheet.\\
+\textbf{Lack of Visibility} - Once a reimbursement request was submitted, there was no way for submitters to track the status of their requests. This lack of visibility led to uncertainty and increased follow-up inquiries to the finance team, further burdening their workload.\\
+
+\subsection{New Implementation}
+\textbf{Elimination of Spreadsheet Dependency} - The new reimbursement management system eliminates the need for spreadsheets by providing a structured web interface for submitting reimbursement requests. The new optical character recognition system can automatically fill in key reimbursement information, which clubs can review and revise for accuracy. This streamlines the submission process and reduces the likelihood of formatting errors. Furthermore, this process is much simpler and allows for clubs to submit reimbursements throughout the year in a much simpler fashion, rather than needing to wait until the end of the semester to submit a large spreadsheet.\\
+\textbf{Streamlined File Handling} - The new system allows clubs to upload receipts directly through the web interface. Despite only being allowed to submit receipts one at a time, the system provides a more intuitive and user-friendly experience. The finance team can also view receipts directly from the reimbursement review dashboard without needing to download and organize files manually, improving efficiency and reducing the risk of lost documents.\\
+\textbf{Centralized Tracking and Visibility} - The system tracks the status of each expense report and provides visibility to submitters through the dashboard. Submitters can see whether their requests are pending, approved, or rejected, which reduces uncertainty and minimizes follow-up inquiries to the finance team.\\
+\textbf{Optimized Reviewer Workflow} - Reviewers are no longer required to manually cross reference spreadsheet and image files. Rather, the images can be seen through the click of a button next to the reimbursement submission itself. This way, the approval process is quick and seamless, allowing for more efficient processing of reimbursements. \\
+
 
 \section{Unit Testing}
 
@@ -249,6 +260,18 @@ graduate attribute of Reflection.
   without heavy micromanagement. We were able to move quickly, keep momentum,
   and still align our writing style during review.
 
+  \noindent\textbf{Johnny response:} One aspect that went well while writing 
+  this deliverable was that we already had a well documented Verification and 
+  Validation (VnV) Plan. The structure and testing strategies described in the 
+  plan helped guide the organization of the report and made it easier to document
+   the verification activities that were performed.
+
+  \noindent\textbf{Thomas response:} Something that went well was how we were able
+   to transition from the planning phase to executing the report. From our initial
+    VNV plan, we had structured the documentation well so the same happened for this 
+    document. We were also proactive when claiming sections without needing to micromanage 
+    each other so we were able to progress at a good pace and write a cohesive final document.
+
   \item What pain points did you experience during this deliverable, and how
     did you resolve them?
 
@@ -257,6 +280,20 @@ graduate attribute of Reflection.
   of detail for test case descriptions. We resolved this by discussing the
   rubric and template together, then standardizing our format before final
   edits.
+
+  \noindent\textbf{Johnny response:} One challenge was that testing was not always
+   at the forefront of our development priorities while building the system. As a 
+   result, gathering and organizing the evidence for verification required additional
+    effort near the end of development. We resolved this by reviewing our implemented 
+    tests, automated checks, and development history to ensure that all verification 
+    activities were properly documented.
+
+  \noindent\textbf{Thomas response:} A pain point we experienced was bridging the gap 
+  between our active development and final documentation of our testing. Because feature
+   implementation took priority for the past few months, we found ourselves leaving a 
+   lot of the documentation and tests towards the end. We overcame this by taking a step 
+   back, meeting and reviewing what we've covered and completed in terms of our work and
+    how we should proceed with the documentation and testing.
 
   \item Which parts of this document stemmed from speaking to your client(s) or
   a proxy (e.g. your peers)? Which ones were not, and why?
@@ -268,6 +305,21 @@ graduate attribute of Reflection.
   (for example, automation tooling and static analysis planning), because those
   were primarily based on engineering best practices and team implementation
   constraints.
+
+  \noindent\textbf{Johnny response:} Most parts of this document stem from a combination
+   of both client and peer feedback. During development, we frequently discussed features
+    and workflows with peers, while during verification and validation we communicated with 
+    clients to confirm that the implemented functionality met their expectations. Some sections,
+     such as implementation details and automated testing descriptions, were based primarily 
+     on internal development practices rather than external feedback. 
+
+  \noindent\textbf{Thomas response:} The sections that were coordinated with our clients were 
+  evaluating the reimbursement workflow, UI intuitiveness, and overall usability. These being 
+  key topics of conversation that shaped our development and end-to-end user experience discussions. 
+  For the parts that were done purely on our own as a team were the backend implementation, 
+  automated testing, and static analysis. These were established based on our team's technical
+   constraints and standard software that we could use at no cost to us (ultimately leading to
+    no cost for the MES when actually implemented).
 
   \item In what ways was the Verification and Validation (VnV) Plan different
   from the activities that were actually conducted for VnV?  If there were
@@ -286,18 +338,24 @@ graduate attribute of Reflection.
   technical understanding during development. In future projects, I would still
   expect some deviations, but we can reduce them by planning explicit priority
   tiers (must-have, should-have, nice-to-have) from the beginning.
-\end{enumerate}
 
-\noindent\textbf{Johnny's Reflection:}
-\begin{enumerate}
+  \noindent\textbf{Johnny response:} There were not many differences between the 
+  planned and executed VnV activities, particularly for functional verification. 
+  The system workflows were relatively straightforward and well defined, which allowed
+   us to follow the original plan closely. Minor adjustments occurred as implementation
+    progressed, but the overall testing strategy remained consistent with the plan. 
+    In future projects, similar alignment could be anticipated when requirements and 
+    workflows are clearly defined early in development.
 
-\item One aspect that went well while writing this deliverable was that we already had a well documented Verification and Validation (VnV) Plan. The structure and testing strategies described in the plan helped guide the organization of the report and made it easier to document the verification activities that were performed.
-
-\item One challenge was that testing was not always at the forefront of our development priorities while building the system. As a result, gathering and organizing the evidence for verification required additional effort near the end of development. We resolved this by reviewing our implemented tests, automated checks, and development history to ensure that all verification activities were properly documented.
-
-\item Most parts of this document stem from a combination of both client and peer feedback. During development, we frequently discussed features and workflows with peers, while during verification and validation we communicated with clients to confirm that the implemented functionality met their expectations. Some sections, such as implementation details and automated testing descriptions, were based primarily on internal development practices rather than external feedback.
-
-\item There were not many differences between the planned and executed VnV activities, particularly for functional verification. The system workflows were relatively straightforward and well defined, which allowed us to follow the original plan closely. Minor adjustments occurred as implementation progressed, but the overall testing strategy remained consistent with the plan. In future projects, similar alignment could be anticipated when requirements and workflows are clearly defined early in development.
+  \noindent\textbf{Thomas response:} The VNV plan was primarily focused on an overarching
+   plan that we had for the core system workflow and how we wanted it to be designed 
+   from the start. Upon implementation, there weren't many drastic differences between 
+   the two. In the end, we scaled back some of the broader less critical testing to 
+   ensure high-priority features were more rigorously verified. This for example included 
+   the access control and receipt submission. In future projects, I would try to anticipate 
+   time crunches near the end of a project when it comes to testing and begin automated testing 
+   earlier in the development lifecycle. It would also help by explicitly categorizing tests 
+   by priority from early on in the project.
 
 \end{enumerate}
 
