@@ -1,0 +1,254 @@
+\documentclass[12pt, titlepage]{article}
+
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=red,
+    urlcolor=blue
+}
+\usepackage[round]{natbib}
+
+\input{../Comments}
+\input{../Common}
+
+\begin{document}
+
+\title{Usability Testing Report: \progname} 
+\author{\authname}
+\date{\today}
+	
+\maketitle
+
+\pagenumbering{roman}
+
+\section{Revision History}
+
+\begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
+\toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
+\midrule
+April 5, 2026 & 1.0 & Initial usability testing report from Kyle session\\
+\bottomrule
+\end{tabularx}
+
+~\newpage
+
+\section{Symbols, Abbreviations and Acronyms}
+
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{l l} 
+  \toprule		
+  \textbf{symbol} & \textbf{description}\\
+  \midrule 
+  MES & Manufacturing Engineering Society\\
+  VP & Vice President\\
+  UI & User Interface\\
+  \bottomrule
+\end{tabular}\\
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\pagenumbering{arabic}
+
+\section{Introduction}
+
+This document presents the findings from a usability testing session conducted with Kyle, a representative user of the MES Finance Tracking Platform. The testing was performed to evaluate the intuitiveness, navigation clarity, and overall user experience across core workflows: receipt submission, club expense management, and finance administration.
+
+The session revealed a system with strong foundational usability and positive user perception, along with specific areas for improvement in discoverability, consistency, and feature visibility.
+
+\section{Test Methodology}
+
+\subsection{Participant}
+\begin{itemize}
+    \item Kyle (recruited with no prior system documentation)
+    \item Starting knowledge: None
+\end{itemize}
+
+\subsection{Tasks Evaluated}
+\begin{enumerate}
+    \item Submit a receipt
+    \item Approve/reject expense requests (Club Executive role)
+    \item View expenses for a specific year (2019)
+    \item Accept/reject expense requests (VP Finance role)
+    \item General workflow and navigation feedback
+\end{enumerate}
+
+\subsection{Test Format}
+Open-ended task-based testing with think-aloud protocol. Participant was given minimal initial direction and asked to locate features and complete workflows using the system interface.
+
+\section{Detailed Findings by Task}
+
+\subsection{Task 1: Submit a Receipt}
+
+\subsubsection{Navigation Path}
+The participant initially explored the hotbar and scrolled through the home page before locating the receipt submission feature. The feature was eventually found under \textbf{Administration} \(\rightarrow\) \textbf{Finances}. Upon finding the correct location, the participant commented ``ah, that makes sense.''
+
+\subsubsection{Results}
+\begin{itemize}
+    \item \textbf{Discoverability:} Moderate friction—feature not immediately obvious; required navigation through multiple menu levels
+    \item \textbf{Task Completion:} Success (no blockers after discovery)
+    \item \textbf{Workflow Intuitiveness:} The receipt submission page was intuitive; no additional blockers encountered post-discovery
+\end{itemize}
+
+\subsubsection{User Observations}
+
+\paragraph{File Upload Interaction}
+The participant initially attempted to drag a file onto the upload box, suggesting the large upload area conveyed strong affordance for drag-and-drop. The system did not support this interaction, requiring the participant to click to open a file browser instead.
+
+\paragraph{Checklist Clarity}
+The participant questioned the pre-submission checklist, specifically regarding a descriptive point: \textit{``If a description is needed, why is the description field optional?''} This indicates a logical inconsistency in the UI copy or field configuration.
+
+\subsubsection{Suggestions}
+\begin{itemize}
+    \item Add drag-and-drop file upload support to match user expectations
+    \item Implement file preview functionality to allow verification before submission
+    \item Clarify required vs. optional fields in the pre-submission checklist, or adjust field requirements to align with checklist guidance
+\end{itemize}
+
+\subsection{Task 2: Club Expenses Dashboard (Approve/Reject as Club Executive)}
+
+\subsubsection{Results}
+\begin{itemize}
+    \item \textbf{Rejecting Requests:} No usability blockers
+    \item \textbf{Accepting Requests:} No usability blockers
+\end{itemize}
+
+\subsubsection{Navigation Issue}
+The participant browsed the Analytics page and initially looked for an approve/reject section by scrolling down. Upon not finding it, the participant navigated to the top of the page and discovered the Pending/Rejected/Accepted tabs. Clicking on the Pending tab immediately revealed check (\(\checkmark\)) and X icons for approve/reject actions.
+
+\subsubsection{User Observations}
+
+\paragraph{State Management Issue}
+Auth-locked pages initially open empty with missing features. The features appear properly only on the second visit to the page.
+
+\paragraph{Year Selection Mismatch}
+The participant observed a mismatch between dropdown label and the scroll-select year control. Despite this inconsistency, the user was able to quickly select the desired year.
+
+\subsection{Task 3: View Expenses for 2019}
+
+The participant successfully completed this task using the year filter despite the UI state mismatch noted above. No additional friction was reported.
+
+\subsection{Task 4: VP Finance Dashboard (Accept/Reject Expense Requests)}
+
+\subsubsection{Navigation Issue}
+When attempting to view bank details for an expense request, the participant clicked on a ``Details'' button. This button functions as a hover-activated element rather than a clickable component, making it non-intuitive. The hover behavior was not immediately apparent to the user.
+
+\subsubsection{Results}
+\begin{itemize}
+    \item \textbf{Task Completion:} Success
+    \item \textbf{Intuitiveness:} Button interaction pattern not aligned with user expectations
+\end{itemize}
+
+\subsubsection{Suggestion}
+The Details button should either:
+\begin{itemize}
+    \item Be styled and behave as a standard clickable button, or
+    \item Include visual hover indicators (e.g., underline, color change, cursor change) to signal interactivity
+\end{itemize}
+
+\section{General Observations and Feedback}
+
+\subsection{Overall Impression}
+
+When asked ``How do you feel about the entire processes?'', the participant provided the following feedback:
+\begin{itemize}
+    \item \textbf{Positive:} ``At a glance, liked it''
+    \item Appreciated button design
+    \item No concerns with visual design consistency
+\end{itemize}
+
+\subsection{Feature Discoverability and Navigation}
+
+\paragraph{Receipt Submission}
+When posed the hypothetical ``if we asked you to submit a receipt, where would you go?'', the participant indicated preference for navigating through a Clubs and Teams page before arriving at receipt submission, suggesting a more direct pathway would be beneficial.
+
+\paragraph{Expense vs. Reimbursement Terminology}
+The participant expressed confusion about the distinction between an ``expense report'' and a ``club reimbursement.'' This suggests terminology clarity or additional onboarding guidance is needed.
+
+\paragraph{Page Re-entry Performance}
+The participant noted that clicking out and clicking back into a page is quick, but auth-locked pages remain empty on first visit and require a second click to populate.
+
+\subsection{Submission and Status Communication}
+
+\paragraph{Confusion About Submission Completion}
+The participant was confused that the submission went through and unclear about when the entire process was finished. The status message was appreciated but needs repositioning. \textbf{Recommendation:} Move the finished status indicator to the bottom of the confirmation flow.
+
+\paragraph{Receipt Visibility in Review Interfaces}
+On the VP Finance dashboard, the participant was unable to see the receipt when reviewing pending requests. This is a significant gap in the review workflow.
+
+\section{Feature-Specific Recommendations}
+
+\subsection{Submission Workflow}
+\begin{itemize}
+    \item \textbf{Drag-and-Drop Support:} Implement file drag-and-drop for upload boxes
+    \item \textbf{File Preview:} Display a preview of the uploaded file within the checklist verification step
+    \item \textbf{Receipt Visibility:} Ensure receipts are visible to VP Finance reviewers when approving/denying requests
+    \item \textbf{Required Field Clarity:} Align optional/required field designations with checklist requirements and update copy as needed
+\end{itemize}
+
+\subsection{Navigation and Discoverability}
+\begin{itemize}
+    \item \textbf{Receipt Submission Location:} Consider moving receipt submission to a top-level navigation item or shortening the path from home
+    \item \textbf{Terminology Clarity:} Standardize language around ``expense reports,'' ``reimbursements,'' and ``submissions'' across the interface
+    \item \textbf{Clubs/Teams Navigation:} Explore user mental models and determine if receipt submission should be accessible from a Clubs/Teams section
+\end{itemize}
+
+\subsection{Component Behavior and States}
+\begin{itemize}
+    \item \textbf{Fix Auth-Locked Empty Page Issue:} Ensure pages render with all content on first visit, not just on second visit
+    \item \textbf{Details Button Affordance:} Redesign button to clearly signal interactivity (clickable vs. hover-activated)
+    \item \textbf{Dropdown/Year Picker Consistency:} Ensure dropdown label and scroll-select year control are synchronized
+    \item \textbf{Status Messaging:} Reposition completion status to bottom of submission flow to clarify when the process is concluded
+    \item \textbf{Rejection Recoveryability:} Provide visibility or an undo capability when rejection decisions are made
+\end{itemize}
+
+\subsection{Administrative Features}
+\begin{itemize}
+    \item \textbf{Sidebar Table of Contents:} Add a searchable table of contents or search feature to the VP Finance page sidebar, given the volume of clubs to manage
+    \item \textbf{CSV Export:} Include export functionality to CSV on the VP Finance dashboard for reporting and analysis
+    \item \textbf{Color Coding for Expense Type:} Differentiate expense reports with a distinct color treatment to improve scannability
+\end{itemize}
+
+\section{Positive Findings}
+
+The following strengths were observed:
+\begin{itemize}
+    \item \textbf{Button Design:} User appreciated the visual design of buttons
+    \item \textbf{Design Consistency:} No concerns about mismatching design styles across the application
+    \item \textbf{Quick Navigation:} Page-to-page navigation performance is fast
+    \item \textbf{Task Workflow Simplicity:} Approval/rejection workflows are straightforward once discovered
+    \item \textbf{Positive Overall Trajectory:} User felt the system is a ``budding of an ecosystem'' with a strong foundation
+    \item \textbf{Competitive Advantage:} Significantly better than the previous manual system
+\end{itemize}
+
+\section{Recommendations for Priority Implementation}
+
+The following issues should be prioritized based on impact to core workflows:
+
+\begin{enumerate}
+    \item \textbf{HIGH:} Receipt visibility on VP Finance dashboard—critical for review workflow
+    \item \textbf{HIGH:} Fix auth-locked empty page issue on first visit
+    \item \textbf{HIGH:} Clarify submission completion status messaging
+    \item \textbf{MEDIUM:} Improve receipt submission discoverability (navigation path or front-page link)
+    \item \textbf{MEDIUM:} Fix button affordance (Details button hover behavior)
+    \item \textbf{MEDIUM:} Implement drag-and-drop file upload
+    \item \textbf{MEDIUM:} Standardize terminology (expense vs. reimbursement)
+    \item \textbf{LOW:} Add file preview in checklist
+    \item \textbf{LOW:} Add searchable sidebar/export features on VP Finance page
+    \item \textbf{LOW:} Provide undo/recovery for rejection decisions
+\end{enumerate}
+
+\section{Conclusion}
+
+The MES Finance Tracking Platform demonstrates strong foundational usability and positive user reception. The system successfully enables core workflows (submission, review, approval) with minimal friction once features are discovered. Key improvements center on feature discoverability, consistency in interactive elements, and ensuring critical information (receipts) is visible during review workflows.
+
+The participant provided encouraging feedback, describing the system as a significant improvement over manual processes and expressing confidence in the overall direction. With the recommended prioritized refinements, the platform is well-positioned to provide an intuitive, reliable financial management solution for MES clubs.
+
+\end{document}
