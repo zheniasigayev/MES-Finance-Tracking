@@ -4,7 +4,7 @@ This directory contains usability testing documentation for the MES Finance Trac
 
 ## Contents
 
-- **UsabilityTesting.tex**: Comprehensive usability testing report from Kyle's testing session, including:
+- **UsabilityTesting.tex**: Comprehensive usability testing report from the MES Infratech Team testing session, including:
   - Test methodology and participant information
   - Detailed findings organized by task and feature
   - Navigation and interaction observations
@@ -13,7 +13,7 @@ This directory contains usability testing documentation for the MES Finance Trac
 
 ## Testing Summary
 
-Usability testing was conducted with Kyle, a user with no prior system exposure. Testing focused on:
+Usability testing was conducted with the MES Infratech Team, users with no prior system exposure. Testing focused on:
 
 1. Receipt submission workflow
 2. Club executive expense approval/rejection
