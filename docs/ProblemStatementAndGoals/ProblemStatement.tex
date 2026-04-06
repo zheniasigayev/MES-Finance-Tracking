@@ -25,6 +25,7 @@
 09-22 & Thomas Wang & Added Section 1\\
 09-22 & Justin Ho& Problem 1.1-1.4\\
 09-22 & Zhenia Sigayev & Added Sections 2-5\\
+04-05 & Thomas Wang & Updated document to align with latest project requirements\\
 ... & ... & ...\\
 \bottomrule
 \end{tabularx}
@@ -33,12 +34,13 @@
 \section{Problem Statement}
 
 The engineering department currently uses spreadsheets and manual processes to track club finances. This approach
-often results in errors from lost reciepts, duplicated claims, and large amount of claims at the end of the year. A centralized
+often results in errors from lost receipts, duplicated claims, and large amount of claims at the end of the year. A centralized
 financial tracking software system is needed to streamline and automate this process.
 
 The software will take clear inputs such as budgets, expenses, transactions, receipts, and any other financial
 information. The outputs will include reports, summaries, and visual dashboards. This system will be kept simple
-so it is easy to use and maintain for future student groups.
+so it is easy to use and maintain for future student groups. This system utilizes an LLM pipeline to perform receipt uploads,
+parsing, and extraction through Google Gemini to eliminate manual entry errors. 
 
 Stakeholders include student group leadership teams who manage budget, administrative staff who monitor spending and 
 issue reimbursements, and faculty advisors. The environment the software will run on is the department's existing digital 
@@ -46,13 +48,13 @@ infrastructure with the software being in the form of a web platform
 
 The importance of the problem lies in improving financial tracking efficiency, reducing the reporting time
 and support better financial decision making for student activities. The goals of the project are measurable: minimize
-errors in transaction logging and reciept submissions, encourage continuous submissions over the school year rather than 
+errors in transaction logging and receipts submissions, encourage continuous submissions over the school year rather than 
 a large quantity at the end of the year, and provide clear visualization that makes budgets and spending easy to interpret.
 
 
 \subsection{Problem}
 \begin{itemize}
-    \item MES reimbursment process is manual and slow to complete
+    \item MES reimbursement process is manual and slow to complete
     \item expense submissions can come from multiple places making them difficult to access
     \item Hard to keep track of payments and receipts
   \end{itemize}
@@ -157,6 +159,10 @@ Software and Technology Stack:
       \item next-sitemap (sitemap generation)
       \item pnpm/yarn (dependency management)
     \end{itemize}
+  \item \textbf{AI/ML:}
+    \begin{itemize}
+      \item Google Gemini (LLM for receipt parsing and data extraction)
+    \end{itemize}
 \end{itemize}
 
 \section{Goals}
@@ -169,13 +175,11 @@ Software and Technology Stack:
 
   \item \textbf{Improve receipt management} — Achieve 100\% receipt retention through digital storage, preventing lost or misplaced documentation.
 
-  \item \textbf{Minimize manual data entry} — Automate at least 80\% of the data entry currently performed manually by treasurers and administrators.
+  \item \textbf{Minimize manual data entry} — Minimize manual data entry by leveraging automated receipt data extraction, ensuring only a clear picture of receipt is needed for reimbursement submission. 
 \end{itemize}
 
 \section{Stretch Goals}
 \begin{itemize}
-  \item \textbf{Mobile-friendly interface} — Create a responsive design that works seamlessly on smartphones, allowing receipt uploads directly from mobile devices.
-
   \item \textbf{Bulk processing features} — Enable administrators to process bulk reimbursement requests simultaneously to further improve efficiency.
 
   \item \textbf{Distribute submissions throughout the year} — Reduce end-of-year submission spikes by implementing reminder features that encourage regular submissions.
@@ -183,13 +187,15 @@ Software and Technology Stack:
   \item \textbf{Automated receipt data extraction} — Have at least 10 MES clubs submit at least 1 reimbursement receipt using our new MES financial tracker before end of April.
 
   \item \textbf{Advanced analytics dashboard} — Provide trend analysis and forecasting tools to help clubs plan future spending based on historical data.
+  
+  \item \textbf{Role Based Access Control} - Ensure current MES RBAC system is implemented and only authorized users see sensitive reimbursement info
 \end{itemize}
 
 \section{Extras}
 
 \begin{itemize}
 \item \textbf{User Instructional Video} — Create a short instructional video demonstrating how to use the MES financial tracker, including steps for submitting expenses, tracking reimbursements, and generating reports.
-\item \textbf{Wireframe Report} — Develop a comprehensive wireframe report outlining the user interface and user experience design for all key pages of the MES financial tracker.
+\item \textbf{Usability Testing Report} — Conduct usability testing sessions with a sample of MES club members and administrators, gather feedback on the user experience, and compile findings and recommendations for improvement.
 \end{itemize}
 
 \newpage{}

@@ -103,6 +103,8 @@
   \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
     \midrule
       Oct 10 & 1.0 & Initial version\\
+      Apr 5 & 1.1 & Updated document to align with latest project requirements\\
+       ... & ... & ...\\
   \bottomrule
 \end{tabularx}
 
@@ -160,6 +162,7 @@
         \item Manages application logic, routing, and communication with the database.
         \item Uses MongoDB Community Server as the primary data storage system.
         \item Exposes APIs consumed by the frontend for dynamic content delivery.
+        \item Google Geimini LLM Pipeline integrated via API to handle receipt parsing and data extraction.
     \end{itemize}
 
     \subsection{Database}
@@ -185,6 +188,7 @@
         \item GitHub Actions (via \texttt{.github/workflows}) for CI/CD and automated testing.
         \item NextUI and TailwindCSS for UI components and styling.
         \item Additional Node.js ecosystem libraries and packages installed via pnpm or yarn.
+        \item Google Cloud Platform for AI infrastructure and cloud storage of receipt images. 
     \end{itemize}
 
     % \begin{figure}[H]
@@ -200,29 +204,31 @@
 %-------------------------------------
 \section{Stakeholders}
   \subsection{Direct Stakeholders}
-    \subsubsection{Club Leadership}
+    \subsubsection{Club Leadership (President and VPs)}
       \begin{itemize}
         \item \textbf{Description}: Members of the executive team of clubs that fall under the MES.  
         \item \textbf{Use Cases:}
           \begin{itemize}
+            \item Provide final approval before sending reimbursement requests to MES using club executive dashboard.
             \item Review and submit expense reimbursement requests on behalf of their club.
             \item Track the status of submitted requests.
             \item Review past reimbursements and budget accordingly.
           \end{itemize}
       \end{itemize}
-    \subsubsection{Club General Members}
+    \subsubsection{General Club Members}
       \begin{itemize}
-        \item \textbf{Description}: General members of clubs that fall under the MES.
+        \item \textbf{Description}: Any member of clubs that fall under the MES.
         \item \textbf{Use Cases:}
           \begin{itemize}
-            \item Submit expense reimbursement requests for expenses incurred on behalf of their club, pending review of executives.
+            \item Submit expense reimbursement requests for expenses incurred on behalf of their club, pending review of executives, using only a picture.
           \end{itemize}
       \end{itemize}
-    \subsubsection{McMaster University Finance}
+    \subsubsection{MES Finance Administrators}
       \begin{itemize}
         \item \textbf{Description}: University staff responsible for auditing and overseeing the financial activities of student organizations.
         \item \textbf{Use Cases:}
           \begin{itemize}
+            \item Approve or reject requests quickly via MES Admin Dashboard.
             \item Issue reimbursements to club members based on approved requests.
             \item Ensure compliance with university financial policies and regulations.
           \end{itemize}
@@ -354,6 +360,7 @@
       \item \textbf{Audit Log}: A chronological record of all changes made to the system, including who made the change and when it was made.
       \item \textbf{Budget Allocation}: The total amount of funds allocated to a club or team for a specific period, typically a fiscal year.
       \item \textbf{Expense Claim}: A request for reimbursement submitted by a club or team member for expenses incurred on behalf of the club or team.
+      \item \textbf{Role Based Access Control (RBAC)}: System to ensure only authorized users see sensitive reimbursement information and can perform certain actions based on their role (e.g., submitter, reviewer, administrator).
       \item \textbf{Receipt}: A digital or physical document that serves as proof of purchase for an expense.
       \item \textbf{Reimbursement}: The process of repaying a club or team member for approved expenses.
       \item \textbf{Reviewer}: An MES staff member or administrator responsible for reviewing and approving or rejecting expense claims.
@@ -452,9 +459,8 @@
 %-------------------------------------
 \section{The Scope of the Work}
   \subsection{The Current Situation}
-    The MES currently uses spreadsheets and manual processes
-    to track club finances. This approach results in a large amount of work for MES financial
-    staff due to lost receipts, duplicated claims, or other manual errors. A centralized
+    The MES currently uses spreadsheets and manual processes to track club finances, this is a very tedious process that is time-consuming and error-prone. 
+    This approach results in a large amount of work for MES financial staff due to lost receipts, duplicated claims, or other manual errors. A centralized
     financial tracking platform is needed to streamline and automate this process for the MES.
 
   \subsection{The Context of the Work}
@@ -600,6 +606,8 @@
       \item The system shall permanently store and retain digital receipt submissions.
       \item The system shall maintain an audit trail that records who submitted, reviewed, approved, or denied each expense claim.
       \item The system shall enable access to club expense submissions to the submitters, and other club members with a role greater or equal to that of the submitter, or MES administrators and approvers.
+      \item The system shall automatically extract transaction details from uploaded images using LLM-pipelines
+      \item The system shall provide centralized club dashboard for leadership to track and approve member submissions
     \end{enumerate}
 
 %-------------------------------------
@@ -789,6 +797,7 @@ The following 7 sections outline the non-functional requirements for the MES Fin
 \begin{enumerate}
     \item Every key action (claim submission, approval, rejection, fund disbursement) must be logged with timestamp, user ID, and action details.
     \item Audit logs must be retained for a minimum of 3 years for accountability and financial review.
+    \item All updates to reimbursements must be tracked, including specific user performing the action.
 \end{enumerate}
 
 \subsection{Immunity Requirements [IMM]}
@@ -908,9 +917,10 @@ The following 7 sections outline the non-functional requirements for the MES Fin
     \item Implementing a role-aware finance portal on the existing MES Next.js stack with dedicated dashboards for club members, treasurers, and administrators using reusable components (NextUI, Tailwind) that satisfy accessibility requirements.
     \item Building the reimbursement workflow as Next.js API routes on Node.js with MongoDB collections for clubs, requests, budgets, and attachments to enforce audit trails and status tracking.
     \item Establishing a GitHub Actions pipeline for linting, testing with Jest/RTL, and deploying to MES staging/production branches to maintain development workflow commitments.
-    \item Using cloud storage (e.g., AWS S3) for receipt uploads with secure access controls and integrating OCR services (e.g., Amazon Textract) for automated data extraction.
+    \item Integrate Google Gemini for automated data extraction to satisfy the 'only picture is needed' submission requirement.
     \item Designing the database schema to support scalability for future features like budgeting tools or analytics dashboards.
     \item Ensuring all sensitive data is encrypted in transit (TLS) and at rest, complying with McMaster University privacy policies.
+    \item Leverage free technology for long-term project sustainability. 
   \end{itemize}
 
 %-------------------------------------
