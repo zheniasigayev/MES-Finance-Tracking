@@ -86,8 +86,8 @@ requirement was validated through observable behavior and persistent data state.
 \toprule
 \textbf{Req.} & \textbf{Test ID} & \textbf{Method} & \textbf{Observed Result} & \textbf{Status}\\
 \midrule
-FRQ-1 & FRQ-1-SUBMIT & UI automation + DB check & Reimbursement requests were submitted successfully with required metadata and receipt links persisted. & Pass\\
-FRQ-2 & FRQ-2-REVIEW & UI workflow + backend verification & Reviewer approval/rejection actions updated request state correctly and recorded reviewer decision details. & Pass\\
+FRQ-1 & FRQ-1-SUBMIT & UI automation + DB check & Reimbursement requests were submitted successfully via Receipt Image Upload with AI extraction accurately identifying sub-totals and HST & Pass\\
+FRQ-2 & FRQ-2-REVIEW & UI workflow + backend verification & Reviewers successfully approved/rejected requests via MES Admin Dashboard & Pass\\
 FRQ-3 & FRQ-3-STATUS & API + UI cross-check & Status values displayed in the dashboard matched API responses and underlying stored state. & Pass\\
 FRQ-4 & FRQ-4-STORAGE & Storage/API verification & Uploaded receipts remained retrievable after submission and were protected by role-based access constraints. & Pass\\
 FRQ-5 & FRQ-5-AUDIT & Automated log checks & Audit entries were generated for submission and decision events with actor identity and timestamps. & Pass\\
@@ -146,7 +146,8 @@ inputs.
 \subsection{Maintainability and Supportability}
 
 Maintainability was evaluated using linting/format checks and documentation
-review activities from \texttt{NFL-MNT-1}.
+review activities from \texttt{NFL-MNT-1}. The use of freemium technology ensures
+long-term sustainability and low overhead for MES Infra-Tech team maintenance.
 
 \textbf{Outcome:}
 The codebase satisfied the configured static quality gates used during
