@@ -1,7 +1,16 @@
 \documentclass{article}
 
+\usepackage{amsmath}
 \usepackage{tabularx}
 \usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    citecolor=blue
+}
 
 \title{Reflection and Traceability Report on \progname}
 
@@ -16,128 +25,657 @@
 
 \maketitle
 
-\plt{Reflection is an important component of getting the full benefits from a
-learning experience.  Besides the intrinsic benefits of reflection, this
-document will be used to help the TAs grade how well your team responded to
-feedback.  Therefore, traceability between Revision 0 and Revision 1 is and
-important part of the reflection exercise.  In addition, several CEAB (Canadian
-Engineering Accreditation Board) Learning Outcomes (LOs) will be assessed based
-on your reflections.}
+\tableofcontents
+
+\newpage
 
 \section{Changes in Response to Feedback}
 
-\plt{Summarize the changes made over the course of the project in response to
-feedback from TAs, the instructor, teammates, other teams, the project
-supervisor (if present), and from user testers.}
+This section documents every item of feedback received from TAs, the course
+instructor, peer reviewers, the project supervisor, and usability testers
+over the course of the project.  For each item the source, a short label,
+and the change made (or the reason no change was made) are recorded.
 
-\plt{For those teams with an external supervisor, please highlight how the feedback 
-from the supervisor shaped your project.  In particular, you should highlight the 
-supervisor's response to your Rev 0 demonstration to them.}
-
-\plt{Version control can make the summary relatively easy, if you used issues
-and meaningful commits.  If you feedback is in an issue, and you responded in
-the issue tracker, you can point to the issue as part of explaining your
-changes.  If addressing the issue required changes to code or documentation, you
-can point to the specific commit that made the changes.  Although the links are
-helpful for the details, you should include a label for each item of feedback so
-that the reader has an idea of what each item is about without the need to click
-on everything to find out.}
-
-\plt{If you were not organized with your commits, traceability between feedback
-and commits will not be feasible to capture after the fact.  You will instead
-need to spend time writing down a summary of the changes made in response to
-each item of feedback.}
-
-\plt{You should address EVERY item of feedback.  A table or itemized list is
-recommended.  You should record every item of feedback, along with the source of
-that feedback and the change you made in response to that feedback.  The
-response can be a change to your documentation, code, or development process.
-The response can also be the reason why no changes were made in response to the
-feedback.  To make this information manageable, you will record the feedback and
-response separately for each deliverable in the sections that follow.}
-
-\plt{If the feedback is general or incomplete, the TA (or instructor) will not
-be able to grade your response to feedback.  In that case your grade on this
-document, and likely the Revision 1 versions of the other documents will be
-low.} 
+The team's external supervisor is Luke, the MES Infra-Tech representative,
+who attended regular bi-weekly stakeholder check-ins throughout the project.
+The course instructor (Prof.\ Smith) observed the Rev~0 demonstration and
+provided written feedback reproduced in part below.
 
 \subsection{SRS and Hazard Analysis}
 
+\begin{longtable}{p{3.2cm} p{3.8cm} p{7.4cm}}
+\toprule
+\textbf{Source} & \textbf{Feedback Label} & \textbf{Response / Change Made} \\
+\midrule
+\endhead
+
+TA Meeting \#2 (Oct~2, 2025)
+  & Requirements traceability matrix missing
+  & Added traceability matrices to the SRS linking every functional and
+    non-functional requirement to the corresponding VnV test case and, where
+    applicable, to hazard analysis safety requirements.
+    See PR~\#35 (\textit{Initial traceability matrices}).
+\\[4pt]
+
+TA Meeting \#2 (Oct~2, 2025)
+  & Formal mathematical notation (SpecMath) required
+  & Added a finite-state machine (FSM) representation of the user
+    reimbursement workflow to the SRS to satisfy the formal-notation
+    requirement.
+\\[4pt]
+
+TA Meeting \#2 (Oct~2, 2025)
+  & Use case diagram recommended for system/technical section
+  & Added a use case diagram to the SRS system-description section
+    illustrating interactions between the three user roles (club member,
+    club executive, VP Finance/MES admin) and the system.
+\\[4pt]
+
+TA Meeting \#2 (Oct~2, 2025)
+  & FMEA table not traced back to SRS requirements
+  & Added a ``Related SRS Requirements'' column to the FMEA table in
+    \texttt{HazardAnalysis.tex} so every hazard entry links to the safety
+    or functional requirements that mitigate it.
+\\[4pt]
+
+TA Meeting \#2 (Oct~2, 2025)
+  & No applicable privacy/security standards identified
+  & Identified relevant data-handling and privacy standards for student
+    financial data and added them to the SRS and Hazard Analysis.
+\\[4pt]
+
+Peer review (GitHub Issues)
+  & Hazard categorisation ambiguity as technical and safety overlap
+  & Clarified hazard categorisation criteria in
+    \texttt{HazardAnalysis.tex}; hazards that produce both technical and
+    safety consequences are now cross-referenced with a note, and the FMEA
+    table was reviewed for consistent categorisation throughout.
+\\[4pt]
+
+Peer review (GitHub Issues)
+  & Mitigation strategies too vague since no implementation specifics
+  & Expanded the mitigation-strategy column of the FMEA table with
+    concrete countermeasures for each system component (Authentication,
+    Request Submission, Budget Tracking, Notifications, Admin Tools,
+    Data Storage).
+\\[4pt]
+
+Peer review (GitHub Issues)
+  & Safety-requirement implementation timeline unclear (SR1--SR10
+    ``first'' vs.\ ``future'' lacks justification)
+  & Added rationale for implementation prioritisation in the Safety
+    Requirements section, explaining why certain requirements (SR2,
+    SR4--SR8) were implemented in the initial release and others (SR1,
+    SR3, SR9--SR10) were deferred to a later phase.
+\\[4pt]
+
+Peer review (GitHub Issues)
+  & Missing/unverifiable citation (IppolitoWallace1995)
+  & Verified that the reference file path
+    (\texttt{../../refs/References}) is correct and that the full
+    citation is present in the bibliography.
+\\
+
+\bottomrule
+\end{longtable}
+
 \subsection{Design and Design Documentation}
+
+\begin{longtable}{p{3.2cm} p{3.8cm} p{7.4cm}}
+\toprule
+\textbf{Source} & \textbf{Feedback Label} & \textbf{Response / Change Made} \\
+\midrule
+\endhead
+
+Peer review GitHub Issue \#81
+  & Inconsistency in MIS Module M4
+  & Resolved the inconsistency in Module~M4 (Receipt Processing Module)
+    in \texttt{MIS.tex}.
+    Commit: \texttt{3fc9799}
+    (\textit{Address issue 81 - Inconsistency in MIS M4}).
+\\[4pt]
+
+Peer review GitHub Issue \#84
+  & Consistency issues across MIS
+  & Fixed consistency issues (naming, notation, table style) throughout
+    \texttt{MIS.tex}.
+    Commit: \texttt{f74a647}
+    (\textit{Fix issue 84 - Consistency}).
+\\[4pt]
+
+Peer review GitHub Issue \#85
+  & Receipt Processing Module (M4) misclassified
+  & Reclassified M4 to the correct module category in
+    \texttt{MIS.tex}.
+    Commit: \texttt{8d2581d}
+    (\textit{Issue 85: The Receipt Processing Module (M4) appears to be
+    misclassified}).
+\\[4pt]
+
+Peer review GitHub Issue \#87
+  & Symbols, Abbreviations and Acronyms section incomplete
+  & Expanded the Symbols/Abbreviations/Acronyms table in
+    \texttt{MIS.tex} with all missing terms.
+    Commit: \texttt{5c84f06}
+    (\textit{Issue 87: Incomplete Symbols, Abbreviations and Acronyms
+    Section}).
+\\[4pt]
+
+Peer review GitHub Issue \#88
+  & Missing type definitions for Parameters, Constants, and State
+    Variables
+  & Added explicit type definitions for all module parameters, constants,
+    and state variables throughout \texttt{MIS.tex}.
+    Commit: \texttt{c2ad946}
+    (\textit{Issue 88: Missing Type Definitions}).
+\\[4pt]
+
+Design doc marking (TA/grader)
+  & MIS table formatting and notation unclear; template text still
+    present
+  & Added table grid/wrapping fixes (\texttt{makecell}, custom column
+    types), introduced formal map notation
+    ($\text{map}\; A \rightarrow B$), clarified the Sequence/String/
+    Tuple/Map type definitions, and removed all \texttt{\textbackslash
+    wss\{\}} placeholder text.
+    Commit: \texttt{8b695e7} (PR~\#94
+    \textit{Add feedback from design doc marking}).
+\\[4pt]
+
+Design doc marking (TA/grader)
+  & Anticipated Change (AC) description for external API integrations
+    too vague
+  & Updated the AC entry to read ``External API integrations with
+    required services and actions (e.g., payment processing, email
+    services)'', making explicit what services and actions are subject to
+    change.
+    Commit: \texttt{1ec121e} (PR~\#96 \textit{Feedback Implementation}).
+\\[4pt]
+
+Rev~0 demo Prof.\ Smith
+  & Information hiding and likely changes not clearly explained during
+    Q\&A
+  & The MG already contained AC/UC sections; following the Rev~0
+    feedback, the justification for each anticipated change was expanded
+    to explain \textit{why} that decision was hidden and what a
+    substitution would require.
+\\[4pt]
+
+Rev~0 demo Prof.\ Smith
+  & Demo should be shown before discussing design
+  & For the final presentation the ordering was adjusted so that the live
+    system demo was shown first to ground the design discussion in
+    observable behaviour.
+\\[4pt]
+
+Rev~0 demo Prof.\ Smith
+  & Show more of the actual application rather than generic graphics
+  & Final presentation slides were updated to include screenshots and
+    screen recordings from the live system rather than placeholder
+    diagrams.
+\\
+
+\bottomrule
+\end{longtable}
 
 \subsection{VnV Plan and Report}
 
+\begin{longtable}{p{3.2cm} p{3.8cm} p{7.4cm}}
+\toprule
+\textbf{Source} & \textbf{Feedback Label} & \textbf{Response / Change Made} \\
+\midrule
+\endhead
+
+TA Meeting \#3 (Oct~23, 2025)
+  & VnV test cases not explicitly linked to SRS FR/NFR numbers
+  & System test cases were rewritten to reference SRS requirement
+    identifiers directly
+    (\texttt{FRQ-1-SUBMIT} through \texttt{FRQ-6}, \texttt{NFL-SAL-1},
+    \texttt{NFL-USAB-1}, \texttt{NFL-SEC-1}, \texttt{NFL-MNT-1}).
+    PRs \#48, \#50--\#52.
+\\[4pt]
+
+TA Meeting \#3 (Oct~23, 2025)
+  & Distinction between automated and manual tests not stated
+  & Each test in the VnV Plan now has an explicit method tag
+    (automated: UI automation, API check, database query; or
+    manual: role-based UI walkthrough).
+    PRs \#113--\#114.
+\\[4pt]
+
+TA Meeting \#3 (Oct~23, 2025)
+  & Software Validation section (3.7) incomplete
+  & Completed the Software Validation section to document how the team
+    verified that the system meets the client's actual needs (MES
+    stakeholder sign-off), distinct from technical verification.
+    PR~\#115.
+\\[4pt]
+
+TA Meeting \#3 (Oct~23, 2025)
+  & VnV template version outdated
+  & Updated to the current VnV template (v2.4).
+\\[4pt]
+
+Rev~0 demo Prof.\ Smith / TA
+  & Usability testing lacked a structured plan: no predefined
+    investigation questions, interaction script, or measurement
+    instrument
+  & Rewrote the usability testing plan to include:
+    (a) specific questions and concerns to investigate,
+    (b) a structured five-task list for participants,
+    (c) a think-aloud protocol,
+    (d) defined measurement outcomes.
+    The revised plan was executed with the MES Infratech Team on
+    April~5, 2026 (see
+    \texttt{docs/Extras/UsabilityTesting/UsabilityTesting.tex}).
+\\[4pt]
+
+Rev~0 demo Prof.\ Smith / TA
+  & CI/CD plan amounts to automatic PDF generation only
+  & Expanded the CI/CD section of the VnV Plan to cover ESLint linting,
+    TypeScript type checking, and deployment to the MES staging branch,
+    in addition to the LaTeX PDF generation pipeline.
+\\[4pt]
+
+Rev~0 demo TA
+  & Instructor annotation comments (\texttt{\textbackslash wss\{\}})
+    left in submitted PDFs
+  & Removed all \texttt{\textbackslash wss\{\}} annotations from all
+    deliverable source files.
+    Commit: PR~\#123 (\textit{remove pink wss comments}).
+\\[4pt]
+
+Rev~0 demo TA
+  & Team productivity report inaccurate
+    (wrong lecture and TA meeting counts)
+  & Corrected all attendance figures in the team contribution documents
+    and committed accurate data.  All future contribution reports are
+    verified against calendar records before submission.
+\\[4pt]
+
+PRs \#111--\#117
+  & VnV Report sections incomplete at Rev~0
+  & Completed all outstanding sections of \texttt{VnVReport.tex}:
+    functional requirements evaluation (Sections 3--4, PR~\#111),
+    unit testing section with manual-first strategy and tooling
+    aligned to the MES repo (PR~\#114), appendix reflections
+    (PR~\#115), and unit-testing alignment cleanup (PR~\#117).
+\\
+
+\bottomrule
+\end{longtable}
+
+% ----------------------------------------------------------------
 \section{Extras}
 
-\plt{Summarize the extras that were tackled by this project.  Extras
-can include usability testing, code walkthroughs, user documentation, formal
-proof, GenderMag personas, Design Thinking, etc.  Extras should have already
-been approved by the course instructor as included in your problem statement.}
+\subsection{Usability Testing}
 
+Usability testing was proposed as an extra deliverable at the POC demo
+(November~20, 2025) and approved by the course instructor.  A formal
+session was conducted on April~5, 2026 with the MES Infratech Team, who
+represented the primary administrative users of the system and participated
+with no prior documentation or training.
+
+The session used an open-ended, task-based format.  Five representative tasks were evaluated: (1)~submitting a
+receipt, (2)~approving/rejecting expense requests as a club executive,
+(3)~viewing expenses filtered by year, (4)~accepting/rejecting requests as
+VP Finance, and (5)~general workflow and navigation.
+
+Key findings included moderate discoverability friction for receipt
+submission (buried under Administration $\rightarrow$ Finances), an
+expectation of drag-and-drop file upload that the system did not support, a
+state-management bug causing auth-locked pages to appear empty on first
+visit, a non-intuitive hover-only ``Details'' button on the VP Finance
+dashboard, and a missing receipt-visibility feature for VP Finance
+reviewers during approval.
+
+Overall participant reception was positive: the system was described as a
+significant improvement over the existing manual process and as ``the
+budding of an ecosystem.''  Full findings and prioritised recommendations
+are documented in
+\texttt{docs/Extras/UsabilityTesting/UsabilityTesting.tex}.
+
+\subsection{User Instructional Video}
+
+A user instructional video was created as an approved extra, replacing a
+traditional user manual as suggested by Prof.\ Smith at the POC demo.  The
+video teaches MES club treasurers and administrators how to submit receipts,
+review and approve reimbursement requests, and use the VP Finance dashboard.
+It was added to the repository on April~21, 2026 and is accessible at:
+
+\begin{center}
+\url{https://youtu.be/toWvJ0CXTSU}
+\end{center}
+
+% ----------------------------------------------------------------
 \section{Design Iteration (LO11 (PrototypeIterate))}
 
-\plt{Explain how you arrived at your final design and implementation.  How did
-the design evolve from the first version to the final version?} 
+The design of the MES Club Payment Tracking System evolved through four
+recognisable phases, each shaped by a combination of technical findings,
+client requirements, and user feedback.
 
-\plt{Don't just say what you changed, say why you changed it.  The needs of the
-client should be part of the explanation.  For example, if you made changes in
-response to usability testing, explain what the testing found and what changes
-it led to.}
+\paragraph{Initial design.}
+The original concept was a form-based receipt submission interface that
+would centralise the manual Google~Forms and spreadsheet workflow used by
+MES clubs.  At this stage there was no automated data extraction; the
+assumption was that users would manually enter all financial fields.  The
+key architectural decision from the outset was integration into the existing
+MES monorepo (\texttt{MES-Website-App-Router}) using the slices
+architecture, rather than building a standalone application.
 
+\paragraph{After the Proof-of-Concept (November 2025).}
+The most significant technical risk was automated extraction of amounts,
+line items, and tax from receipt photographs.  The POC resolved this by
+demonstrating a viable pipeline using the Google Gemini LLM API, which
+extracted structured data accurately across diverse receipt formats.  With
+this risk eliminated, the design shifted focus to the remaining high-risk
+item: user authentication and role-based access control (RBAC).
+
+\paragraph{After Revision~0 (January--March 2026).}
+RBAC was implemented with three permission tiers: club member (submit
+only), club executive (submit + review club submissions), and VP
+Finance/MES admin (system-wide review and approval).  Prof.\ Smith's Rev~0
+feedback noted that the dashboard needed more realistic data for the
+demonstration to be convincing, and that user testing was essential for the
+project to demonstrate adoption readiness.  These observations directly
+shaped the decision to conduct structured usability testing with actual MES
+administrators rather than relying on internal testing alone.
+
+\paragraph{After usability testing (April 2026).}
+The MES Infratech Team session identified four high-priority UI issues that
+were subsequently addressed:
+\begin{itemize}
+  \item \textbf{Receipt submission discoverability:} navigation depth
+    reduced by adding a shortcut from the home page.
+  \item \textbf{Auth-locked empty page:} a state-management bug was fixed
+    so that protected pages hydrate correctly on first visit.
+  \item \textbf{Details button affordance:} the hover-only interaction was
+    replaced with a clearly styled clickable element.
+  \item \textbf{Receipt visibility for VP Finance:} the review interface
+    was updated to display the uploaded receipt alongside request details.
+\end{itemize}
+
+% ----------------------------------------------------------------
 \section{Design Decisions (LO12)}
 
-\plt{Reflect and justify your design decisions.  How did limitations,
- assumptions, and constraints influence your decisions?  Discuss each of these
- separately.}
+\subsection{Limitations}
 
+\begin{itemize}
+  \item \textbf{Google Gemini free-tier rate limits.}  The receipt-parsing
+    pipeline uses the Gemini API, which imposes per-minute and per-day
+    quotas on the free tier.  The system was designed to queue parsing
+    requests gracefully rather than fail silently under burst load, and the
+    economic analysis confirmed that current MES submission volumes stay
+    well within the free-tier limits.
+  \item \textbf{OCR accuracy.}  LLM-based extraction is not 100\% accurate
+    for all receipt formats.  The design therefore preserves the raw
+    receipt image and includes a manual correction step before final
+    submission, allowing users to verify extracted values.
+  \item \textbf{Online-only operation.}  The system has no offline mode.
+    This is consistent with the rest of the MES website and acceptable for
+    the administrative use case, but it means the system is unavailable
+    during MES infrastructure outages.
+\end{itemize}
+
+\subsection{Assumptions}
+
+\begin{itemize}
+  \item \textbf{SSO dependency.}  All users authenticate through the
+    existing MES Single Sign-On system.  The finance module does not
+    manage credentials independently; it relies on the identity established
+    by SSO to determine role assignments.
+  \item \textbf{Timely submissions.}  The workflow assumes that club
+    treasurers submit receipts within the current academic year.
+    Cross-year submissions are not explicitly handled.
+  \item \textbf{Schema isolation.}  The MongoDB database schema can be
+    extended with new collections and fields for the finance module without
+    disrupting existing MES data.  This was confirmed in the September~26
+    technical meeting with the MES Infra-Tech team.
+\end{itemize}
+
+\subsection{Constraints}
+
+\begin{itemize}
+  \item \textbf{MES monorepo integration.}  The most significant
+    architectural constraint was the requirement to develop within the MES
+    monorepo using the slices architecture.  This precluded a standalone
+    deployment and required conforming to the existing Next.js App Router
+    conventions, pre-styled component library, and CI/CD pipeline.
+  \item \textbf{Mandated technology stack.}  MongoDB, Next.js, and the
+    MES component library were all client-mandated; no alternatives were
+    evaluated for these layers.
+  \item \textbf{MIT licence.}  The project inherits the MIT licence from
+    the MES monorepo.  This was agreed with MES and ensures that future
+    student teams and MES Infra-Tech can maintain and extend the system
+    freely.
+  \item \textbf{RBAC role hierarchy.}  The three-tier role model (club
+    member $\rightarrow$ club executive $\rightarrow$ VP Finance/MES admin)
+    was specified directly by MES stakeholder requirements and is not a
+    design choice open to revision.
+\end{itemize}
+
+% ----------------------------------------------------------------
 \section{Economic Considerations (LO23)}
 
-\plt{Is there a market for your product? What would be involved in marketing your 
-product? What is your estimate of the cost to produce a version that you could 
-sell?  What would you charge for your product?  How many units would you have to 
-sell to make money? If your product isn't something that would be sold, like an 
-open source project, how would you go about attracting users?  How many potential 
-users currently exist?}
+The MES Club Payment Tracking System is an open-source contribution to a
+non-profit student organisation and is not intended for commercial sale.
+The relevant economic questions therefore concern sustainability, adoption,
+and potential for reuse rather than pricing or profit.
 
+\paragraph{Target users and market size.}
+The McMaster Engineering Society supports approximately 6,000 undergraduate
+engineering students organised into 40$+$ clubs.  Within those clubs the
+system is used by roughly 40--80 club treasurers (primary submitters),
+80--150 club executives (approvers), and 5--10 MES VP Finance and
+administrative staff.  The total active user base in a given academic year
+is therefore in the range of 200--300 people.
+
+\paragraph{Production and operating cost.}
+The system runs on the existing MES cloud infrastructure managed by the
+Infra-Tech team at no additional hosting cost.  The only variable operating
+cost is the Google Gemini API for receipt parsing, which at current
+submission volumes falls within the free tier.  Estimated ongoing cost:
+\$0--\$20 CAD per month.  If MES submission volumes grew by an order of
+magnitude, a paid Gemini tier would cost on the order of \$10--\$50 per
+month still negligible for a student society budget.
+
+\paragraph{Attracting users and driving adoption.}
+Because the system is embedded in the MES website, user acquisition is
+automatic once the MES Infra-Tech team merges the module into the
+production branch and retires the existing Google~Forms process.  The
+Rev~0 demonstration and the April~2026 usability testing session were
+conducted partly to build confidence with the Infra-Tech stakeholders and
+accelerate that merge decision.
+
+\paragraph{Potential for broader adoption.}
+The MIT licence and the slices architecture mean that any other university
+engineering society running a similar Next.js monorepo could adopt the
+module with minimal effort.  Student engineering societies at other
+Canadian universities face identical club-finance problems.  Attracting
+broader adoption would require extracting the finance slice into a
+standalone package and publishing it with setup documentation, an effort
+estimated at two to four weeks of developer time beyond the capstone scope.
+
+% ----------------------------------------------------------------
 \section{Reflection on Project Management (LO24)}
-
-\plt{This question focuses on processes and tools used for project management.}
 
 \subsection{How Does Your Project Management Compare to Your Development Plan}
 
-\plt{Did you follow your Development plan, with respect to the team meeting plan, 
-team communication plan, team member roles and workflow plan.  Did you use the 
-technology you planned on using?}
+The team followed the Development Plan closely in most respects.  Weekly
+60-minute team meetings were held consistently throughout the project.
+Stakeholder check-ins with Luke (MES) occurred roughly bi-weekly as
+planned.  GitHub Issues and pull requests were used for all code and
+documentation changes, Discord for day-to-day coordination, and email for
+formal stakeholder communication.
+
+The two notable deviations were:
+\begin{itemize}
+  \item The team developed entirely within the MES monorepo
+    (\texttt{MES-Website-App-Router}) rather than using a submodule
+    approach.  Documentation remained in the capstone repository as
+    planned, so grading and contribution tracking were not affected.
+  \item The CI/CD plan was initially limited to automated LaTeX PDF
+    generation.  ESLint linting, TypeScript type-checking, and the staging
+    deployment pipeline were added later than planned; this gap was noted
+    in the Rev~0 feedback and corrected before the final submission.
+\end{itemize}
 
 \subsection{What Went Well?}
 
-\plt{What went well for your project management in terms of processes and 
-technology?}
+\begin{itemize}
+  \item \textbf{GitHub-based workflow.}  Feature branches, required PR
+    reviews, and issue-linked commits kept every contribution traceable
+    and made it easy to identify what changed and why.
+  \item \textbf{Early de-risking of OCR.}  The receipt-parsing POC
+    succeeded ahead of schedule and removed the largest technical
+    uncertainty from the project, allowing the team to focus on the
+    application layer rather than on the AI pipeline.
+  \item \textbf{Consistent team meetings.}  Meeting notes were recorded as
+    GitHub Issues, creating a searchable decision log for the duration of
+    the project.
+  \item \textbf{Structured usability testing.}  Adopting a task-based
+    think-aloud methodology produced specific, actionable findings rather
+    than vague impressions, and the resulting report was comprehensive
+    enough to drive targeted UI improvements.
+\end{itemize}
 
 \subsection{What Went Wrong?}
 
-\plt{What went wrong in terms of processes and technology?}
+\begin{itemize}
+  \item \textbf{POC development lagged.}  The TA noted at Meeting~\#3
+    (Oct~23) that POC implementation ``should be going, but it's not.''
+    The delay was caused by underestimating the time needed to understand
+    the MES monorepo and slices architecture before being able to add new
+    code.
+  \item \textbf{Team contribution tracking started too late.}
+    Contributions were not logged consistently from day one, which led to
+    an underwhelming Rev~0 productivity report (Prof.\ Smith:
+    ``underwhelming productivity report this data is valuable to the TA
+    and instructor'').
+  \item \textbf{Miscommunication at Rev~0 demo.}  Two team members
+    attended virtually due to a last-minute miscommunication, which
+    affected the cohesion of the live presentation.
+  \item \textbf{Instructor annotations left in deliverables.}
+    \texttt{\textbackslash wss\{\}} grader comments were left in submitted
+    PDFs at Rev~0, creating an unprofessional appearance.  These were
+    removed in PR~\#123 before the final submission.
+\end{itemize}
 
 \subsection{What Would you Do Differently Next Time?}
 
-\plt{What will you do differently for your next project?}
+\begin{itemize}
+  \item \textbf{Set up contribution tracking from week one.}  A standing
+    agenda item to review each member's commits, PRs, and meeting
+    attendance at every weekly meeting would have prevented the Rev~0
+    reporting gap.
+  \item \textbf{Start implementation in parallel with early documentation.}
+    Treating documentation and implementation as sequential phases caused
+    the POC lag.  Future projects would benefit from a spike on the riskiest
+    technical component as soon as the problem is understood, regardless of
+    where documentation stands.
+  \item \textbf{Pre-submission checklist.}  A shared checklist run before
+    every graded submission (remove template comments, verify author names,
+    confirm placeholder text is gone) would have caught the annotation and
+    productivity-report issues before they reached graders.
+  \item \textbf{Explicit attendance confirmation before presentations.}
+    Confirming in-person vs.\ remote participation at least 24~hours
+    before every graded presentation would prevent last-minute
+    miscommunications.
+\end{itemize}
 
+% ----------------------------------------------------------------
 \section{Ethics and Equity (LO18)}
 
-\plt{Describe how your team applied the principle of equity and universal design
-to ensure equitable treatment of all stakeholders.}
+\paragraph{Financial data privacy.}
+The system handles sensitive reimbursement data belonging to student clubs.
+RBAC enforcement ensures that a club member can only access their own
+submissions, a club executive can access submissions within their own club,
+and VP Finance/MES admin accounts have system-wide read and approval access.
+No user can view another club's financial records.  All access is logged
+in an immutable audit trail, providing transparency and accountability for
+every approval and rejection decision.
 
+\paragraph{Accessibility.}
+The system targets the Web Content Accessibility Guidelines (WCAG) as
+documented in the SRS non-functional requirements.  Pre-styled MES
+components already adhere to the accessibility standards maintained by the
+MES Infra-Tech team, and new components developed for the finance module
+were designed to remain consistent with those standards.
+
+\paragraph{Equitable treatment across clubs.}
+All 40$+$ MES clubs access the same system with the same workflow.  No
+club receives preferential treatment in the review pipeline.  The uniform
+approval flow and audit trail ensure that decisions are made on the basis
+of submitted documentation rather than personal relationships or manual
+discretion.
+
+\paragraph{Data minimisation.}
+The system collects only the information strictly necessary for
+reimbursement processing: receipt image, amount, description, and club
+association.  No additional personal data is stored beyond what is already
+held by the MES SSO system.
+
+\paragraph{Universal design.}
+The interface was designed to serve three distinct user types with very
+different usage patterns: casual club members who may submit only one or
+two receipts per year, club executives who review submissions regularly,
+and VP Finance staff managing high transaction volumes.  The usability
+testing confirmed that a first-time user with no prior documentation or
+training could successfully complete all core workflows.
+
+% ----------------------------------------------------------------
 \section{Reflection on Capstone}
-
-\plt{This question focuses on what you learned during the course of the capstone project.}
 
 \subsection{Which Courses Were Relevant}
 
-\plt{Which of the courses you have taken were relevant for the capstone project?}
+\begin{itemize}
+  \item \textbf{SE~3XA3 (Software Engineering Practice):}  The most
+    directly applicable course.  The requirements documentation process
+    (SRS), hazard analysis methodology, V\&V planning and reporting
+    workflow, and the concept of iterative revision based on formal
+    feedback all mirror the SE~3XA3 course structure at a larger scale.
+  \item \textbf{SE~3S03 / CS~3SH3 (Software Testing):}  Foundational for
+    writing the VnV Plan and Report, designing test cases with explicit
+    coverage criteria, and distinguishing between unit testing, system
+    testing, and acceptance testing.
+  \item \textbf{CS~3DB3 (Databases):}  Relevant to MongoDB schema design,
+    query correctness for the financial data model, and understanding the
+    implications of document-based storage (vs.\ relational) for data
+    integrity in a financial context.
+\end{itemize}
 
 \subsection{Knowledge/Skills Outside of Courses}
 
-\plt{What skills/knowledge did you need to acquire for your capstone project
-that was outside of the courses you took?}
+\begin{itemize}
+  \item \textbf{Next.js App Router (server components and server actions).}
+    The project uses the Next.js~13$+$ App Router paradigm, including
+    React Server Components, server actions, and streaming.  This
+    architecture was not covered in any SE or CS course; team members
+    learned it from the Next.js documentation and the existing MES codebase.
+  \item \textbf{LLM API integration (Google Gemini).}  Designing a
+    production-grade pipeline to extract structured financial data (line
+    items, subtotals, HST) from unstructured receipt photographs using a
+    generative AI API required knowledge of prompt engineering, output
+    parsing, and error handling not taught in the curriculum.
+  \item \textbf{Role-Based Access Control at the application layer.}
+    Implementing RBAC with server-side route guards, middleware-level
+    authorisation checks, and API-level permission enforcement required
+    learning patterns beyond what is typically covered in SE security
+    courses.
+  \item \textbf{MongoDB Atlas and document-based schema design.}  Working
+    within the existing MES MongoDB schema required understanding
+    document modelling trade-offs (embedding vs.\ referencing) and the
+    operational constraints of a shared production database.
+  \item \textbf{Large-scale LaTeX documentation.}  Managing a
+    multi-document LaTeX project with shared definition files, automated
+    PDF generation via GitHub Actions, and cross-document
+    \texttt{\textbackslash externaldocument} references was a new skill
+    for most team members.
+  \item \textbf{CI/CD within a large organisation's monorepo.}  Writing
+    GitHub Actions workflows that integrate into an existing organisation's
+    CI pipeline including linting, type checking, and staging deployment
+    against a protected main branch required practical knowledge that
+    goes beyond typical course assignments.
+\end{itemize}
 
 \end{document}
